@@ -101,7 +101,7 @@
                         <div class="card-body p-2">
                             <div class="row align-items-center">
                                 <div class="col-3 text-start">
-                                    <div class="icon icon-shape shadow text-center border-radius-md ">
+                                    <div class="icon icon-shape shadow text-center border-radius-md " style="    overflow: hidden;">
                                         <img src="{{Auth::user()->avatar_url}}" alt="الصورة الشخصية" style="max-width: 100%;" class="border-radius-md">
                                     </div>
                                 </div>

@@ -27,6 +27,7 @@ class AllocationController extends Controller
     {
         $this->authorize('view', Allocation::class);
         $allocations = Allocation::paginate(10);
+        
         return view('dashboard.projects.allocations.index', compact('allocations'));
     }
 

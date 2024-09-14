@@ -6,69 +6,7 @@
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-                <div class="table-responsive">
-                    <div class="d-flex justify-content-end p-3 align-items-start">
-                        <button type="button" class="btn btn-secondary" style="margin-left: 10px" id="expandBtn">
-                            <i class="fa-solid fa-maximize"></i>
-                        </button>
-                        @can('create','App\\Models\Allocation')
-                        <a href="{{route('allocations.create')}}" class="btn btn-primary m-0">
-                            <i class="fa-solid fa-plus"></i>
-                        </a>
-                        @endcan
-                    </div>
-                    <div>
-                        <table class="table align-items-center mb-0 table-hover table-bordered">
-                            <thead>
-                                <tr>
-                                    <th class="text-secondary opacity-7 text-center">#</th>
-                                    <th>تاريخ التخصيص</th>
-                                    <th>رقم الموازنة</th>
-                                    <th>الاسم المختصر</th>
-                                    <th>المؤسسة</th>
-                                    <th>المشروع</th>
-                                    <th>الصنف</th>
-                                    <th>الكمية</th>
-                                    <th>السعر</th>
-                                    <th>إجمالي $</th>
-                                    <th>التخصيص</th>
-                                    <th>العملة</th>
-                                    <th>المبلغ $</th>
-                                    <th>عدد المستفيدين</th>
-                                    <th>بنود التنفيد</th>
-                                    <th>تاريخ القبض</th>
-                                    <th>بيان</th>
-                                    <th>المبلغ المقبوض</th>
-                                    <th>العملة</th>
-                                    <th>ملاحظات</th>
-                                    <th>اسم المستخدم</th>
-                                    <th>المدير المستلم</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <style>
-                                input,select,textarea{
-                                    max-width: 100% !important;
-                                    text-align: center !important;
-                                    border: none !important;
-                                    width: 125px !important;
-                                }
-                                textarea{
-                                    text-align: right !important;
-                                    width: 200px !important;
-                                }
-                            </style>
-                            <tbody>
-                                @foreach ($allocations as  $index => $allocation)
-                                    <livewire:allocation-table :allocation="$allocation" :index="$index"  />
-                                @endforeach
-                            </tbody>
-                        </table>
-                        <div>
-                            {{ $allocations->links() }}
-                        </div>
-                    </div>
-                </div>
+                <livewire:allocation-index />
             </div>
         </div>
     </div>
@@ -84,12 +22,15 @@
             });
 
             $(document).on('click', '#collapseBtn', function() {
-                console.log('clicked');
                 $('nav.navbar').css('display', 'block');
                 $('aside').css('display', 'block');
                 $('.main-content').css('margin-right', '17.125rem');
                 $(this).html('<i class="fa-solid fa-maximize"></i>');
                 $(this).attr('id', 'expandBtn');
+            });
+
+            $(document).on('click', '#filterBtn', function() {
+                $('#filter').slideToggle();
             });
         });
     </script>

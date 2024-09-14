@@ -79,7 +79,6 @@
             });
 
             $(document).on('click', '#collapseBtn', function() {
-                console.log('clicked');
                 $('nav.navbar').css('display', 'block');
                 $('aside').css('display', 'block');
                 $('.main-content').css('margin-right', '17.125rem');
