@@ -24,6 +24,7 @@ Route::group([
     Route::get('profile/{user}', [UserController::class, 'profile'])->name('users.profile');
 
     Route::post('allocations/import', [AllocationController::class, 'import'])->name('allocations.import');
+    Route::post('executives/import', [ExecutiveController::class, 'import'])->name('executives.import');
 
     Route::resources([
         'users' => UserController::class,

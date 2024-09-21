@@ -31,8 +31,8 @@ class Executive extends Model
         'files',
     ];
 
-     // relationsheps
-     public function user(){
+    // relationsheps
+    public function user(){
         return $this->belongsTo(User::class,'user_id');
     }
 

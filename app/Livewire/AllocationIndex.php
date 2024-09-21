@@ -13,18 +13,34 @@ class AllocationIndex extends Component
 
     // protected $paginationTheme = 'bootstrap'; // تأكد من تعيين الشكل المناسب للتصفح
 
+    public $amounts_allocated = 0;
+    public $amounts_received = 0;
+    public $remaining = 0;
+    public $collection_rate = 0;
+
     public $filterArray = [
         'budget_number' => '',
         'from_date_allocation' => '',
         'to_date_allocation' => '',
-
+        'broker_name' => '',
+        'organization_name' => '',
+        'project_name' => '',
+        'item_name' => '',
     ];
 
-        // get data from models
-        public $brokers;
-        public $organizations;
-        public $projects;
-        public $items;
+    public $filterB = false;
+
+    public function filterBox(){
+        $this->filterB = !$this->filterB;
+        $this->render();
+    }
+
+
+    // get data from models
+    public $brokers;
+    public $organizations;
+    public $projects;
+    public $items;
 
     public function mount(){
 
@@ -38,7 +54,6 @@ class AllocationIndex extends Component
     public function filter()
     {
         // إعادة التهيئة إلى الصفحة الأولى عند تغيير الفلتر
-        // $this->resetPage();
         $this->render();
     }
 
@@ -47,7 +62,7 @@ class AllocationIndex extends Component
     {
         // جلب البيانات وتطبيق الفلاتر
         $allocations = Allocation::query();
-
+        $filterCheck = false;
         foreach ($this->filterArray as $key => $value) {
             if (!empty($value)) {
                 if ($key == 'from_date_allocation') {
@@ -63,15 +78,38 @@ class AllocationIndex extends Component
                         $value = Carbon::now()->format('Y-m-d');
                     }
                     $allocations->where($key, '<=', $value);
-                } else {
+                }else{
                     // تطبيق فلتر LIKE للحقول النصية
                     $allocations->where($key, 'LIKE', "%{$value}%");
                 }
             }
         }
 
-        // التصفح
-        $allocations = $allocations->paginate(10);
+        foreach ($this->filterArray as $value) {
+            if (!empty($value)) {
+                $filterCheck = true;
+                break; // خروج من الحلقة بمجرد العثور على قيمة غير فارغة
+            }
+        }
+        // $filterCheck = !empty(array_filter($this->filterArray));
+
+        $this->amounts_allocated = $allocations->sum('amount');
+        $this->amounts_received = $allocations->sum('amount_received');
+        $this->remaining = $this->amounts_allocated - $this->amounts_received;
+        if($this->amounts_allocated != 0 && $this->amounts_received != 0){
+            $this->collection_rate = ($this->amounts_received / $this->amounts_allocated) * 100;
+        }else{
+            $this->collection_rate = 0;
+        }
+
+
+        if($filterCheck == true){
+            $allocations = $allocations->paginate(100);
+            // $allocations = $allocations->get();
+        }else{
+            $allocations = $allocations->paginate(10);
+        }
+
 
         // إعادة عرض البيانات إلى الـ view
         return view('livewire.allocation-index', compact('allocations'));

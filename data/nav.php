@@ -18,6 +18,10 @@ return [
                 'icon' => 'fa-solid fa-folder',
                 'permission' => 'view',
                 'model' => 'App\\Models\AccreditationProject',
+                'badge' => [
+                    'type' => 'count',
+                    'color' => 'gradient-info',
+                ],
             ],
         ]
     ],
@@ -31,6 +35,7 @@ return [
                 'icon' => 'fa-solid fa-calculator',
                 'permission' => 'view',
                 'model' => 'App\\Models\Allocation',
+
             ],
             'executives' => [
                 'title' => 'التنفيذات',

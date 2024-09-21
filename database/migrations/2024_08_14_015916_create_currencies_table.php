@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code');
-            $table->decimal('value', 6, 2);
+            $table->decimal('value', 20, 20);
         });
     }
 

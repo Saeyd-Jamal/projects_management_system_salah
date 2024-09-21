@@ -9,7 +9,7 @@
             <h1 class="me-1 h4">{{config('app.name')}}</h1>
         </a>
     </div>
-    
+
     <hr class="horizontal dark mt-0">
     <div class="collapse navbar-collapse px-0 w-auto  max-height-vh-100 h-100" id="sidenav-collapse-main">
         @foreach (app('nav') as $nav)
@@ -21,11 +21,21 @@
             @foreach ($nav['items'] as $item)
                 @can($item['permission'], $item['model'])
                 <li class="nav-item">
-                    <a class="nav-link {{ Str::startsWith(url()->current(), route($item['route'])) ? 'active' : '' }}" href="{{route($item['route'])}}">
+                    <a class="nav-link justify-content-between {{ Str::startsWith(url()->current(), route($item['route'])) ? 'active' : '' }}" href="{{route($item['route'])}}">
                         <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center ms-2 d-flex align-items-center justify-content-center">
                             <i class="{{$item['icon']}}"></i>
                         </div>
                         <span class="nav-link-text me-1">{{$item['title']}}</span>
+                        @if (isset($item['badge']))
+                            <span class="badge badge-sm bg-{{$item['badge']['color']}}">
+                                @if ($item['badge']['type']== 'count')
+                                    {{$item['model']::count()}}
+                                @endif
+                            </span>
+                        @else
+                            <span></span>
+                        @endif
+
                     </a>
                 </li>
                 @endcan

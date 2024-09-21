@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Imports\ExecutivesImport;
 use App\Models\Executive;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -9,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ExecutiveController extends Controller
 {
@@ -19,7 +21,7 @@ class ExecutiveController extends Controller
     public function index()
     {
         $this->authorize('view', Executive::class);
-        $executives = Executive::with('broker', 'project', 'item')->paginate(10);
+        $executives = Executive::paginate(10);
         return view('dashboard.projects.executives.index', compact('executives'));
     }
 
@@ -157,4 +159,16 @@ class ExecutiveController extends Controller
         $executive->delete();
         return redirect()->route('executives.index')->with('danger', 'تمت عملية الحذف بنجاح');
     }
+
+
+    public function import(Request $request){
+        $this->authorize('import', Executive::class);
+        if(!$request->hasFile('file')){
+            return redirect()->route('executives.index')->with('danger', 'الرجاء تحميل الملف');
+        }
+        $file = $request->file('file');
+        Excel::import(new ExecutivesImport, $file);
+        return redirect()->route('executives.index')->with('success', 'تمت عملية الاستيراد بنجاح');
+    }
+
 }

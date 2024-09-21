@@ -202,11 +202,14 @@ class AccreditationProjectController extends Controller
                 'currency_allocation_value' => $currency_allocation_value,
                 'currency_received_value' => $currency_received_value,
                 'files' => $files,
+
             ]);
 
             if($request->adoption == true){
                 $request->merge([
                     'manager_name' => Auth::user()->name,
+                    'user_id' => $accreditation->user_id,
+                    'user_name' => $accreditation->user_name,
                 ]);
                 Allocation::create($request->all());
                 $accreditation->delete();
@@ -243,6 +246,7 @@ class AccreditationProjectController extends Controller
                 $extractedText = substr($notes, $startPos);
                 $id  = $extractedText;
             }
+
             // رفع الملفات للتخصيص
             $files = json_decode($accreditation->files, true) ?? [];
             $year = Carbon::parse($request->implementation_date)->format('Y');
@@ -265,7 +269,10 @@ class AccreditationProjectController extends Controller
             if($request->adoption == true){
                 $request->merge([
                     'manager_name' => Auth::user()->name,
+                    'user_id' => $accreditation->user_id,
+                    'user_name' => $accreditation->user_name,
                 ]);
+                $request['notes'] = "";
                 Executive::create($request->all());
                 $accreditation->delete();
             }else{
