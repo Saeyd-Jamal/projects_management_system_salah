@@ -13,6 +13,8 @@ class ExecutiveIndex extends Component
 
     // protected $paginationTheme = 'bootstrap'; // تأكد من تعيين الشكل المناسب للتصفح
 
+    public $paginationItems = 10;
+
     public $ILS = 0;
 
     public $total_amounts = 0;
@@ -43,7 +45,7 @@ class ExecutiveIndex extends Component
 
     // get data from executive table
     public $accounts;
-    public $affiliate_names;
+    public $affiliates;
     public $receiveds;
     public $details;
 
@@ -57,7 +59,7 @@ class ExecutiveIndex extends Component
 
         // get data from executive table
         $this->accounts = Executive::select('account')->distinct()->pluck('account')->toArray();
-        $this->affiliate_names = Executive::select('affiliate_name')->distinct()->pluck('affiliate_name')->toArray();
+        $this->affiliates = Executive::select('affiliate_name')->distinct()->pluck('affiliate_name')->toArray();
         $this->receiveds = Executive::select('received')->distinct()->pluck('received')->toArray();
         $this->details = Executive::select('detail')->distinct()->pluck('detail')->toArray();
 
@@ -107,23 +109,27 @@ class ExecutiveIndex extends Component
                 break; // خروج من الحلقة بمجرد العثور على قيمة غير فارغة
             }
         }
-        // $filterCheck = !empty(array_filter($this->filterArray));
+
+        if($filterCheck == false){
+            $allocations = Executive::query();
+        }
 
         $this->total_amounts = $executives->sum('total_ils');
         $this->total_payments = $executives->sum('amount_payments');
         $this->remaining_balance = $this->total_amounts - $this->total_payments;
 
 
-        if($filterCheck == true){
-            $executives = $executives->paginate(100);
-            // $executives = $executives->get();
+
+        if($this->paginationItems == "all"){
+            $executives = $executives->get();
         }else{
-            $executives = $executives->paginate(10);
+            $executives = $executives->paginate(intval($this->paginationItems));
         }
+
 
         $this->ILS = Currency::where('code', 'ILS')->first()->value;
 
         // إعادة عرض البيانات إلى الـ view
-        return view('livewire.executive-index', compact('executives'));
+        return view('livewire.executive-index', compact('executives','filterCheck'));
     }
 }

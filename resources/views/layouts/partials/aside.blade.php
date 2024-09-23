@@ -27,11 +27,15 @@
                         </div>
                         <span class="nav-link-text me-1">{{$item['title']}}</span>
                         @if (isset($item['badge']))
-                            <span class="badge badge-sm bg-{{$item['badge']['color']}}">
-                                @if ($item['badge']['type']== 'count')
-                                    {{$item['model']::count()}}
+                            @if ($item['badge']['type']== 'count')
+                                @if ($item['model']::count() != 0)
+                                    <span class="badge badge-sm bg-{{$item['badge']['color']}}">
+                                        {{$item['model']::count()}}
+                                    </span>
+                                @else
+                                    <span></span>
                                 @endif
-                            </span>
+                            @endif
                         @else
                             <span></span>
                         @endif

@@ -13,6 +13,8 @@ class AllocationIndex extends Component
 
     // protected $paginationTheme = 'bootstrap'; // تأكد من تعيين الشكل المناسب للتصفح
 
+    public $paginationItems = 10;
+
     public $amounts_allocated = 0;
     public $amounts_received = 0;
     public $remaining = 0;
@@ -91,11 +93,15 @@ class AllocationIndex extends Component
                 break; // خروج من الحلقة بمجرد العثور على قيمة غير فارغة
             }
         }
+        if($filterCheck == false){
+            $allocations = Allocation::query();
+        }
         // $filterCheck = !empty(array_filter($this->filterArray));
 
         $this->amounts_allocated = $allocations->sum('amount');
         $this->amounts_received = $allocations->sum('amount_received');
         $this->remaining = $this->amounts_allocated - $this->amounts_received;
+
         if($this->amounts_allocated != 0 && $this->amounts_received != 0){
             $this->collection_rate = ($this->amounts_received / $this->amounts_allocated) * 100;
         }else{
@@ -103,15 +109,14 @@ class AllocationIndex extends Component
         }
 
 
-        if($filterCheck == true){
-            $allocations = $allocations->paginate(100);
-            // $allocations = $allocations->get();
+        if($this->paginationItems == "all"){
+            $allocations = $allocations->get();
         }else{
-            $allocations = $allocations->paginate(10);
+            $allocations = $allocations->paginate(intval($this->paginationItems));
         }
 
 
         // إعادة عرض البيانات إلى الـ view
-        return view('livewire.allocation-index', compact('allocations'));
+        return view('livewire.allocation-index', compact('allocations', 'filterCheck'));
     }
 }
