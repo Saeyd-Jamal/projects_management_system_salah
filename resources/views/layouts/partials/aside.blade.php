@@ -19,30 +19,56 @@
         </div>
         <ul class="navbar-nav">
             @foreach ($nav['items'] as $item)
-                @can($item['permission'], $item['model'])
-                <li class="nav-item">
-                    <a class="nav-link justify-content-between {{ Str::startsWith(url()->current(), route($item['route'])) ? 'active' : '' }}" href="{{route($item['route'])}}">
-                        <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center ms-2 d-flex align-items-center justify-content-center">
-                            <i class="{{$item['icon']}}"></i>
-                        </div>
-                        <span class="nav-link-text me-1">{{$item['title']}}</span>
-                        @if (isset($item['badge']))
-                            @if ($item['badge']['type']== 'count')
-                                @if ($item['model']::count() != 0)
-                                    <span class="badge badge-sm bg-{{$item['badge']['color']}}">
-                                        {{$item['model']::count()}}
-                                    </span>
+                @if(isset($item['model']))
+                    @can($item['permission'], $item['model'])
+                        <li class="nav-item">
+                            <a class="nav-link justify-content-between {{ Str::startsWith(url()->current(), route($item['route'])) ? 'active' : '' }}" href="{{route($item['route'])}}">
+                                <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center ms-2 d-flex align-items-center justify-content-center">
+                                    <i class="{{$item['icon']}}"></i>
+                                </div>
+                                <span class="nav-link-text me-1">{{$item['title']}}</span>
+                                @if (isset($item['badge']))
+                                    @if ($item['badge']['type']== 'count')
+                                        @if ($item['model']::count() != 0)
+                                            <span class="badge badge-sm bg-{{$item['badge']['color']}}">
+                                                {{$item['model']::count()}}
+                                            </span>
+                                        @else
+                                            <span></span>
+                                        @endif
+                                    @endif
                                 @else
                                     <span></span>
                                 @endif
-                            @endif
-                        @else
-                            <span></span>
-                        @endif
+                            </a>
+                        </li>
+                    @endcan
+                @else
+                    @can($item['permission'])
+                        <li class="nav-item">
+                            <a class="nav-link justify-content-between {{ Str::startsWith(url()->current(), route($item['route'])) ? 'active' : '' }}" href="{{route($item['route'])}}">
+                                <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center ms-2 d-flex align-items-center justify-content-center">
+                                    <i class="{{$item['icon']}}"></i>
+                                </div>
+                                <span class="nav-link-text me-1">{{$item['title']}}</span>
+                                @if (isset($item['badge']))
+                                    @if ($item['badge']['type']== 'count')
+                                        @if ($item['model']::count() != 0)
+                                            <span class="badge badge-sm bg-{{$item['badge']['color']}}">
+                                                {{$item['model']::count()}}
+                                            </span>
+                                        @else
+                                            <span></span>
+                                        @endif
+                                    @endif
+                                @else
+                                    <span></span>
+                                @endif
+                            </a>
+                        </li>
+                    @endcan
+                @endif
 
-                    </a>
-                </li>
-                @endcan
             @endforeach
         </ul>
         @endforeach

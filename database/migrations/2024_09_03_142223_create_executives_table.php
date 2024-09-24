@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('quantity')->nullable()->comment('الكمية');
             $table->decimal('price', 10, 2)->nullable()->comment('السعر ₪');
             $table->decimal('total_ils', 10, 2)->nullable()->comment('الإجمالي ₪');
-            $table->string('received')->comment('المستلم');
+            $table->string('received')->nullable()->comment('المستلم');
             $table->text('notes')->nullable();
             $table->decimal('amount_payments', 10, 2)->nullable()->comment('المبلغ المدفوع');
             $table->text('payment_mechanism')->nullable()->comment('آلية الدفع');

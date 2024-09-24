@@ -1,5 +1,6 @@
 <div class="table-responsive">
     @push('styles')
+        <link rel="stylesheet" href="{{asset('css/stickyTable.css')}}">
         <!-- إضافة بعض CSS المخصص لتحسين المظهر -->
         <style>
             /* تنسيق حقل البحث */
@@ -180,16 +181,16 @@
             </div>
         </form>
     </div>
-    <div>
-        <table class="table align-items-center mb-0 table-hover table-bordered">
+    <div class="table-container">
+        <table class="table align-items-center mb-0 table-hover table-bordered" id="sticky">
             <thead>
                 <tr>
                     <th class="text-secondary opacity-7 text-center">#</th>
-                    <th>التاريخ</th>
+                    <th  class="sticky" style="right: 0px;">التاريخ</th>
                     {{-- <th>رقم الموازنة</th> --}}
-                    <th>المؤسسة</th>
-                    <th>الحساب</th>
-                    <th>الاسم</th>
+                    <th  class="sticky" style="right: 142px;">المؤسسة</th>
+                    <th class="sticky" style="right: 284px;" >الحساب</th>
+                    <th class="sticky" style="right: 426px;">الاسم</th>
                     <th>المشروع</th>
                     <th>التفصيل..</th>
                     <th>الصنف</th>

@@ -3,7 +3,7 @@
     <td  class="text-center">
         {{ $index + 1 }}
     </td>
-    <td>
+    <td  class="sticky" style="right: 0px;">
         {{-- <x-form.input type="date" name="date_executive" required :value="$executive->date_executive" wire:input="update('date_executive', $event.target.value)" /> --}}
         <x-form.input type="date" name="implementation_date" required wire:model="implementation_date" wire:input="update('implementation_date', $event.target.value)"  />
     </td>
@@ -16,7 +16,7 @@
             @endif
         </div>
     </td> --}}
-    <td>
+    <td class="sticky" style="right: 142px">
         <x-form.input name="broker_name" list="brokers_list" :value="$executive->broker_name" required wire:input="update('broker_name', $event.target.value)" />
         <datalist id="brokers_list">
             @foreach ($brokers as $broker)
@@ -24,7 +24,7 @@
             @endforeach
         </datalist>
     </td>
-    <td>
+    <td  class="sticky" style="right: 284px;">
         <x-form.input name="account" list="account_list" :value="$executive->account" required wire:input="update('account', $event.target.value)" />
         <datalist id="account_list">
             @foreach ($accounts as $account)
@@ -32,7 +32,7 @@
             @endforeach
         </datalist>
     </td>
-    <td>
+    <td  class="sticky" style="right: 426px;">
         <x-form.input name="affiliate_name" list="affiliate_name_list" :value="$executive->affiliate_name" required wire:input="update('affiliate_name', $event.target.value)" />
         <datalist id="affiliate_name_list">
             @foreach ($affiliate_names as $affiliate_name)

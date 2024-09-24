@@ -4,7 +4,7 @@ namespace App\Imports;
 
 use App\Models\Executive;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Date;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 

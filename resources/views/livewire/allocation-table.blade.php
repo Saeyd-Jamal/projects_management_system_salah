@@ -3,10 +3,10 @@
     <td  class="text-center">
         {{ $index + 1 }}
     </td>
-    <td>
+    <td class="sticky" style="right: 0px;">
         <x-form.input type="date" name="date_allocation" required :value="$allocation->date_allocation" wire:input="update('date_allocation', $event.target.value)" />
     </td>
-    <td>
+    <td class="sticky" style="right: 142px;">
         <x-form.input type="number" name="budget_number" :value="$allocation->budget_number" placeholder="رقم الموزانة : 1212" class="text-center" required wire:input="budget_number_check($event.target.value)" />
         <div id="budget_number_error" class="text-danger"  >
             @if ($budget_number_error != '')
@@ -15,7 +15,7 @@
             @endif
         </div>
     </td>
-    <td>
+    <td class="sticky" style="right: 284px;">
         <x-form.input name="broker_name" list="brokers_list" :value="$allocation->broker_name" required  wire:input="update('broker_name', $event.target.value)"/>
         <datalist id="brokers_list">
             @foreach ($brokers as $broker)
@@ -23,7 +23,7 @@
             @endforeach
         </datalist>
     </td>
-    <td>
+    <td class="sticky" style="right: 426px;">
         <x-form.input name="organization_name" list="organizations_list" :value="$allocation->organization_name" required  wire:input="update('organization_name', $event.target.value)"/>
         <datalist id="organizations_list">
             @foreach ($organizations as $organization)
@@ -31,7 +31,7 @@
             @endforeach
         </datalist>
     </td>
-    <td>
+    <td class="sticky" style="right: 568px;">
         <x-form.input name="project_name" list="projects_list" :value="$allocation->project_name" required wire:input="update('project_name', $event.target.value)" />
         <datalist id="projects_list">
             @foreach ($projects as $project)

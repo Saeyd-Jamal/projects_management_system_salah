@@ -44,6 +44,12 @@ return [
                 'permission' => 'view',
                 'model' => 'App\\Models\Executive',
             ],
+            'reports' => [
+                'title' => 'التقارير',
+                'route' => 'reports.index',
+                'icon' => 'fa-solid fa-file-lines',
+                'permission' => 'reports.view',
+            ],
         ]
     ],
     'system_settings' => [
@@ -73,6 +79,7 @@ return [
             ],
         ]
     ],
+    /*
     'cataloguing' => [
         'title' => 'الفهرسة',
         'icon' => 'fa-solid fa-puzzle-piece',
@@ -107,5 +114,5 @@ return [
             ],
         ]
     ],
-
+    */
 ];

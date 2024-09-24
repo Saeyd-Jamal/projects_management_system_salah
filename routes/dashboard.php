@@ -8,6 +8,7 @@ use App\Http\Controllers\ExecutiveController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -26,6 +27,10 @@ Route::group([
     Route::post('allocations/import', [AllocationController::class, 'import'])->name('allocations.import');
     Route::post('executives/import', [ExecutiveController::class, 'import'])->name('executives.import');
 
+    Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::post('reports/export', [ReportController::class, 'export'])->name('reports.export');
+
+    
     Route::resources([
         'users' => UserController::class,
         'roles' => RoleController::class,
