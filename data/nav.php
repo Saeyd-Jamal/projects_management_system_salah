@@ -77,11 +77,18 @@ return [
                 'permission' => 'view',
                 'model' => 'App\\Models\Currency',
             ],
+            'items' => [
+                'title' => 'الأصناف',
+                'route' => 'items.index',
+                'icon' => 'fa-solid fa-toolbox',
+                'permission' => 'view',
+                'model' => 'App\\Models\Item',
+            ],
         ]
     ],
     /*
     'cataloguing' => [
-        'title' => 'الفهرسة',
+        'title' => 'التخصيصات',
         'icon' => 'fa-solid fa-puzzle-piece',
         'items' => [
             'brokers' => [
@@ -105,13 +112,7 @@ return [
                 'permission' => 'view',
                 'model' => 'App\\Models\Project',
             ],
-            'items' => [
-                'title' => 'الأصناف',
-                'route' => 'items.index',
-                'icon' => 'fa-solid fa-toolbox',
-                'permission' => 'view',
-                'model' => 'App\\Models\Item',
-            ],
+
         ]
     ],
     */

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>كشف أرصدة المؤسسات الداعمة</title>
+    <title>كشف الإجمالي</title>
     <style>
         body {
             font-family: 'XBRiyaz', sans-serif;
@@ -89,64 +89,81 @@
         <table class="blueTable">
             <thead>
                 <tr>
-                    <td colspan="7" style="border:0;">
+                    <td colspan="5" style="border:0;">
                         <p>
                             <span>قسم المشاريع</span> /
-                            <span>كشف أرصدة المؤسسات الداعمة</span>
+                            <span>كشف الإجمالي</span>
                         </p>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="7" align="center" style="color: #000;border:0;">
-                        <h1>كشف أرصدة المؤسسات الداعمة </h1>
+                    <td colspan="5" align="center" style="color: #000;border:0;">
+                        <h1>كشف الإجمالي</h1>
                     </td>
                 </tr>
                 <tr style="background: #dddddd;">
                     <th>#</th>
-                    <th>المؤسسة</th>
-                    <th>نسبة التمويل</th>
+                    <th>الصنف</th>
+                    <th>المخصص</th>
+                    <th>المنفذ</th>
+                    <th>المتبقي للتنفيذ</th>
+                    <th>سعر ش</th>
                     <th>مبلغ التخصيص</th>
-                    <th>القبض بالدولار</th>
-                    <th>الرصيد بالدولار</th>
-                    <th>نسبة التحصيل</th>
+                    <th>المنفذ بالشيكل</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($brokers as $broker)
                 @php
-                    $allocation = App\Models\Allocation::where('broker_name', $broker)->get();
-                    $amount = $allocation->sum('amount');
-                    $amount_received = $allocation->sum('amount_received');
-
-                    //  لحل مشكلة القسمة
-                    $amount = ($amount == 0 ? 1 : $amount);
-                    $amount_received = ($amount_received == 0 ? 1 : $amount_received);
-                    $totalAmount = ($allocationsTotal['amount'] == 0 ? 1 : $allocationsTotal['amount']); ;
+                    $total_allocations = 0;
                 @endphp
+                @foreach ($items as $item)
+                    @php
+                        $allocation = App\Models\Allocation::where('item_name', $item)->get();
+                        $executive = App\Models\Executive::where('item_name', $item)->get();
+
+                        $quantityAllocation = $allocation->sum('quantity');
+                        $quantityExecutive = $executive->sum('quantity');
+
+                        $total_ils = $executive->sum('total_ils');
+
+                        $item_price  = App\Models\Item::where('name', $item)->first();
+                        if($item_price != null){
+                            $item_price = $item_price->price;
+                        }else {
+                            $item_price = $total_ils / $quantityExecutive;
+                        }
+
+                        $total_allocation = $quantityAllocation * $item_price;
+
+                        $total_allocations += $total_allocation;
+                    @endphp
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $broker }}</td>
-                        <td>{{ number_format($amount / $totalAmount,5) * 100 }} %</td>
-                        <td>{{ number_format($amount,2) }}</td>
-                        <td>{{ number_format($amount_received,2) }}</td>
+                        <td>{{ $item }}</td>
+                        <td>{{ number_format($quantityAllocation,0) }}</td>
+                        <td>{{ number_format($quantityExecutive,0) }}</td>
                         <td>
-                            {{ number_format($amount - $amount_received,2) }}
+                            {{ number_format($quantityAllocation - $quantityExecutive,0) }}
                         </td>
                         <td>
-                            {{ number_format($amount_received / $amount,5) * 100 }} %
+                            {{ number_format($item_price,0) }}
                         </td>
+                        <td>{{ number_format($total_allocation,0) }}</td>
+                        <td>{{ number_format($total_ils,0) }}</td>
+
                     </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3" align="right">المجموع</td>
-                    <td>{{ number_format($allocationsTotal['amount'],2) }}</td>
-                    <td>{{ number_format($allocationsTotal['amount_received'],2) }}</td>
-                    <td>{{ number_format($allocationsTotal['amount'] - $allocationsTotal['amount_received'],2) }}</td>
-                    <td> {{ number_format($allocationsTotal['amount_received'] / $allocationsTotal['amount'],5) * 100 }} %</td>
+                    <td colspan="2" align="right">المجموع</td>
+                    <td>{{ number_format($executivesTotal['quantity_allocations'],0) }}</td>
+                    <td>{{ number_format($executivesTotal['quantity_executives'],0) }}</td>
+                    <td>{{ number_format($executivesTotal['quantity_allocations'] - $executivesTotal['quantity_executives'],0) }}</td>
+                    <td></td>
+                    <td>{{ number_format($total_allocations,0) }}</td>
+                    <td>{{ number_format($executivesTotal['total_ils'],0) }}</td>
                 </tr>
-
             </tfoot>
         </table>
         <htmlpagefooter name="page-footer">

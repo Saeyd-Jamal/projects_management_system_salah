@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Allocation;
+use App\Models\Executive;
 use App\Models\Item;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -17,7 +19,7 @@ class ItemController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Item::class);
-        $items = Item::paginate(10);
+        $items = Item::get();
         return view('dashboard.cataloguing.items.index', compact('items'));
     }
 
@@ -28,7 +30,11 @@ class ItemController extends Controller
     {
         $this->authorize('create', Item::class);
         $item = new Item();
-        return view('dashboard.cataloguing.items.create', compact('item'));
+        $itemsFromAllocation = Allocation::select('item_name')->distinct()->pluck('item_name')->toArray();
+        $itemsFromExecutive = Executive::select('item_name')->distinct()->pluck('item_name')->toArray();
+
+        $items = array_unique(array_merge($itemsFromAllocation, $itemsFromExecutive));
+        return view('dashboard.cataloguing.items.create', compact('item', 'items'));
     }
 
     /**
@@ -40,19 +46,6 @@ class ItemController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-        ]);
-
-        $files = [];
-        if ($request->hasFile('filesArray')) {
-            foreach ($request->file('filesArray') as $file) {
-                $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-                $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
-                $filepath = $file->storeAs("files/items/". Str::slug($request->post('name')), $filenameExtension, 'public');
-                $files[$file->getClientOriginalName()] = $filepath;
-            }
-        }
-        $request->merge([
-            'files' => json_encode($files),
         ]);
 
         Item::create($request->all());
@@ -74,8 +67,11 @@ class ItemController extends Controller
     {
         $this->authorize('update', Item::class);
         $btn_label = 'تعديل';
-        $files = json_decode($item->files, true) ?? [];
-        return view('dashboard.cataloguing.items.edit', compact('item', 'btn_label','files'));
+        $itemsFromAllocation = Allocation::select('item_name')->distinct()->pluck('item_name')->toArray();
+        $itemsFromExecutive = Executive::select('item_name')->distinct()->pluck('item_name')->toArray();
+
+        $items = array_unique(array_merge($itemsFromAllocation, $itemsFromExecutive));
+        return view('dashboard.cataloguing.items.edit', compact('item', 'btn_label', 'items'));
     }
 
     /**
@@ -84,20 +80,6 @@ class ItemController extends Controller
     public function update(Request $request, Item $item)
     {
         $this->authorize('update', Item::class);
-        $slug = $item->slug;
-        // استرجاع الملفات الحالية وتحويلها إلى مصفوفة
-        $files = json_decode($item->files, true) ?? [];
-        if ($request->hasFile('filesArray')) {
-            foreach ($request->file('filesArray') as $file) {
-                $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-                $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
-                $filepath = $file->storeAs("files/items/". Str::slug($item->name), $filenameExtension, 'public');
-                $files[$file->getClientOriginalName()] = $filepath;
-            }
-        }
-        $request->merge([
-            'files' => json_encode($files),
-        ]);
         $item->update($request->all());
         return redirect()->route('items.index')->with('success', 'تم تحديث بيانات الصنف المحدد');
     }
@@ -108,11 +90,6 @@ class ItemController extends Controller
     public function destroy(Item $item)
     {
         $this->authorize('delete', Item::class);
-        $files = json_decode($item->files, true) ?? [];
-        foreach ($files as $file) {
-            Storage::delete($file);
-        }
-        Storage::deleteDirectory('files/items/' . Str::slug($item->name));
         $item->delete();
         return redirect()->route('items.index')->with('danger', 'تم حذف الصنف المحدد');
     }

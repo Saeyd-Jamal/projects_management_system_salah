@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>كشف أرصدة المؤسسات الداعمة</title>
+    <title>كشف المناطق</title>
     <style>
         body {
             font-family: 'XBRiyaz', sans-serif;
@@ -89,64 +89,47 @@
         <table class="blueTable">
             <thead>
                 <tr>
-                    <td colspan="7" style="border:0;">
+                    <td colspan="3" style="border:0;">
                         <p>
                             <span>قسم المشاريع</span> /
-                            <span>كشف أرصدة المؤسسات الداعمة</span>
+                            <span>كشف المناطق</span>
                         </p>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="7" align="center" style="color: #000;border:0;">
-                        <h1>كشف أرصدة المؤسسات الداعمة </h1>
+                    <td colspan="{{ 2 + count($items) }}" align="center" style="color: #000;border:0;">
+                        <h1>كشف المناطق</h1>
                     </td>
                 </tr>
                 <tr style="background: #dddddd;">
                     <th>#</th>
-                    <th>المؤسسة</th>
-                    <th>نسبة التمويل</th>
-                    <th>مبلغ التخصيص</th>
-                    <th>القبض بالدولار</th>
-                    <th>الرصيد بالدولار</th>
-                    <th>نسبة التحصيل</th>
+                    <th>المنطقة</th>
+                    @foreach ($items as $item)
+                        <th>{{ $item }}</th>
+                    @endforeach
                 </tr>
             </thead>
             <tbody>
-                @foreach ($brokers as $broker)
-                @php
-                    $allocation = App\Models\Allocation::where('broker_name', $broker)->get();
-                    $amount = $allocation->sum('amount');
-                    $amount_received = $allocation->sum('amount_received');
-
-                    //  لحل مشكلة القسمة
-                    $amount = ($amount == 0 ? 1 : $amount);
-                    $amount_received = ($amount_received == 0 ? 1 : $amount_received);
-                    $totalAmount = ($allocationsTotal['amount'] == 0 ? 1 : $allocationsTotal['amount']); ;
-                @endphp
+                @foreach ($areas as $area)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $broker }}</td>
-                        <td>{{ number_format($amount / $totalAmount,5) * 100 }} %</td>
-                        <td>{{ number_format($amount,2) }}</td>
-                        <td>{{ number_format($amount_received,2) }}</td>
-                        <td>
-                            {{ number_format($amount - $amount_received,2) }}
-                        </td>
-                        <td>
-                            {{ number_format($amount_received / $amount,5) * 100 }} %
-                        </td>
+                        <td>{{ $area }}</td>
+                        @foreach ($items as $item)
+                            @php
+                                $quantity = App\Models\Executive::where('received', $area)->where('item_name', $item)->sum('quantity');
+                            @endphp
+                            <td>{{ $quantity }}</td>
+                        @endforeach
                     </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3" align="right">المجموع</td>
-                    <td>{{ number_format($allocationsTotal['amount'],2) }}</td>
-                    <td>{{ number_format($allocationsTotal['amount_received'],2) }}</td>
-                    <td>{{ number_format($allocationsTotal['amount'] - $allocationsTotal['amount_received'],2) }}</td>
-                    <td> {{ number_format($allocationsTotal['amount_received'] / $allocationsTotal['amount'],5) * 100 }} %</td>
+                    <td colspan="2" align="right">المجموع</td>
+                    @foreach ($items as $item)
+                        <td>{{ number_format(App\Models\Executive::where('item_name', $item)->sum('quantity'),0) }}</td>
+                    @endforeach
                 </tr>
-
             </tfoot>
         </table>
         <htmlpagefooter name="page-footer">

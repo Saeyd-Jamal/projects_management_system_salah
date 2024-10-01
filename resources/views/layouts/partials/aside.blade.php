@@ -15,7 +15,7 @@
         @foreach (app('nav') as $nav)
         <div class="row align-items-center  flex-nowrap" style="margin: 5px;">
             <i style="width: 18px" class="{{$nav['icon']}}"></i>
-            <span>{{$nav['title']}}</span>
+            <span  style="width: 50%;">{{$nav['title']}}</span>
         </div>
         <ul class="navbar-nav">
             @foreach ($nav['items'] as $item)

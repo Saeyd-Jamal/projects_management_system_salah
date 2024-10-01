@@ -1,51 +1,6 @@
 <div class="table-responsive">
     @push('styles')
         <link rel="stylesheet" href="{{asset('css/stickyTable.css')}}">
-        <!-- إضافة بعض CSS المخصص لتحسين المظهر -->
-        <style>
-            /* تنسيق حقل البحث */
-            .search-container {
-                position: relative;
-                width: 100%;
-            }
-
-            .searchInput {
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #ced4da;
-                border-radius: 5px;
-                outline: none;
-            }
-
-            /* تنسيق القائمة المنسدلة */
-            .dropdown-list {
-                position: absolute;
-                width: 100%;
-                max-height: 150px;
-                border: 1px solid #ced4da;
-                border-radius: 0 0 5px 5px;
-                background-color: #fff;
-                z-index: 1000;
-                overflow-y: auto;
-                display: none;
-                /* مخفية بشكل افتراضي */
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            }
-
-            .dropdown-list option {
-                padding: 10px;
-                cursor: pointer;
-            }
-
-            .dropdown-list option:hover {
-                background-color: #f1f1f1;
-            }
-
-            /* عند فتح القائمة */
-            .dropdown-list.show {
-                display: block;
-            }
-        </style>
     @endpush
 
 
@@ -67,101 +22,61 @@
             @csrf
             <div class="row">
                 <div class="form-group col-md-3">
-                    <x-form.input type="date" name="from_implementation_date" label="من تاريخ" required wire:model="filterArray.from_implementation_date" wire:input="filter" />
+                    <x-form.input type="date" name="from_implementation_date" label="من تاريخ" required wire:model="filterArray.from_implementation_date" />
                 </div>
                 <div class="form-group col-md-3">
-                    <x-form.input type="date" name="to_implementation_date" label="الى تاريخ" required wire:model="filterArray.to_implementation_date" wire:input="filter" />
+                    <x-form.input type="date" name="to_implementation_date" label="الى تاريخ" required wire:model="filterArray.to_implementation_date" />
                 </div>
                 <div class="form-group col-md-3">
                     <label for="broker_name">الإسم المختصر</label>
-                    <!-- حاوية لحقل البحث والقائمة المنسدلة -->
-                    <div class="search-container">
-                        <input type="text" class="searchInput form-control mb-2" data-target="broker_name"
-                            placeholder="ابحث...">
-                        <!-- قائمة الخيارات المنسدلة المرتبطة -->
-                        <select id="broker_name" class="dropdown-list form-control" size="5"
-                            wire:model="filterArray.broker_name" wire:input="filter">
-                            <option value="">الكل</option>
-                            @foreach ($brokers as $broker)
-                                <option value="{{ $broker }}">{{ $broker }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <x-form.input name="broker_name" list="brokers_list" wire:model="filterArray.broker_name" />
+                    <datalist id="brokers_list">
+                        @foreach ($brokers as $broker)
+                            <option value="{{ $broker }}">
+                        @endforeach
+                    </datalist>
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="account_name">الحساب</label>
-                    <div class="search-container">
-                        <input type="text" class="searchInput form-control mb-2" data-target="account_name"
-                            placeholder="ابحث...">
-                        <!-- قائمة الخيارات المنسدلة المرتبطة -->
-                        <select id="account_name" class="dropdown-list form-control" size="5"
-                            wire:model="filterArray.account_name" wire:input="filter">
-                            <option value="">الكل</option>
-                            @foreach ($accounts as $account)
-                                <option value="{{ $account }}">{{ $account }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <x-form.input name="account" label="الحساب" list="account_list" wire:model="filterArray.account" />
+                    <datalist id="account_list">
+                        @foreach ($accounts as $account)
+                            <option value="{{ $account }}">
+                        @endforeach
+                    </datalist>
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="affiliate_name">الاسم</label>
-                    <div class="search-container">
-                        <input type="text" class="searchInput form-control mb-2" data-target="affiliate_name"
-                            placeholder="ابحث...">
-                        <!-- قائمة الخيارات المنسدلة المرتبطة -->
-                        <select id="affiliate_name" class="dropdown-list form-control" size="5"
-                            wire:model="filterArray.affiliate_name" wire:input="filter">
-                            <option value="">الكل</option>
-                            @foreach ($affiliates as $affiliate)
-                                <option value="{{ $affiliate }}">{{ $affiliate }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <x-form.input name="affiliate_name" label="الاسم" list="affiliate_name_list" wire:model="filterArray.affiliate_name" />
+                    <datalist id="affiliate_name_list">
+                        @foreach ($affiliates as $affiliate_name)
+                            <option value="{{ $affiliate_name }}">
+                        @endforeach
+                    </datalist>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="project_name">المشروع</label>
-                    <div class="search-container">
-                        <input type="text" class="searchInput form-control mb-2" data-target="project_name"
-                            placeholder="ابحث...">
-                        <!-- قائمة الخيارات المنسدلة المرتبطة -->
-                        <select id="project_name" class="dropdown-list form-control" size="5"
-                            wire:model="filterArray.project_name" wire:input="filter">
-                            <option value="">الكل</option>
-                            @foreach ($projects as $project)
-                                <option value="{{ $project }}">{{ $project }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <x-form.input name="project_name" list="projects_list" wire:model="filterArray.project_name" />
+                    <datalist id="projects_list">
+                        @foreach ($projects as $project)
+                            <option value="{{ $project }}">
+                        @endforeach
+                    </datalist>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="item_name">الصنف</label>
-                    <div class="search-container">
-                        <input type="text" class="searchInput form-control mb-2" data-target="item_name"
-                            placeholder="ابحث...">
-                        <!-- قائمة الخيارات المنسدلة المرتبطة -->
-                        <select id="item_name" class="dropdown-list form-control" size="5"
-                            wire:model="filterArray.item_name" wire:input="filter">
-                            <option value="">الكل</option>
-                            @foreach ($items as $item)
-                                <option value="{{ $item }}">{{ $item }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <x-form.input name="item_name" list="items_list" wire:model="filterArray.item_name" />
+                    <datalist id="items_list">
+                        @foreach ($items as $item)
+                            <option value="{{ $item }}">
+                        @endforeach
+                    </datalist>
                 </div>
                 <div class="form-group col-md-3">
-                    <label for="received_name">المستلم</label>
-                    <div class="search-container">
-                        <input type="text" class="searchInput form-control mb-2" data-target="received_name"
-                            placeholder="ابحث...">
-                        <!-- قائمة الخيارات المنسدلة المرتبطة -->
-                        <select id="received_name" class="dropdown-list form-control" size="5"
-                            wire:model="filterArray.received_name" wire:input="filter">
-                            <option value="">الكل</option>
-                            @foreach ($receiveds as $received)
-                                <option value="{{ $received }}">{{ $received }}</option>
-                            @endforeach
-                        </select>
-                    </div>
+                    <x-form.input name="received" label="المستلم" list="received_list" wire:model="filterArray.received_name" />
+                    <datalist id="received_list">
+                        @foreach ($receiveds as $received)
+                            <option value="{{ $received }}">
+                        @endforeach
+                    </datalist>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="paginationItems">عدد السجلات</label>
@@ -177,7 +92,8 @@
             </div>
 
             <div class="d-flex justify-content-end">
-                <button type="reset" class="btn btn-warning" wire:click="filter">مسح التصفية</button>
+                <button type="reset" class="btn btn-warning" style="margin-left: 15px" wire:click="filter">مسح التصفية</button>
+                <button type="button" class="btn btn-info" wire:click="filter">بحث</button>
             </div>
         </form>
     </div>

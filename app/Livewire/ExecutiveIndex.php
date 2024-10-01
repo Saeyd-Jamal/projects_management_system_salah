@@ -6,12 +6,13 @@ use App\Models\Currency;
 use App\Models\Executive;
 use Carbon\Carbon;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class ExecutiveIndex extends Component
 {
-    // use WithPagination;
+    use WithPagination;
 
-    // protected $paginationTheme = 'bootstrap'; // تأكد من تعيين الشكل المناسب للتصفح
+    protected $paginationTheme = 'bootstrap'; // تأكد من تعيين الشكل المناسب للتصفح
 
     public $paginationItems = 10;
 
@@ -30,7 +31,7 @@ class ExecutiveIndex extends Component
         'organization_name' => '',
         'project_name' => '',
         'item_name' => '',
-        'account_name' => '',
+        'account' => '',
         'affiliate_name' => '',
         'received_name' => '',
     ];

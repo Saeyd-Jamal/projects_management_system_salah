@@ -1,6 +1,6 @@
 <x-front-layout>
     @push('styles')
-    <link rel="stylesheet" href="{{asset('css/select2.css')}}">
+    <link rel="stylesheet" href="{{asset('css/select2.min.css')}}">
     @endpush
     <x-slot:breadcrumb>
         <li class="breadcrumb-item text-sm text-dark active" aria-current="page">التقارير</li>
@@ -15,10 +15,10 @@
                     @csrf
                     <div class="row">
                         <div class="form-group col-md-3">
-                            <x-form.input type="month" :value="date('Y-m')" name="month" label="الشهر المطلوب (الشهر الاول)" />
+                            <x-form.input type="month" value="{{date('Y') . '-01'}}" name="month" label="الشهر المطلوب (الشهر الاول)" />
                         </div>
                         <div class="form-group col-md-3">
-                            <x-form.input type="month"  name="to_month" label="الى شهر" />
+                            <x-form.input type="month" value="{{date('Y') . '-12'}}"  name="to_month" label="الى شهر" />
                         </div>
                         <div class="form-group col-md-3">
                             <label for="broker">الاسم المختصر</label>
@@ -83,7 +83,14 @@
                             <select class="form-control " name="report_type" id="report_type" required>
                                 <option  value="" disabled selected>حدد نوع الكشف</option>
                                 <optgroup label="الكشوفات الأساسية">
-                                    <option value="brokers_balance">كشف ارصدة المؤسسات الداعمة</option>
+                                    <option value="allocations">التخصيصات</option>
+                                    <option value="executives">التنفيذات</option>
+                                    <option value="brokers_balance">ارصدة المؤسسات الداعمة</option>
+                                    <option value="traders_reve">التجار</option>
+                                    <option value="detection_items_month">الأصناف حسب الأشهر</option>
+                                    <option value="total">الإجمالي</option>
+                                    <option value="areas">المناطق</option>
+                                    <option value="item_balances">أرصدة الأصناف</option>
                                 </optgroup>
                             </select>
                         </div>

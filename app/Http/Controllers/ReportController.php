@@ -107,10 +107,12 @@ class ReportController extends Controller
 
         $month = $request->month;
         $to_month = $request->to_month;
+        $year = Carbon::parse($request->month)->format('Y');
 
         $allocations = $this->filterAllocations($request->all());
         $executives = $this->filterExecutives($request->all());
 
+        // المؤسسات الداعمة
         if($request->report_type == 'brokers_balance'){
 
             $brokers = $allocations->select('broker_name')->distinct()->pluck('broker_name')->toArray();
@@ -129,7 +131,7 @@ class ReportController extends Controller
                 'amount_received' => collect($allocationsTotal->pluck('amount_received')->toArray())->sum(),
             ];
 
-            if($request->export_type == 'view'){
+            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
                 $pdf = PDF::loadView('dashboard.reports.brokers_balance',['allocations' => $allocations,'allocationsTotal' => $allocationsTotalArray,'brokers' => $brokers,'month' => $month,'to_month' => $to_month],[],
                 [
                     'mode' => 'utf-8',
@@ -139,6 +141,289 @@ class ReportController extends Controller
                 ]);
                 return $pdf->stream();
             }
+            if($request->export_type == 'export_pdf'){
+                $pdf = PDF::loadView('dashboard.reports.brokers_balance',['allocations' => $allocations,'allocationsTotal' => $allocationsTotalArray,'brokers' => $brokers,'month' => $month,'to_month' => $to_month],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream('كشف ارصدة المؤسسات الداعمة _ '.$time.'.pdf');
+            }
         }
+
+        // التجار
+        if($request->report_type == 'traders_reve'){
+
+            $accounts = $executives->select('account')->distinct()->pluck('account')->toArray();
+
+            $executives = $this->filterExecutives($request->all())->get();
+
+            // دوال الموجوع اخر سطر في التقرير
+            $executivesTotal = collect($executives)->map(function ($executive) use ($month,$to_month) {
+                return [
+                    "total_ils" => $executive->total_ils ?? '0',
+                    'amount_payments' => $executive->amount_payments ?? '0',
+                ];
+            });
+            $executivesTotalArray = [
+                'total_ils' => collect($executivesTotal->pluck('total_ils')->toArray())->sum(),
+                'amount_payments' => collect($executivesTotal->pluck('amount_payments')->toArray())->sum(),
+            ];
+
+            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
+                $pdf = PDF::loadView('dashboard.reports.traders_reve',['executives' => $executives,'executivesTotal' => $executivesTotalArray,'accounts' => $accounts,'month' => $month,'to_month' => $to_month],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream();
+            }
+            if($request->export_type == 'export_pdf'){
+                $pdf = PDF::loadView('dashboard.reports.traders_reve',['executives' => $executives,'executivesTotal' => $executivesTotalArray,'accounts' => $accounts,'month' => $month,'to_month' => $to_month],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream('كشف التجار _ '.$time.'.pdf');
+            }
+        }
+
+        //  الأصناف حسب الأشهر
+        if($request->report_type == 'detection_items_month'){
+
+            $items = $executives->whereBetween('month', [$month, $to_month])->select('item_name')->distinct()->pluck('item_name')->toArray();
+
+            $months = $executives->whereBetween('month', [$month, $to_month])->select('month')->distinct()->pluck('month')->toArray();
+
+            $executives = $this->filterExecutives($request->all())->whereBetween('month', [$month, $to_month])->get();
+
+            $executivesTotalArray = [
+                "01" => $executives->where('month', $year . '-01')->sum('quantity') ?? '0',
+                '02' => $executives->where('month', $year . '-02')->sum('quantity') ?? '0',
+                '03' => $executives->where('month', $year . '-03')->sum('quantity') ?? '0',
+                '04' => $executives->where('month', $year . '-04')->sum('quantity') ?? '0',
+                '05' => $executives->where('month', $year . '-05')->sum('quantity') ?? '0',
+                '06' => $executives->where('month', $year . '-06')->sum('quantity') ?? '0',
+                '07' => $executives->where('month', $year . '-07')->sum('quantity') ?? '0',
+                '08' => $executives->where('month', $year . '-08')->sum('quantity') ?? '0',
+                '09' => $executives->where('month', $year . '-09')->sum('quantity') ?? '0',
+                '10' => $executives->where('month', $year . '-10')->sum('quantity') ?? '0',
+                '11' => $executives->where('month', $year . '-11')->sum('quantity') ?? '0',
+                '12' => $executives->where('month', $year . '-12')->sum('quantity') ?? '0',
+                'quantity' => $executives->sum('quantity') ?? '0',
+                'total_ils' => $this->filterExecutives($request->all())->get()->sum('total_ils') ?? '0',
+            ];
+
+            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
+                $pdf = PDF::loadView('dashboard.reports.detection_items_month',['executives' => $executives,'executivesTotal' => $executivesTotalArray,'items' => $items,'month' => $month,'to_month' => $to_month,'months' => $months,'monthNameAr' => $this->monthNameAr],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4-L',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream();
+            }
+            if($request->export_type == 'export_pdf'){
+                $pdf = PDF::loadView('dashboard.reports.detection_items_month',['executives' => $executives,'executivesTotal' => $executivesTotalArray,'items' => $items,'month' => $month,'to_month' => $to_month,'months' => $months,'monthNameAr' => $this->monthNameAr],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4-L',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream('كشف الأصناف حسب الأشهر _ '.$time.'.pdf');
+            }
+        }
+
+        // الإجمالي
+        if($request->report_type == 'total'){
+
+            $items = $executives->select('item_name')->distinct()->pluck('item_name')->toArray();
+
+
+            $executives = $this->filterExecutives($request->all())->get();
+            $allocations = $this->filterAllocations($request->all())->get();
+
+            $executivesTotalArray = [
+                "quantity_allocations" => $allocations->sum('quantity') ?? '0',
+                'quantity_executives' => $executives->sum('quantity') ?? '0',
+                'total_ils' => $executives->sum('total_ils') ?? '0',
+            ];
+
+            $executives = $this->filterExecutives($request->all());
+            $allocations = $this->filterAllocations($request->all());
+
+            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
+                $pdf = PDF::loadView('dashboard.reports.total',['executives' => $executives,'executivesTotal' => $executivesTotalArray,'allocations' => $allocations,'items' => $items,'month' => $month,'to_month' => $to_month],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream();
+            }
+            if($request->export_type == 'export_pdf'){
+                $pdf = PDF::loadView('dashboard.reports.total',['executives' => $executives,'executivesTotal' => $executivesTotalArray,'allocations' => $allocations,'items' => $items,'month' => $month,'to_month' => $to_month],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream('كشف الإجمالي _ '.$time.'.pdf');
+            }
+        }
+
+
+        // المناطق
+        if($request->report_type == 'areas'){
+
+            $items = $executives->select('item_name')->distinct()->pluck('item_name')->toArray();
+            $items = array_slice($items, 0, 10);
+            $areas = $executives->select('received')->distinct()->pluck('received')->toArray();
+
+            $executives = $this->filterExecutives($request->all());
+
+            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
+                $pdf = PDF::loadView('dashboard.reports.areas',['executives' => $executives,'items' => $items,'month' => $month,'to_month' => $to_month,'areas' => $areas],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4-L',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream();
+            }
+            if($request->export_type == 'export_pdf'){
+                $pdf = PDF::loadView('dashboard.reports.areas',['executives' => $executives,'items' => $items,'month' => $month,'to_month' => $to_month,'areas' => $areas],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4-L',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream('كشف الأصناف حسب المناطق _ '.$time.'.pdf');
+            }
+        }
+
+
+
+        // أرصدة الأصناف
+        if($request->report_type == 'item_balances'){
+
+            $itemsFromExecutive = $executives->select('item_name')->distinct()->pluck('item_name')->toArray();
+            $itemsFromAllocation = $allocations->select('item_name')->distinct()->pluck('item_name')->toArray();
+
+            // دمج البيانات من كلا النموذجين مع إزالة التكرارات
+            $items = array_unique(array_merge($itemsFromAllocation, $itemsFromExecutive));
+            $items = array_slice($items, 0, 10);
+
+            $brokers = $executives->select('broker_name')->distinct()->pluck('broker_name')->toArray();
+
+            $executives = $this->filterExecutives($request->all());
+            $allocations = $this->filterAllocations($request->all());
+
+            $allocationsTotalArray = [
+                "amounts_allocations" => $allocations->sum('amount') ?? '0',
+            ];
+
+            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
+                $pdf = PDF::loadView('dashboard.reports.item_balances',['executives' => $executives,'allocations' => $allocations,'allocationsTotalArray' => $allocationsTotalArray,'items' => $items,'month' => $month,'to_month' => $to_month,'brokers' => $brokers],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4-L',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream();
+            }
+            if($request->export_type == 'export_pdf'){
+                $pdf = PDF::loadView('dashboard.reports.item_balances',['executives' => $executives,'allocations' => $allocations,'allocationsTotalArray' => $allocationsTotalArray,'items' => $items,'month' => $month,'to_month' => $to_month,'brokers' => $brokers],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4-L',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream('كشف أرصدة الأصناف _ '.$time.'.pdf');
+            }
+        }
+
+
+        // التخصيصات
+        if($request->report_type == 'allocations'){
+
+            $allocations = $this->filterAllocations($request->all());
+
+            $allocationsTotal = [
+                "quantity" => $allocations->sum('quantity') ?? '0',
+                "amount" => $allocations->sum('amount') ?? '0',
+                "amount_received" => $allocations->sum('amount_received') ?? '0',
+            ];
+
+            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
+                $pdf = PDF::loadView('dashboard.reports.allocations',['allocations' => $allocations,'allocationsTotal' => $allocationsTotal,'month' => $month,'to_month' => $to_month],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4-L',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream();
+            }
+            if($request->export_type == 'export_pdf'){
+                $pdf = PDF::loadView('dashboard.reports.allocations',['allocations' => $allocations,'month' => $month,'to_month' => $to_month],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4-L',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream('كشف الأصناف حسب الأشهر _ '.$time.'.pdf');
+            }
+        }
+
+        // التنفيذات
+        if($request->report_type == 'executives'){
+
+            $executives = $this->filterExecutives($request->all());
+
+            $executivesTotal = [
+                "quantity" => $executives->sum('quantity') ?? '0',
+                "total_ils" => $executives->sum('total_ils') ?? '0',
+                "amount_payments" => $executives->sum('amount_payments') ?? '0',
+            ];
+
+            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
+                $pdf = PDF::loadView('dashboard.reports.executives',['executives' => $executives,'executivesTotal' => $executivesTotal,'month' => $month,'to_month' => $to_month],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4-L',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream();
+            }
+            if($request->export_type == 'export_pdf'){
+                $pdf = PDF::loadView('dashboard.reports.allocations',['allocations' => $allocations,'month' => $month,'to_month' => $to_month],[],
+                [
+                    'mode' => 'utf-8',
+                    'format' => 'A4-L',
+                    'default_font_size' => 12,
+                    'default_font' => 'Arial',
+                ]);
+                return $pdf->stream('كشف الأصناف حسب الأشهر _ '.$time.'.pdf');
+            }
+        }
+
+
     }
 }

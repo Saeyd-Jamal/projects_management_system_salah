@@ -1,4 +1,3 @@
-
 <tr>
     <td  class="text-center">
         {{ $index + 1 }}

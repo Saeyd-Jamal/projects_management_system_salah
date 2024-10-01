@@ -9,9 +9,9 @@ use Carbon\Carbon;
 
 class AllocationIndex extends Component
 {
-    // use WithPagination;
+    use WithPagination;
 
-    // protected $paginationTheme = 'bootstrap'; // تأكد من تعيين الشكل المناسب للتصفح
+    protected $paginationTheme = 'bootstrap'; // تأكد من تعيين الشكل المناسب للتصفح
 
     public $paginationItems = 10;
 

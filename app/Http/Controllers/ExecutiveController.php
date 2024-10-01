@@ -168,6 +168,14 @@ class ExecutiveController extends Controller
         }
         $file = $request->file('file');
         Excel::import(new ExecutivesImport, $file);
+        $executives = Executive::query();
+        foreach($executives->get() as $executive){
+            $date = Carbon::parse($executive->implementation_date)->format('Y-m-d');
+            $month = Carbon::parse($date)->format('m');
+            $executive->update([
+                'month' => $month
+            ]);
+        }
         return redirect()->route('executives.index')->with('success', 'تمت عملية الاستيراد بنجاح');
     }
 

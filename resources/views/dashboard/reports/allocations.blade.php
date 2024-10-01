@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>كشف أرصدة المؤسسات الداعمة</title>
+    <title>كشف التخصيصات</title>
     <style>
         body {
             font-family: 'XBRiyaz', sans-serif;
@@ -89,64 +89,77 @@
         <table class="blueTable">
             <thead>
                 <tr>
-                    <td colspan="7" style="border:0;">
+                    <td colspan="3" style="border:0;">
                         <p>
                             <span>قسم المشاريع</span> /
-                            <span>كشف أرصدة المؤسسات الداعمة</span>
+                            <span>كشف التخصيصات</span>
                         </p>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="7" align="center" style="color: #000;border:0;">
-                        <h1>كشف أرصدة المؤسسات الداعمة </h1>
+                    <td colspan="{{ 4 + (count($items) *3) }}" align="center" style="color: #000;border:0;">
+                        <h3>كشف التخصيصات</h3>
                     </td>
                 </tr>
                 <tr style="background: #dddddd;">
-                    <th>#</th>
+                    <th class="text-secondary opacity-7 text-center">#</th>
+                    <th>تاريخ <br> التخصيص</th>
+                    <th>رقم <br> الموازنة</th>
+                    <th>الاسم المختصر</th>
                     <th>المؤسسة</th>
-                    <th>نسبة التمويل</th>
-                    <th>مبلغ التخصيص</th>
-                    <th>القبض بالدولار</th>
-                    <th>الرصيد بالدولار</th>
-                    <th>نسبة التحصيل</th>
+                    <th>المشروع</th>
+                    <th>الصنف</th>
+                    <th>الكمية</th>
+                    <th>السعر</th>
+                    <th>إجمالي $</th>
+                    <th>التخصيص</th>
+                    <th>العملة</th>
+                    <th>المبلغ $</th>
+                    <th>عدد المستفيدين</th>
+                    <th>بنود التنفيد</th>
+                    <th>تاريخ القبض</th>
+                    <th>بيان</th>
+                    <th>المبلغ المقبوض</th>
+                    <th>العملة</th>
+                    <th>ملاحظات</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($brokers as $broker)
-                @php
-                    $allocation = App\Models\Allocation::where('broker_name', $broker)->get();
-                    $amount = $allocation->sum('amount');
-                    $amount_received = $allocation->sum('amount_received');
-
-                    //  لحل مشكلة القسمة
-                    $amount = ($amount == 0 ? 1 : $amount);
-                    $amount_received = ($amount_received == 0 ? 1 : $amount_received);
-                    $totalAmount = ($allocationsTotal['amount'] == 0 ? 1 : $allocationsTotal['amount']); ;
-                @endphp
+                @foreach ($allocations as $allocation)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $broker }}</td>
-                        <td>{{ number_format($amount / $totalAmount,5) * 100 }} %</td>
-                        <td>{{ number_format($amount,2) }}</td>
-                        <td>{{ number_format($amount_received,2) }}</td>
-                        <td>
-                            {{ number_format($amount - $amount_received,2) }}
-                        </td>
-                        <td>
-                            {{ number_format($amount_received / $amount,5) * 100 }} %
-                        </td>
+                        <td>{{ $allocation->date_allocation }}</td>
+                        <td>{{ $allocation->budget_number }}</td>
+                        <td>{{ $allocation->broker_name }}</td>
+                        <td>{{ $allocation->organization_name }}</td>
+                        <td>{{ $allocation->project_name }}</td>
+                        <td>{{ $allocation->item_name }}</td>
+                        <td>{{ $allocation->quantity }}</td>
+                        <td>{{ $allocation->price }}</td>
+                        <td>{{ $allocation->total_dollar }}</td>
+                        <td>{{ $allocation->allocation }}</td>
+                        <td>{{ $allocation->currency_allocation }}</td>
+                        <td>{{ $allocation->amount }}</td>
+                        <td>{{ $allocation->number_beneficiaries }}</td>
+                        <td>{{ $allocation->implementation_items }}</td>
+                        <td>{{ $allocation->date_implementation }}</td>
+                        <td>{{ $allocation->implementation_statement }}</td>
+                        <td>{{ $allocation->amount_received }}</td>
+                        <td>{{ $allocation->currency_received }}</td>
+                        <td>{{ $allocation->notes }}</td>
                     </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3" align="right">المجموع</td>
-                    <td>{{ number_format($allocationsTotal['amount'],2) }}</td>
-                    <td>{{ number_format($allocationsTotal['amount_received'],2) }}</td>
-                    <td>{{ number_format($allocationsTotal['amount'] - $allocationsTotal['amount_received'],2) }}</td>
-                    <td> {{ number_format($allocationsTotal['amount_received'] / $allocationsTotal['amount'],5) * 100 }} %</td>
+                    <td colspan="7" align="right">الإجمالي</td>
+                    <td>{{  number_format($allocationsTotal['quantity'],0) }}</td>
+                    <td colspan="4"></td>
+                    <td>{{ number_format($allocationsTotal['amount'],0) }}</td>
+                    <td colspan="3"></td>
+                    <td>{{ number_format($allocationsTotal['amount_received'],0) }}</td>
+                    <td colspan="2"></td>
                 </tr>
-
             </tfoot>
         </table>
         <htmlpagefooter name="page-footer">

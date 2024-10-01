@@ -1,6 +1,6 @@
 <x-front-layout>
     <x-slot:breadcrumb>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">الأصناف</li>
+        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">تخصيص الأصناف</li>
     </x-slot:breadcrumb>
 
     <div class="row">
@@ -19,6 +19,7 @@
                             <tr>
                                 <th class="text-secondary opacity-7 text-center">#</th>
                                 <th>الاسم</th>
+                                <th>السعر</th>
                                 <th>ملاحظات</th>
                                 <th></th>
                             </tr>
@@ -28,6 +29,7 @@
                             <tr>
                                 <td  class="text-center">{{$loop->iteration}}</td>
                                 <td>{{ $item->name }}</td>
+                                <td>{{ $item->price }}</td>
                                 <td>{{ $item->description }}</td>
                                 <td class="align-middle">
                                     <div class="d-flex align-items-center">
@@ -52,9 +54,6 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <div>
-                        {{ $items->links() }}
-                    </div>
                 </div>
             </div>
         </div>

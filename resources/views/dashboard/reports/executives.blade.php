@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>كشف أرصدة المؤسسات الداعمة</title>
+    <title>كشف التنفيذات</title>
     <style>
         body {
             font-family: 'XBRiyaz', sans-serif;
@@ -89,64 +89,67 @@
         <table class="blueTable">
             <thead>
                 <tr>
-                    <td colspan="7" style="border:0;">
+                    <td colspan="3" style="border:0;">
                         <p>
                             <span>قسم المشاريع</span> /
-                            <span>كشف أرصدة المؤسسات الداعمة</span>
+                            <span>كشف التنفيذات</span>
                         </p>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="7" align="center" style="color: #000;border:0;">
-                        <h1>كشف أرصدة المؤسسات الداعمة </h1>
+                    <td colspan="{{ 4 + (count($items) *3) }}" align="center" style="color: #000;border:0;">
+                        <h3>كشف التنفيذات</h3>
                     </td>
                 </tr>
                 <tr style="background: #dddddd;">
-                    <th>#</th>
+                    <th class="text-secondary opacity-7 text-center">#</th>
+                    <th>التاريخ</th>
                     <th>المؤسسة</th>
-                    <th>نسبة التمويل</th>
-                    <th>مبلغ التخصيص</th>
-                    <th>القبض بالدولار</th>
-                    <th>الرصيد بالدولار</th>
-                    <th>نسبة التحصيل</th>
+                    <th>الحساب</th>
+                    <th>الاسم</th>
+                    <th>المشروع</th>
+                    <th>التفصيل..</th>
+                    <th>الصنف</th>
+                    <th>الكمية</th>
+                    <th>السعر ₪</th>
+                    <th>إجمالي ₪</th>
+                    <th>المستلم</th>
+                    <th>ملاحظات</th>
+                    <th>الدفعات</th>
+                    <th>آلية الدفع</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($brokers as $broker)
-                @php
-                    $allocation = App\Models\Allocation::where('broker_name', $broker)->get();
-                    $amount = $allocation->sum('amount');
-                    $amount_received = $allocation->sum('amount_received');
-
-                    //  لحل مشكلة القسمة
-                    $amount = ($amount == 0 ? 1 : $amount);
-                    $amount_received = ($amount_received == 0 ? 1 : $amount_received);
-                    $totalAmount = ($allocationsTotal['amount'] == 0 ? 1 : $allocationsTotal['amount']); ;
-                @endphp
+                @foreach ($executives as $executive)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td>{{ $broker }}</td>
-                        <td>{{ number_format($amount / $totalAmount,5) * 100 }} %</td>
-                        <td>{{ number_format($amount,2) }}</td>
-                        <td>{{ number_format($amount_received,2) }}</td>
-                        <td>
-                            {{ number_format($amount - $amount_received,2) }}
-                        </td>
-                        <td>
-                            {{ number_format($amount_received / $amount,5) * 100 }} %
-                        </td>
+                        <td>{{ $executive->implementation_date }}</td>
+                        <td>{{ $executive->broker_name }}</td>
+                        <td>{{ $executive->account }}</td>
+                        <td>{{ $executive->affiliate_name }}</td>
+                        <td>{{ $executive->project_name }}</td>
+                        <td>{{ $executive->detail }}</td>
+                        <td>{{ $executive->item_name }}</td>
+                        <td>{{ $executive->quantity }}</td>
+                        <td>{{ $executive->price }}</td>
+                        <td>{{ $executive->total_ils }}</td>
+                        <td>{{ $executive->received }}</td>
+                        <td>{{ $executive->notes }}</td>
+                        <td>{{ $executive->amount_payments }}</td>
+                        <td>{{ $executive->payment_mechanism }}</td>
                     </tr>
                 @endforeach
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="3" align="right">المجموع</td>
-                    <td>{{ number_format($allocationsTotal['amount'],2) }}</td>
-                    <td>{{ number_format($allocationsTotal['amount_received'],2) }}</td>
-                    <td>{{ number_format($allocationsTotal['amount'] - $allocationsTotal['amount_received'],2) }}</td>
-                    <td> {{ number_format($allocationsTotal['amount_received'] / $allocationsTotal['amount'],5) * 100 }} %</td>
+                    <td colspan="8" align="right">الإجمالي</td>
+                    <td>{{  number_format($executivesTotal['quantity'],0) }}</td>
+                    <td></td>
+                    <td>{{ number_format($executivesTotal['total_ils'],0) }}</td>
+                    <td colspan="2"></td>
+                    <td>{{ number_format($executivesTotal['amount_payments'],0) }}</td>
+                    <td></td>
                 </tr>
-
             </tfoot>
         </table>
         <htmlpagefooter name="page-footer">
@@ -157,7 +160,7 @@
                     @auth
                         <td width="33%" style="text-align: left;">{{ Auth::user()->name }}</td>
                     @else
-                        <td width="33%" style="text-align: left;">اسم المستخدم</td>
+                        <td width="33%" style="text-align: left;"></td>
                     @endauth
                 </tr>
             </table>
