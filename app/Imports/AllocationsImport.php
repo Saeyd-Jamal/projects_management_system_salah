@@ -34,13 +34,6 @@ class AllocationsImport implements ToModel,WithHeadingRow
         ($row['alaaml'] == 'يورو') ? $row['alaaml'] = 'EUR' : $row['alaaml'] = 'USD';
         $currency_allocation = Currency::where('code', $row['alaaml'])->first();
 
-        ($row['aaml'] == 'دولار') ? $row['aaml'] = 'USD' : $row['aaml'] = 'EUR';
-        ($row['aaml'] == 'دينار أردني') ? $row['aaml'] = 'JOD' : $row['aaml'] = 'USD';
-        ($row['aaml'] == 'دينار كويتي') ? $row['aaml'] = 'KWD' : $row['aaml'] = 'USD';
-        ($row['aaml'] == 'شيكل') ? $row['aaml'] = 'ILS' : $row['aaml'] = 'USD';
-        ($row['aaml'] == 'يورو') ? $row['aaml'] = 'EUR' : $row['aaml'] = 'USD';
-        $currency_received = ($row['aaml'] != null) ? Currency::where('code', $row['aaml'])->first() : null;
-
         return new Allocation([
             'date_allocation' => $this->formatDate($row['tarykh_altkhsys']),
             'budget_number' => $row['rkm_almoazn'],
@@ -56,13 +49,11 @@ class AllocationsImport implements ToModel,WithHeadingRow
             'currency_allocation_value' => $currency_allocation != null ? $currency_allocation->value : null,
             'amount' => $row['almblgh_baldolar'],
             'implementation_items' => $row['bnod_altnfyth'],
-            'date_implementation' => $this->formatDate($row['tarykh_alastlam']),
+            'date_implementation' => $this->formatDate($row['tarykh_alastlam'] ?? null),
             'implementation_statement' => $row['byan'],
-            'amount_received' => $row['almblgh'],
-            'currency_received' => $currency_received != null ? $currency_received->code : null,
-            'currency_received_value' => $currency_received != null ? $currency_received->value : null,
-            'notes' => $row['mlahthat'],
-            'number_beneficiaries' => $row['aadd_almstfydyn'],
+            'amount_received' => $row['almblgh_dolar'],
+            // 'notes' => $row['mlahthat'],
+            // 'number_beneficiaries' => $row['aadd_almstfydyn'],
         ]);
     }
     public function chunkSize(): int

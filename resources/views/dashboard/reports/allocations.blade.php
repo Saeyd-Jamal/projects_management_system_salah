@@ -78,6 +78,43 @@
             border-radius: 5px;
         }
     </style>
+        <style>
+            .table {
+                border-collapse: collapse;
+                margin: 1em 0;
+                width: 100%;
+                color: #000000;
+            }
+            .table {
+                width: 100%;
+                margin-bottom: 1rem;
+                background-color: transparent;
+                border: 1px solid #dee2e6;
+            }
+            .table-bordered {
+                border: 1px solid #dee2e6;
+            }
+            .table-bordered th,
+            .table-bordered td {
+                border: 1px solid #dee2e6;
+                padding: 8px;
+                text-align: center;
+                vertical-align: middle;
+            }
+            .table-hover tbody tr:hover {
+                background-color: #f5f5f5;
+            }
+            .text-danger {
+                color: #dc3545;
+            }
+            .align-items-center {
+                vertical-align: middle !important;
+            }
+            th {
+                background-color: #f0f0f0;
+                font-weight: bold;
+            }
+        </style>
 </head>
 
 <body>
@@ -120,8 +157,6 @@
                     <th>تاريخ القبض</th>
                     <th>بيان</th>
                     <th>المبلغ المقبوض</th>
-                    <th>العملة</th>
-                    <th>ملاحظات</th>
                 </tr>
             </thead>
             <tbody>
@@ -145,8 +180,6 @@
                         <td>{{ $allocation->date_implementation }}</td>
                         <td>{{ $allocation->implementation_statement }}</td>
                         <td>{{ $allocation->amount_received }}</td>
-                        <td>{{ $allocation->currency_received }}</td>
-                        <td>{{ $allocation->notes }}</td>
                     </tr>
                 @endforeach
             </tbody>
@@ -161,6 +194,42 @@
                     <td colspan="2"></td>
                 </tr>
             </tfoot>
+        </table>
+        <table width="100%" style="vertical-align: bottom; color: #000000;  margin: 1em">
+            <tr>
+                <td width="33%"></td>
+                <td width="33%" align="center"></td>
+                <td width="33%" align="center">
+                    <table class="table align-items-center mb-0 table-hover table-bordered">
+                        <tbody>
+                            <tr>
+                                <th>المبالغ المخصصة</th>
+                                <td>
+                                    {{ number_format($amounts_allocated, 2) ?? 0 }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>المبالغ المستلمة</th>
+                                <td>
+                                    {{ number_format($amounts_received, 2) ?? 0 }}
+                                </td>
+                            </tr>
+                            <tr style="background: #ddd;">
+                                <th>المتبقي</th>
+                                <td>
+                                    {{ number_format($remaining, 2) ?? 0 }}
+                                </td>
+                            </tr>
+                            <tr class="text-danger">
+                                <th>نسبة التحصيل</th>
+                                <td>
+                                    {{ number_format($collection_rate, 2) ?? 0 }} %
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
         </table>
         <htmlpagefooter name="page-footer">
             <table width="100%" style="vertical-align: bottom; color: #000000;  margin: 1em">

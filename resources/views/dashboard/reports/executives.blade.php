@@ -78,6 +78,43 @@
             border-radius: 5px;
         }
     </style>
+    <style>
+        .table {
+            border-collapse: collapse;
+            margin: 1em 0;
+            width: 100%;
+            color: #000000;
+        }
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            background-color: transparent;
+            border: 1px solid #dee2e6;
+        }
+        .table-bordered {
+            border: 1px solid #dee2e6;
+        }
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        .text-danger {
+            color: #dc3545;
+        }
+        .align-items-center {
+            vertical-align: middle !important;
+        }
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
@@ -151,6 +188,58 @@
                     <td></td>
                 </tr>
             </tfoot>
+        </table>
+        <table  width="100%" style="vertical-align: bottom; color: #000000;  margin: 1em">
+            <tr>
+                <td width="33%"></td>
+                <td width="33%" align="center"></td>
+                <td width="33%" align="center">
+                    <table class="table align-items-center mb-0 table-bordered">
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>بالشيكل</th>
+                                <th>بالدولار</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th>اجمالي مبالغ شيكل</th>
+                                <td>
+                                    {{number_format($total_amounts,2) ?? 0}}
+                                </td>
+                                <td class="text-danger">
+                                    {{number_format($total_amounts * $ILS,2) ?? 0}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>اجمالي الدفعات شيكل</th>
+                                <td>
+                                    {{number_format($total_payments,2) ?? 0}}
+                                </td>
+                                <td class="text-danger">
+                                    {{ number_format($ILS * $total_payments,2) ?? 0}}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>الرصيد المتبقي شيكل</th>
+                                <td>
+                                    {{number_format($remaining_balance,2) ?? 0}}
+                                </td>
+                                <td class="text-danger">
+                                    {{ number_format($ILS * $remaining_balance,2) ?? 0}}
+                                </td>
+                            </tr>
+                            <tr class="text-danger">
+                                <th colspan="2">سعر الدولار / الشيكل</th>
+                                <td>
+                                    {{number_format(1 / $ILS,2) ?? 0}}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
         </table>
         <htmlpagefooter name="page-footer">
             <table width="100%" style="vertical-align: bottom; color: #000000;  margin: 1em">

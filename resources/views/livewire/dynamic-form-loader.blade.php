@@ -4,10 +4,10 @@
             <label for="selectedForm">إختيار النموذج المطلوب</label>
             <select class="form-control" id="selectedForm" wire:model="selectedForm" wire:change="loadForm">
                 <option label="فتح القائمة"></option>
-                @can('create', App\Models\Allocation::class)
+                @can('allocation', 'App\\Models\AccreditationProject')
                     <option value="allocations">التخصيص</option>
                 @endcan
-                @can('create', App\Models\Executive::class)
+                @can('execution', 'App\\Models\AccreditationProject')
                     <option value="executives">تنفيذ</option>
                 @endcan
             </select>

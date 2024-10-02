@@ -27,8 +27,6 @@ class Allocation extends Model
         'date_implementation',
         'implementation_statement',
         'amount_received',
-        'currency_received',
-        'currency_received_value',
         'notes',
         'number_beneficiaries',
         'user_id',

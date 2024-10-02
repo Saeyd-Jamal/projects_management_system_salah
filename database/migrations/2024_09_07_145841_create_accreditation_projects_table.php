@@ -27,8 +27,6 @@ return new class extends Migration
             $table->date('date_implementation')->nullable()->comment('تاريخ التنفيذ');
             $table->text('implementation_statement')->nullable()->comment('بيان');
             $table->decimal('amount_received', 10, 2)->nullable()->comment('المبلغ المستلم');
-            $table->string('currency_received')->nullable()->comment('عملة التلسيم');
-            $table->decimal('currency_received_value', 6, 2)->nullable()->comment('قيمة عملة التلسيم');
             $table->integer('number_beneficiaries')->nullable()->comment('عدد المستفيدين');
 
             // بيانات التنفيذ

@@ -29,10 +29,7 @@ return new class extends Migration
             $table->text('implementation_items')->nullable()->comment('بنود التنفيذ');
             $table->date('date_implementation')->nullable()->comment('تاريخ التنفيذ');
             $table->text('implementation_statement')->nullable()->comment('بيان');
-            $table->decimal('amount_received', 10, 2)->nullable()->comment('المبلغ المستلم');
-            $table->string('currency_received')->comment('عملة التلسيم');
-            $table->decimal('currency_received_value', 6, 2)->comment('قيمة عملة التلسيم');
-            $table->text('notes')->nullable();
+            $table->decimal('amount_received', 10, 2)->nullable()->comment('المبلغ المستلم');            $table->text('notes')->nullable();
             $table->integer('number_beneficiaries')->nullable()->comment('عدد المستفيدين');
             $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('user_name')->nullable()->comment('المستخدم');

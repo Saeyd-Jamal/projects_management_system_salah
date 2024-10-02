@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Allocation;
+use App\Models\Currency;
 use App\Models\Executive;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -361,7 +362,7 @@ class ReportController extends Controller
         // التخصيصات
         if($request->report_type == 'allocations'){
 
-            $allocations = $this->filterAllocations($request->all());
+            $allocations = $this->filterAllocations($request->all())->get();
 
             $allocationsTotal = [
                 "quantity" => $allocations->sum('quantity') ?? '0',
@@ -369,8 +370,21 @@ class ReportController extends Controller
                 "amount_received" => $allocations->sum('amount_received') ?? '0',
             ];
 
+
+            $amounts_allocated = $allocations->sum('amount');
+            $amounts_received = $allocations->sum('amount_received');
+            $remaining = $amounts_allocated - $amounts_received;
+
+            if($amounts_allocated != 0 && $amounts_received != 0){
+                $collection_rate = ($amounts_received / $amounts_allocated) * 100;
+            }else{
+                $collection_rate = 0;
+            }
+
+
+
             if($request->export_type == 'view' || $request->export_type == 'export_excel'){
-                $pdf = PDF::loadView('dashboard.reports.allocations',['allocations' => $allocations,'allocationsTotal' => $allocationsTotal,'month' => $month,'to_month' => $to_month],[],
+                $pdf = PDF::loadView('dashboard.reports.allocations',['allocations' => $allocations,'allocationsTotal' => $allocationsTotal,'amounts_allocated' => $amounts_allocated,'amounts_received' => $amounts_received,'collection_rate' => $collection_rate,'remaining' => $remaining,'month' => $month,'to_month' => $to_month],[],
                 [
                     'mode' => 'utf-8',
                     'format' => 'A4-L',
@@ -394,7 +408,7 @@ class ReportController extends Controller
         // التنفيذات
         if($request->report_type == 'executives'){
 
-            $executives = $this->filterExecutives($request->all());
+            $executives = $this->filterExecutives($request->all())->get();
 
             $executivesTotal = [
                 "quantity" => $executives->sum('quantity') ?? '0',
@@ -402,8 +416,16 @@ class ReportController extends Controller
                 "amount_payments" => $executives->sum('amount_payments') ?? '0',
             ];
 
+            $total_amounts = $executives->sum('total_ils');
+            $total_payments = $executives->sum('amount_payments');
+            $remaining_balance = $total_amounts - $total_payments;
+
+            $ILS = Currency::where('code', 'ILS')->first()->value;
+
+
+
             if($request->export_type == 'view' || $request->export_type == 'export_excel'){
-                $pdf = PDF::loadView('dashboard.reports.executives',['executives' => $executives,'executivesTotal' => $executivesTotal,'month' => $month,'to_month' => $to_month],[],
+                $pdf = PDF::loadView('dashboard.reports.executives',['executives' => $executives,'executivesTotal' => $executivesTotal,'total_amounts' => $total_amounts,'total_payments' => $total_payments,'remaining_balance' => $remaining_balance,'ILS' => $ILS,'month' => $month,'to_month' => $to_month],[],
                 [
                     'mode' => 'utf-8',
                     'format' => 'A4-L',
