@@ -1,7 +1,7 @@
 <x-front-layout>
     <x-slot:breadcrumb>
-        <li class="breadcrumb-item text-sm text-dark">مشاريع الإعتماد</li>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">تعديل المشروع</li>
+        <li><a href="{{ route('accreditations.index') }}">مشاريع الإعتماد</a></li>
+        <li><a href="#">تعديل المشروع</a></li>
     </x-slot:breadcrumb>
 
 

@@ -3,7 +3,7 @@
     <link rel="stylesheet" href="{{asset('css/select2.min.css')}}">
     @endpush
     <x-slot:breadcrumb>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">التقارير</li>
+        <li><a href="#">التقارير</a></li>
     </x-slot:breadcrumb>
     <div class="card">
         <div class="card-header pb-0">
@@ -109,9 +109,6 @@
                             <h2 class="h5 page-title"></h2>
                         </div>
                         <div class="col-auto">
-                            <button type="reset"  class="btn btn-danger">
-                                مسح
-                            </button>
                             <button type="submit"  class="btn btn-primary">
                                 تصدير
                             </button>

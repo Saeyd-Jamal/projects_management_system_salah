@@ -1,6 +1,6 @@
 <x-front-layout>
     <x-slot:breadcrumb>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">الصلاحيات</li>
+        <li><a href="#">الصلاحيات</a></li>
     </x-slot:breadcrumb>
 
     <div class="row">
@@ -10,7 +10,7 @@
                     <div class="d-flex justify-content-end p-3">
                         @can('create','App\\Models\Role')
                         <a href="{{route('roles.create')}}" class="btn btn-primary m-0">
-                            <i class="fa-solid fa-plus"></i>
+                            <i class="fe fe-plus"></i>
                         </a>
                         @endcan
                     </div>

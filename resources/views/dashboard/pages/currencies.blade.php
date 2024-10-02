@@ -1,7 +1,6 @@
 <x-front-layout>
     <x-slot:breadcrumb>
-        {{-- <li class="breadcrumb-item text-sm text-dark">RTL</li> --}}
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">المستخدمين</li>
+        <li><a href="#">العملات</a></li>
     </x-slot:breadcrumb>
 
     <div class="row">
@@ -10,8 +9,8 @@
                 <div class="table-responsive">
                     <div class="d-flex justify-content-end p-3">
                         @can('create','App\\Models\Currency')
-                        <button class="btn btn-primary m-0" data-bs-toggle="modal" data-bs-target="#createCurrency">
-                            <i class="fa-solid fa-plus"></i>
+                        <button class="btn btn-primary m-0" data-toggle="modal" data-target="#createCurrency">
+                            <i class="fe fe-plus"></i>
                         </button>
                         @endcan
                     </div>
@@ -27,7 +26,7 @@
                         </thead>
                         <tbody>
                             @foreach ($currencies as $currency)
-                            <tr @can('update','App\\Models\Currency')data-bs-toggle="modal" data-bs-target="#editCurrency-{{$currency->id}}"@endcan >
+                            <tr @can('update','App\\Models\Currency') data-toggle="modal" data-target="#editCurrency-{{$currency->id}}"@endcan >
                                 <td class="text-center">{{$loop->iteration}}</td>
                                 <td>{{ $currency->name }}</td>
                                 <td>{{ $currency->code }}</td>
@@ -60,7 +59,9 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="createCurrencyLabel">إضافة عملة جديدة</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <form action="{{route('currencies.store')}}" method="post">
                 @csrf
@@ -93,7 +94,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="editCurrencyLabel">تعديل عملة {{$currency->name}}</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <form action="{{route('currencies.update', $currency->id)}}" method="post">
                     @csrf
@@ -107,7 +110,7 @@
                                 <x-form.input type="text" name="code" label="الرمز بالإنجليزي" :value="$currency->code" placeholder="إملأ الرمز : USD"  required />
                             </div>
                             <div class="form-group col-md-12">
-                                <x-form.input type="number" min="0" step="0.01" name="value" label="الاسم" :value="$currency->value" placeholder="إملأ القيمة : 1.1" required />
+                                <x-form.input type="text" min="0" name="value" label="القيمة مقابل الدولار" :value="$currency->value" placeholder="إملأ القيمة : 1.1" required />
                             </div>
                         </div>
                     </div>

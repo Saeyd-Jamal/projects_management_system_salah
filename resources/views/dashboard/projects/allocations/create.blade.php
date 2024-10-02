@@ -1,7 +1,7 @@
 <x-front-layout>
     <x-slot:breadcrumb>
-        <li class="breadcrumb-item text-sm text-dark">التخصيصات</li>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">إضافة تخصيص جديد</li>
+        <li><a href="{{ route('allocations.index') }}">التخصيصات</a></li>
+        <li><a href="{{ route('allocations.create') }}">اضافة تخصيص جديد</a></li>
     </x-slot:breadcrumb>
 
     <div class="row">
@@ -9,8 +9,8 @@
             @csrf
             <livewire:allocation-form :allocation="$allocation" />
         </form>
-
     </div>
+    <hr>
     <h3>رفع ملف اكسيل</h3>
     <div class="row">
         {{-- Excel  --}}
@@ -21,9 +21,11 @@
                         @csrf
                         <input type="file" name="file" class="form-control">
                         <button type="submit" class="btn btn-primary mt-3">
-                            <i class="fa-solid fa-upload"></i>
                             تحميل البيانات
                         </button>
+                        <a href="{{asset('filesExcel/templateAllocation.xlsx')}}" class='nav-link' download="نموذج بيانات التنفيذ.xlsx" >
+                            تحميل نموذج البيانات
+                        </a>
                     </form>
                 </div>
             </div>

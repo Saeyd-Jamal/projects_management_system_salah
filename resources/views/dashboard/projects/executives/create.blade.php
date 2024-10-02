@@ -1,7 +1,7 @@
 <x-front-layout>
     <x-slot:breadcrumb>
-        <li class="breadcrumb-item text-sm text-dark">التنفيذات</li>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">إضافة تنفيذ جديد</li>
+        <li><a href="{{ route('executives.index')}}">التنفيذات</a></li>
+        <li><a href="#">اضافة تنفيذ جديد</a></li>
     </x-slot:breadcrumb>
 
     <div class="row">
@@ -20,11 +20,9 @@
                         @csrf
                         <input type="file" name="file" class="form-control">
                         <button type="submit" class="btn btn-primary mt-3">
-                            <i class="fa-solid fa-upload"></i>
                             تحميل البيانات
                         </button>
                         <a href="{{asset('filesExcel/templateExecutives.xlsx')}}" class='nav-link' download="نموذج بيانات التنفيذ.xlsx" >
-                            <i class="fa-solid fa-file-excel"></i>
                             تحميل نموذج البيانات
                         </a>
                     </form>

@@ -59,7 +59,7 @@
         <x-form.input  type="number" min="0" step="0.01" name="allocation" wire:model="allocation_field" wire:input="allocationFun" required />
     </td>
     <td>
-        <select class="form-select text-center" name="currency_allocation" id="currency_allocation" wire:model="currency_allocation" wire:input="allocationFun">
+        <select class="form-control text-center" name="currency_allocation" id="currency_allocation" wire:model="currency_allocation" wire:input="allocationFun">
             <option label="فتح القائمة">
             @foreach ($currencies as $currency)
                 <option value="{{ $currency->code }}" @selected($currency->code == $allocation->currency_allocation || $currency->code == "USD")>{{ $currency->name }}</option>
@@ -85,7 +85,7 @@
         <x-form.input type="number" min="0" step="0.01" name="amount_received" :value="$allocation->amount_received" wire:input="update('amount_received', $event.target.value)" />
     </td>
     <td>
-        <select class="form-select text-center" name="currency_received" id="currency_received" wire:model="currency_received" wire:input="update('currency_received', $event.target.value)">
+        <select class="form-control text-center" name="currency_received" id="currency_received" wire:model="currency_received" wire:input="update('currency_received', $event.target.value)">
             <option label="فتح القائمة">
             @foreach ($currencies as $currency)
                 <option value="{{ $currency->code }}" @selected($currency->code == $allocation->currency_received || $currency->code == "USD")>{{ $currency->name }}</option>

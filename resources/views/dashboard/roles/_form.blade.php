@@ -2,9 +2,14 @@
 <style>
     #user-roles{
         display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: minmax(auto, auto);
-    gap: 5px 75px;
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: minmax(auto, auto);
+        gap: 5px 75px;
+    }
+    @media only screen and (max-width: 1200px) {
+        #user-roles{
+            grid-template-columns: repeat(2, 1fr);
+        }
     }
 </style>
 @endpush
@@ -44,7 +49,7 @@
                                 @if ($ability_name != 'name')
                                 <div class="custom-control custom-checkbox" style="margin-right: 0;">
                                     <input class="form-control-input abilities_{{$abilities_name}}" type="checkbox" name="abilities[]" id="ability-{{$abilities_name . '.' . $ability_name}}" value="{{$abilities_name . '.' . $ability_name}}" @checked(in_array($abilities_name . '.' . $ability_name, $role->permissions()->pluck('name')->toArray())) >
-                                    <label class="custom-control-label" for="ability-{{$abilities_name . '.' . $ability_name}}">
+                                    <label class="" for="ability-{{$abilities_name . '.' . $ability_name}}">
                                         {{$ability}}
                                     </label>
                                 </div>

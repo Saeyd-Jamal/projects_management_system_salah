@@ -1,20 +1,17 @@
-<div class="table-responsive">
+<div class="table-responsive" style="overflow: hidden;">
     @push('styles')
         <link rel="stylesheet" href="{{asset('css/stickyTable.css')}}">
     @endpush
-
-
-
     <div class="d-flex justify-content-end p-3 align-items-start">
         <button type="button" class="btn btn-secondary" style="margin-left: 10px" id="expandBtn">
-            <i class="fa-solid fa-maximize"></i>
+            <i class="fe fe-maximize"></i>
         </button>
         <button type="button" class="btn btn-warning" style="margin-left: 10px" id="filterBtn" wire:click="filterBox">
-            <i class="fa-solid fa-filter"></i>
+            <i class="fe fe-filter"></i>
         </button>
         @can('create', 'App\\Models\Allocation')
             <a href="{{ route('allocations.create') }}" class="btn btn-primary m-0">
-                <i class="fa-solid fa-plus"></i>
+                <i class="fe fe-plus"></i>
             </a>
         @endcan
     </div>
@@ -24,8 +21,7 @@
             <div class="row">
                 <div class="form-group col-3">
                     <x-form.input type="number" name="budget_number" label="رقم الموازنة"
-                        wire:model="filterArray.budget_number" placeholder="رقم الموزانة : 1212" class="text-center"
-                         />
+                        wire:model="filterArray.budget_number" placeholder="رقم الموزانة : 1212" class="text-center"/>
                 </div>
                 <div class="form-group col-md-3">
                     <x-form.input type="date" name="from_date_allocation" label="من تاريخ التخصيص" required

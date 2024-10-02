@@ -1,7 +1,6 @@
 <x-front-layout>
     <x-slot:breadcrumb>
-        {{-- <li class="breadcrumb-item text-sm text-dark">RTL</li> --}}
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">المستخدمين</li>
+        <li><a href="#">المستخدمين</a></li>
     </x-slot:breadcrumb>
 
     <div class="row">
@@ -11,7 +10,7 @@
                     <div class="d-flex justify-content-end p-3">
                         @can('create', 'App\Models\User')
                         <a href="{{route('users.create')}}" class="btn btn-primary m-0">
-                            <i class="fa-solid fa-plus"></i>
+                            <i class="fe fe-plus"></i>
                         </a>
                         @endcan
                     </div>
@@ -52,17 +51,16 @@
                                 @if ($user->last_activity >= now()->subMinutes(5))
                                     <td class="text-center">
                                         <i class="fe fe-circle text-success bg-success rounded-circle"></i>
-                                        <i class="fa-solid fa-circle text-success  rounded-circle"></i>
                                     </td>
                                 @else
                                     <td  class="text-center">
-                                        <i class="fa-regular fa-circle"></i>
+                                        <i class="fe fe-circle"></i>
                                     </td>
                                 @endif
                                 <td>
                                     <div class="d-flex align-items-center px-2 py-1">
                                         <div>
-                                            <img src="{{ $user->avatar_url }}" class="avatar avatar-sm me-3">
+                                            <img src="{{ $user->avatar_url }}" class="avatar avatar-sm me-3" width="50px">
                                         </div>
                                         <div class="ml-3">
                                             {{ $user->name }}

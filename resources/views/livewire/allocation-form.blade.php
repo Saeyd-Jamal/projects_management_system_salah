@@ -1,6 +1,6 @@
 <div class="container-fluid">
+    <h3>بيانات التخصيص</h3>
     <div class="row">
-        <h3>بيانات التخصيص</h3>
         <div class="form-group col-md-3">
             <x-form.input type="number" name="budget_number" label="رقم الموازنة" wire:model="budget_number" placeholder="رقم الموزانة : 1212" class="text-center" required wire:input="budget_number_check($event.target.value)" />
             <div id="budget_number_error" class="text-danger" >
@@ -63,7 +63,7 @@
         </div>
         <div class="form-group col-md-3">
             <label for="currency_allocation">العملة</label>
-            <select class="form-select text-center" name="currency_allocation" id="currency_allocation" wire:model="currency_allocation" wire:input="allocationFun">
+            <select class="form-control text-center" name="currency_allocation" id="currency_allocation" wire:model="currency_allocation" wire:input="allocationFun">
                 <option label="فتح القائمة">
                 @foreach ($currencies as $currency)
                     <option value="{{ $currency->code }}" @selected($currency->code == $allocation->currency_allocation || $currency->code == "USD")>{{ $currency->name }}</option>
@@ -81,8 +81,8 @@
         </div>
     </div>
     <hr>
+    <h3>بنود القبض</h3>
     <div class="row">
-        <h3>بنود القبض</h3>
         <div class="form-group col-md-3">
             <x-form.input type="date" name="date_implementation" label="تاريخ القبض" :value="$allocation->date_implementation" />
         </div>
@@ -91,7 +91,7 @@
         </div>
         <div class="form-group col-md-3">
             <label for="currency_received">العملة</label>
-            <select class="form-select text-center" name="currency_received" id="currency_received" wire:model="currency_received">
+            <select class="form-control text-center" name="currency_received" id="currency_received" wire:model="currency_received">
                 <option label="فتح القائمة">
                 @foreach ($currencies as $currency)
                     <option value="{{ $currency->code }}" @selected($currency->code == $allocation->currency_received || $currency->code == "USD")>{{ $currency->name }}</option>
@@ -107,7 +107,7 @@
     <div class="row">
         @if($editForm == true)
         <div class="form-group col-md-3">
-            <x-form.input name="user_id" label="اسم المستخدم" :value="$allocation->user->name" disabled />
+            <x-form.input name="user_id" label="اسم المستخدم" :value="($allocation->user->name ?? '')" disabled />
         </div>
         <div class="form-group col-md-3">
             <x-form.input name="manager_name" label="المدير المستلم" :value="$allocation->manager_name" disabled />
@@ -129,10 +129,6 @@
         </button>
     </div>
     <div class="form-group col-md-4">
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped progress-bar-animated bg-dark" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
-        </div>
         <x-form.input type="file" name="filesArray[]" label="رفع ملفات للتخصيص" multiple />
     </div>
-
 </div>

@@ -1,6 +1,6 @@
 <x-front-layout>
     <x-slot:breadcrumb>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">التخصيصات</li>
+        <li><a href="{{ route('allocations.index') }}">التخصيصات</a></li>
     </x-slot:breadcrumb>
 
     <div class="row">
@@ -17,15 +17,15 @@
                 $('nav.navbar').css('display', 'none');
                 $('aside').css('display', 'none');
                 $('.main-content').css('margin', '0');
-                $(this).html('<i class="fa-solid fa-minimize"></i>');
+                $(this).html('<i class="fe fe-minimize"></i>');
                 $(this).attr('id', 'collapseBtn');
             });
 
             $(document).on('click', '#collapseBtn', function() {
-                $('nav.navbar').css('display', 'block');
+                $('nav.navbar').css('display', 'flex');
                 $('aside').css('display', 'block');
                 $('.main-content').css('margin-right', '17.125rem');
-                $(this).html('<i class="fa-solid fa-maximize"></i>');
+                $(this).html('<i class="fe fe-maximize"></i>');
                 $(this).attr('id', 'expandBtn');
             });
 

@@ -1,7 +1,7 @@
 <x-front-layout>
     <x-slot:breadcrumb>
-        <li class="breadcrumb-item text-sm text-dark">الصلاحيات</li>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">إضافة صلاحية جديدة</li>
+        <li><a href="{{ route('roles.index') }}">الصلاحيات</a></li>
+        <li><a href="#">إضافة صلاحية جديدة</a></li>
     </x-slot:breadcrumb>
 
     <div class="row">

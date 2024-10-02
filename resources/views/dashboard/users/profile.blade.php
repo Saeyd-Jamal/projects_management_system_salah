@@ -1,6 +1,6 @@
 <x-front-layout>
     <x-slot:breadcrumb>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">الملف الشخصي</li>
+        <li><a href="#">الملف الشخصي</a></li>
     </x-slot:breadcrumb>
 
     <div class="row">

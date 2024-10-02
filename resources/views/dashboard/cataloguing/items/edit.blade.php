@@ -1,7 +1,7 @@
 <x-front-layout>
     <x-slot:breadcrumb>
-        <li class="breadcrumb-item text-sm text-dark">الأصناف</li>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">تعديل الصنف : {{ $item->name }}</li>
+        <li><a href="{{ route('items.index')}}">الأصناف</a></li>
+        <li><a href="#">تعديل الصنف : {{ $item->name }}</a></li>
     </x-slot:breadcrumb>
 
 

@@ -1,4 +1,4 @@
-<div class="table-responsive">
+<div class="table-responsive"  style="overflow: hidden;">
     @push('styles')
         <link rel="stylesheet" href="{{asset('css/stickyTable.css')}}">
     @endpush
@@ -6,14 +6,14 @@
 
     <div class="d-flex justify-content-end p-3 align-items-start">
         <button type="button" class="btn btn-secondary" style="margin-left: 10px" id="expandBtn">
-            <i class="fa-solid fa-maximize"></i>
+            <i class="fe fe-maximize"></i>
         </button>
         <button type="button" class="btn btn-warning" style="margin-left: 10px" id="filterBtn" wire:click="filterBox">
-            <i class="fa-solid fa-filter"></i>
+            <i class="fe fe-filter"></i>
         </button>
         @can('create','App\\Models\Executive')
         <a href="{{route('executives.create')}}" class="btn btn-primary m-0">
-            <i class="fa-solid fa-plus"></i>
+            <i class="fe fe-plus"></i>
         </a>
         @endcan
     </div>
@@ -200,47 +200,4 @@
             </table>
         </div>
     </div>
-    @push('scripts')
-        <!-- إضافة كود jQuery لتفعيل البحث الحي لجميع الحقول -->
-        <script>
-            $(document).ready(function() {
-                // عند الكتابة في حقل البحث
-                $('.searchInput').on('keyup', function() {
-                    var filter = $(this).val().toLowerCase();
-                    var target = $(this).data('target');
-                    var $dropdown = $('#' + target);
-
-                    $dropdown.find('option').each(function() {
-                        $(this).toggle($(this).text().toLowerCase().includes(filter));
-                    });
-                });
-
-                $('.searchInput').on('focus', function() {
-                    var target = $(this).data('target');
-                    var $dropdown = $('#' + target);
-                    $('.dropdown-list').removeClass('show');
-                    $dropdown.addClass('show');
-                });
-
-                // عند اختيار عنصر من القائمة
-                $('.dropdown-list').on('click', 'option', function() {
-                    var selectedValue = $(this).text();
-                    var $input = $(this).closest('.search-container').find('.searchInput');
-
-                    // وضع القيمة المختارة في حقل الإدخال
-                    $input.val(selectedValue);
-
-                    // إخفاء القائمة بعد الاختيار
-                    $(this).parent().removeClass('show');
-                });
-
-                // إخفاء القائمة عند النقر خارجها
-                $(document).on('click', function(event) {
-                    if (!$(event.target).closest('.search-container').length) {
-                        $('.dropdown-list').removeClass('show');
-                    }
-                });
-            });
-        </script>
-    @endpush
 </div>

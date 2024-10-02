@@ -1,7 +1,7 @@
 <x-front-layout>
     <x-slot:breadcrumb>
-        <li class="breadcrumb-item text-sm text-dark">المستخدمين</li>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">تعديل المستخدم</li>
+        <li><a href="{{ route('users.index')}}">المستخدمين</a></li>
+        <li><a href="#">تعديل المستخدم : {{ $user->name }}</a></li>
     </x-slot:breadcrumb>
 
     <div class="row">

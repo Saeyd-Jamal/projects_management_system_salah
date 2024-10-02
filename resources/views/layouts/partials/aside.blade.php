@@ -1,36 +1,35 @@
-<aside
-    class="bodyPage sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-end me-3 rotate-caret bg-white "
-    id="sidenav-main" style=" transition: all 0.15s ease;">
-    <div class="sidenav-header" style="height: auto;">
-        <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute start-0 top-0 d-none d-xl-none"
-            aria-hidden="true" id="iconSidenav"></i>
-        <a class="navbar-brand m-0 p-0" href="{{route('home')}}" style="display: flex; flex-direction: column; align-items: center;">
-            <img src="{{asset('img/logo.png')}}" class="navbar-brand-img" style="max-height: 100%" width="77%" alt="main_logo">
-            <h1 class="me-1 h4">{{config('app.name')}}</h1>
-        </a>
-    </div>
+<aside class="sidebar-left border-right bg-white shadow" id="leftSidebar" data-simplebar>
+    <a href="#" class="btn collapseSidebar toggle-btn d-lg-none text-muted ml-2 mt-3" data-toggle="toggle">
+        <i class="fe fe-x"><span class="sr-only"></span></i>
+    </a>
+    <nav class="vertnav navbar navbar-light">
+        <!-- nav bar -->
+        <div class="row justify-content-center" style="text-align:center;">
+            <div class="w-100 d-flex">
+                <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="{{route('home')}}">
+                    <img src="{{asset('img/logo.png')}}" class="navbar-brand-img mx-auto" alt="..." style="width: 75%">
+                </a>
+            </div>
 
-    <hr class="horizontal dark mt-0">
-    <div class="collapse navbar-collapse px-0 w-auto  max-height-vh-100 h-100" id="sidenav-collapse-main">
-        @foreach (app('nav') as $nav)
-        <div class="row align-items-center  flex-nowrap" style="margin: 5px;">
-            <i style="width: 18px" class="{{$nav['icon']}}"></i>
-            <span  style="width: 50%;">{{$nav['title']}}</span>
+            <h2 class="text-center h4">{{Config::get('app.name')}}</h2>
         </div>
-        <ul class="navbar-nav">
+        @foreach (app('nav') as $nav)
+        <p class="text-muted nav-heading mt-4 mb-1">
+            <i style="width: 18px" class="{{$nav['icon']}}"></i>
+            <span>{{$nav['title']}}</span>
+        </p>
+        <ul class="navbar-nav flex-fill w-100 mb-2">
             @foreach ($nav['items'] as $item)
                 @if(isset($item['model']))
                     @can($item['permission'], $item['model'])
-                        <li class="nav-item">
-                            <a class="nav-link justify-content-between {{ Str::startsWith(url()->current(), route($item['route'])) ? 'active' : '' }}" href="{{route($item['route'])}}">
-                                <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center ms-2 d-flex align-items-center justify-content-center">
-                                    <i class="{{$item['icon']}}"></i>
-                                </div>
-                                <span class="nav-link-text me-1">{{$item['title']}}</span>
+                        <li class="nav-item w-100">
+                            <a class="nav-link" href="{{route($item['route'])}}">
+                                <i class="{{$item['icon']}}"></i>
+                                <span class="ml-3 item-text">{{$item['title']}}</span>
                                 @if (isset($item['badge']))
                                     @if ($item['badge']['type']== 'count')
                                         @if ($item['model']::count() != 0)
-                                            <span class="badge badge-sm bg-{{$item['badge']['color']}}">
+                                            <span class="badge badge-pill badge-{{$item['badge']['color']}}">
                                                 {{$item['model']::count()}}
                                             </span>
                                         @else
@@ -45,16 +44,14 @@
                     @endcan
                 @else
                     @can($item['permission'])
-                        <li class="nav-item">
-                            <a class="nav-link justify-content-between {{ Str::startsWith(url()->current(), route($item['route'])) ? 'active' : '' }}" href="{{route($item['route'])}}">
-                                <div class="icon icon-shape icon-sm shadow border-radius-md bg-white text-center ms-2 d-flex align-items-center justify-content-center">
-                                    <i class="{{$item['icon']}}"></i>
-                                </div>
-                                <span class="nav-link-text me-1">{{$item['title']}}</span>
+                        <li class="nav-item w-100">
+                            <a class="nav-link" href="{{route($item['route'])}}">
+                                <i class="{{$item['icon']}}"></i>
+                                <span class="ml-3 item-text">{{$item['title']}}</span>
                                 @if (isset($item['badge']))
                                     @if ($item['badge']['type']== 'count')
                                         @if ($item['model']::count() != 0)
-                                            <span class="badge badge-sm bg-{{$item['badge']['color']}}">
+                                            <span class="badge badge-pill badge-{{$item['badge']['color']}}">
                                                 {{$item['model']::count()}}
                                             </span>
                                         @else
@@ -68,9 +65,12 @@
                         </li>
                     @endcan
                 @endif
-
             @endforeach
         </ul>
         @endforeach
-    </div>
+
+        <div class="btn-box w-100 mt-3 mb-1">
+            <p class="text-muted font-weight-bold h6">© تم الإنشاء بواسطة <a href="https://saeyd-jamal.github.io/My_Portfolio/" target="_blank">م.السيد الأخرس</a></p>
+        </div>
+    </nav>
 </aside>

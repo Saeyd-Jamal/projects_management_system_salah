@@ -1,32 +1,37 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
-
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="apple-touch-icon" sizes="76x76" href="{{asset('img/icon.png')}}">
-    <link rel="icon" type="image/png" href="{{asset('img/icon.png')}}">
-    <title>
-        {{ $title }}
-    </title>
-        <link href="{{asset('assets/css/bootstrap.rtl.css')}}" rel="stylesheet" />
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="{{ asset('img/icon.png') }}">
+    <title>{{ $title }}</title>
+    <!-- Simple bar CSS -->
+    <link rel="stylesheet" href="{{asset('assets/css/simplebar.css')}}">
+    <!-- Fonts CSS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&display=swap" rel="stylesheet">
 
-    <!--  Fonts and icons -->
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-    <!-- Font Awesome Icons -->
-    <link href="{{asset('assets/css/all.min.css')}}" rel="stylesheet"></link>
-    <!-- Nucleo Icons -->
-    <link href="{{asset('assets/css/nucleo-icons.css')}}" rel="stylesheet" />
-    <link href="{{asset('assets/css/nucleo-svg.css')}}" rel="stylesheet" />
-    <!-- Font Awesome Icons -->
-    <link href="{{asset('assets/css/nucleo-svg.css')}}" rel="stylesheet" />
-    <!-- CSS Files -->
-    <link id="pagestyle" href="{{asset('assets/css/soft-ui-dashboard.css?v=1.0.3')}}" rel="stylesheet" />
-
-    <link href="{{asset('assets/css/coustem.css')}}" rel="stylesheet" />
-
-    <livewire:styles />
+    <!-- Icons CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/feather.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/select2.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/dropzone.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/uppy.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/jquery.steps.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/jquery.timepicker.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/quill.snow.css') }}">
+    <!-- Date Range Picker CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/daterangepicker.css') }}">
+    <!-- App CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/css/app-light.css') }}" id="lightTheme">
+    <link rel="stylesheet" href="{{ asset('assets/css/app-dark.css') }}" id="darkTheme" disabled>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+        }
+    </style>
     @stack('styles')
 </head>
-
-<body class="g-sidenav-show rtl bg-gray-100">
+<body class="vertical light rtl">

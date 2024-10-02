@@ -1,6 +1,6 @@
 <div class="container-fluid">
+    <h3>بيانات التنفيذ</h3>
     <div class="row">
-        <h3>بيانات التنفيذ</h3>
         {{-- <div class="form-group col-md-3">
             <x-form.input type="number" name="budget_number" label="رقم الموازنة" wire:model="budget_number" placeholder="رقم الموزانة : 1212" class="text-center" required wire:input="budget_number_check($event.target.value)" />
             <div id="budget_number_error" class="text-danger" >
@@ -86,8 +86,8 @@
         </div>
     </div>
     <hr>
+    <h3>بنود الدفع</h3>
     <div class="row">
-        <h3>بنود الدفع</h3>
         <div class="form-group col-md-3">
             <x-form.input type="number" min="0" step="0.01" name="amount_payments" label="الدفعات" :value="$executive->amount_payments"/>
         </div>
@@ -119,9 +119,6 @@
         </button>
     </div>
     <div class="form-group col-md-4">
-        <div class="progress">
-            <div class="progress-bar progress-bar-striped progress-bar-animated bg-dark" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
-        </div>
         <x-form.input type="file" name="filesArray[]" label="رفع ملفات للتنفيذ" multiple />
     </div>
 

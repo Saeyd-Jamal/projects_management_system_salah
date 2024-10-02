@@ -97,7 +97,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="{{ 4 + (count($items) *3) }}" align="center" style="color: #000;border:0;">
+                    <td colspan="15" align="center" style="color: #000;border:0;">
                         <h3>كشف التنفيذات</h3>
                     </td>
                 </tr>

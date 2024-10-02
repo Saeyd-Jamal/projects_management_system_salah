@@ -1,6 +1,6 @@
 <x-front-layout>
     <x-slot:breadcrumb>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">مشاريع الإعتماد</li>
+        <li><a href="{{ route('accreditations.index') }}">مشاريع الإعتماد</a></li>
     </x-slot:breadcrumb>
 
     <div class="row">
@@ -10,7 +10,7 @@
                     <div class="d-flex justify-content-end p-3 align-items-start">
                         @can('create','App\\Models\AccreditationProject')
                         <a href="{{route('accreditations.create')}}" class="btn btn-primary m-0">
-                            <i class="fa-solid fa-plus"></i>
+                            <i class="fe fe-plus"></i>
                         </a>
                         @endcan
                     </div>
@@ -30,7 +30,6 @@
                                     <th>اسم المستخدم</th>
                                     <th>المدير المستلم</th>
                                     <th>تاريخ الإضافة</th>
-
                                 </tr>
                             </thead>
                             <tbody>

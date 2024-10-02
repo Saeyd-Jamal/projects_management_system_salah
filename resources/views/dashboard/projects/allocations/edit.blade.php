@@ -1,7 +1,7 @@
 <x-front-layout>
     <x-slot:breadcrumb>
-        <li class="breadcrumb-item text-sm text-dark">التخصيصات</li>
-        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">تعديل التخصيص</li>
+        <li><a href="{{ route('allocations.index')}}">التخصيصات</a></li>
+        <li><a href="#">تعديل التخصيص رقم {{ $allocation->budget_number }}</a></li>
     </x-slot:breadcrumb>
 
 
@@ -13,27 +13,4 @@
         </form>
         <livewire:files :files="$files" :obj="$allocation" />
     </div>
-    @push('scripts')
-    <script>
-        $(function () {
-            $(document).ready(function () {
-                var message = $('.success__msg');
-                $('#UploadfileID').ajaxForm({
-                    beforeSend: function () {
-                        var percentage = '0';
-                    },
-                    uploadProgress: function (event, position, total, percentComplete) {
-                        var percentage = percentComplete;
-                        $('.progress .progress-bar').css("width", percentage+'%', function() {
-                            return $(this).attr("aria-valuenow", percentage) + "%";
-                        })
-                    },
-                    complete: function (xhr) {
-                        location.reload();
-                    }
-                });
-            });
-        });
-    </script>
-    @endpush
 </x-front-layout>
