@@ -41,8 +41,13 @@ class ExecutiveIndex extends Component
     public function filterBox(){
         $this->filterB = !$this->filterB;
         $this->render();
+        new Executive();
     }
 
+
+
+    public $executiveNew;
+    public $executivesAdd = 0;
 
     // get data from executive table
     public $accounts;
@@ -58,6 +63,7 @@ class ExecutiveIndex extends Component
 
     public function mount(){
 
+        $this->executiveNew = new Executive();
         // get data from executive table
         $this->accounts = Executive::select('account')->distinct()->pluck('account')->toArray();
         $this->affiliates = Executive::select('affiliate_name')->distinct()->pluck('affiliate_name')->toArray();
@@ -74,6 +80,13 @@ class ExecutiveIndex extends Component
     {
         // إعادة التهيئة إلى الصفحة الأولى عند تغيير الفلتر
         $this->render();
+    }
+
+
+    public function addRow()
+    {
+        $this->executivesAdd += 1;
+
     }
 
     // دالة render لعرض البيانات
@@ -122,11 +135,10 @@ class ExecutiveIndex extends Component
 
 
         if($this->paginationItems == "all"){
-            $executives = $executives->get();
+            $executives = $executives->paginate(100);
         }else{
             $executives = $executives->paginate(intval($this->paginationItems));
         }
-
 
         $this->ILS = Currency::where('code', 'ILS')->first()->value;
 

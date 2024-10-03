@@ -100,13 +100,18 @@
     <div class="table-container">
         <table class="table align-items-center mb-0 table-hover table-bordered" id="sticky">
             <thead>
+                <style>
+                    table th {
+                        color: #000 !important;
+                    }
+                </style>
                 <tr>
-                    <th class="text-secondary opacity-7 text-center">#</th>
-                    <th  class="sticky" style="right: 0px;">التاريخ</th>
+                    <th class="text-secondary  opacity-7 text-center sticky" style="right: 0px;">#</th>
+                    <th  class="sticky" style="right: 36.5px;">التاريخ</th>
                     {{-- <th>رقم الموازنة</th> --}}
-                    <th  class="sticky" style="right: 142px;">المؤسسة</th>
-                    <th class="sticky" style="right: 284px;" >الحساب</th>
-                    <th class="sticky" style="right: 426px;">الاسم</th>
+                    <th  class="sticky" style="right: 161px;">المؤسسة</th>
+                    <th class="sticky" style="right: 360px;" >الحساب</th>
+                    <th>الاسم</th>
                     <th>المشروع</th>
                     <th>التفصيل..</th>
                     <th>الصنف</th>
@@ -123,15 +128,27 @@
                 </tr>
             </thead>
             <style>
-                table input,table select,table textarea{
-                    max-width: 100% !important;
-                    text-align: center !important;
-                    border: none !important;
-                    width: 125px !important;
+                table td, table th {
+                    padding: 3px 10px !important;
                 }
-                table textarea{
+                table input,
+                table select,
+                table textarea {
+                    max-width: 100% !important;
+                    text-align: right !important;
+                    border: none !important;
+                    width: 104px !important;
+                    padding: 0 !important;
+                }
+                table textarea {
                     text-align: right !important;
                     width: 200px !important;
+                }
+                table .number {
+                    width: 70px !important;
+                }
+                table .name {
+                    width: 178px !important;
                 }
             </style>
             <tbody>
@@ -142,55 +159,53 @@
         </table>
         <div>
             @if ($executives instanceof \Illuminate\Pagination\LengthAwarePaginator)
-                @if ($filterCheck != true)
-                    {{ $executives->links() }}
-                @endif
+                {{ $executives->links() }}
             @else
                 {{-- إذا لم يكن هناك روابط --}}
             @endif
         </div>
     </div>
     {{-- مجموع المبالغ --}}
-    <div class="row justify-content-end m-3">
+    <div class="row justify-content-center m-3">
         <div class="col-3">
             <table class="table align-items-center mb-0 table-hover table-bordered">
                 <thead>
                     <tr>
                         <th></th>
-                        <th>بالشيكل</th>
-                        <th>بالدولار</th>
+                        <th style="background: #27AE60;color: #000">بالشيكل</th>
+                        <th style="background: #C0392B;color: #fff !important;">بالدولار</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     <tr>
-                        <th>اجمالي مبالغ شيكل</th>
-                        <td>
+                        <th style="background: #27AE60;">اجمالي مبالغ شيكل</th>
+                        <td style="background: #17a2b8; color: #fff;">
                             {{number_format($total_amounts,2) ?? 0}}
                         </td>
-                        <td class="text-danger">
+                        <td class="text-danger" style="background: #ddd">
                             {{number_format($total_amounts * $ILS,2) ?? 0}}
                         </td>
                     </tr>
                     <tr>
-                        <th>اجمالي الدفعات شيكل</th>
-                        <td>
+                        <th style="background: #27AE60;">اجمالي الدفعات شيكل</th>
+                        <td style="background: #17a2b8;  color: #fff;">
                             {{number_format($total_payments,2) ?? 0}}
                         </td>
-                        <td class="text-danger">
+                        <td class="text-danger" style="background: #ddd">
                             {{ number_format($ILS * $total_payments,2) ?? 0}}
                         </td>
                     </tr>
                     <tr>
                         <th>الرصيد المتبقي شيكل</th>
-                        <td>
+                        <td  style="background: #17a2b8;  color: #fff;">
                             {{number_format($remaining_balance,2) ?? 0}}
-                        </td>
-                        <td class="text-danger">
+                        </td >
+                        <td class="text-danger" style="background: #ddd">
                             {{ number_format($ILS * $remaining_balance,2) ?? 0}}
                         </td>
                     </tr>
-                    <tr class="text-danger">
+                    <tr class="text-danger" style="background: #ddd">
                         <th colspan="2">سعر الدولار / الشيكل</th>
                         <td>
                             {{number_format(1 / $ILS,2) ?? 0}}

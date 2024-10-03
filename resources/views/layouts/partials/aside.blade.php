@@ -1,3 +1,11 @@
+<style>
+    .simplebar-wrapper{
+        border-radius: 13px;
+        margin: 4px 7px 5px 0;
+        background: #e2f9fb;
+        color: white;
+    }
+</style>
 <aside class="sidebar-left border-right bg-white shadow" id="leftSidebar" data-simplebar>
     <a href="#" class="btn collapseSidebar toggle-btn d-lg-none text-muted ml-2 mt-3" data-toggle="toggle">
         <i class="fe fe-x"><span class="sr-only"></span></i>

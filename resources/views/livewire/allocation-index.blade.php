@@ -90,13 +90,18 @@
     <div class="table-container">
         <table class="table align-items-center mb-0 table-hover table-bordered"  id="sticky">
             <thead>
+                <style>
+                    table th {
+                        color: #000 !important;
+                    }
+                </style>
                 <tr>
                     <th class="text-secondary opacity-7 text-center">#</th>
                     <th  class="sticky" style="right: 0px;">تاريخ التخصيص</th>
-                    <th  class="sticky" style="right: 142px;">رقم الموازنة</th>
-                    <th  class="sticky" style="right: 284px;">الاسم المختصر</th>
-                    <th  class="sticky" style="right: 426px;">المؤسسة</th>
-                    <th  class="sticky" style="right: 568px;">المشروع</th>
+                    <th  class="sticky" style="right: 145px;">رقم الموازنة</th>
+                    <th  class="sticky" style="right: 235px;">الاسم المختصر</th>
+                    <th>المؤسسة</th>
+                    <th>المشروع</th>
                     <th>الصنف</th>
                     <th>الكمية</th>
                     <th>السعر</th>
@@ -117,11 +122,14 @@
                 </tr>
             </thead>
             <style>
+                table td, table th {
+                    padding: 3px 10px !important;
+                }
                 table input,
                 table select,
                 table textarea {
                     max-width: 100% !important;
-                    text-align: center !important;
+                    text-align: right !important;
                     border: none !important;
                     width: 125px !important;
                 }
@@ -130,19 +138,22 @@
                     text-align: right !important;
                     width: 200px !important;
                 }
+                table .number {
+                    width: 70px !important;
+                }
+                table .name {
+                    width: 178px !important;
+                }
             </style>
             <tbody>
                 @foreach ($allocations as $index => $allocation)
-                    <livewire:allocation-table :allocation="$allocation" :index="$index"
-                        wire:key="allocation-{{ $allocation->id }}" />
+                    <livewire:allocation-table :allocation="$allocation" :index="$index" wire:key="allocation-{{ $allocation->id }}" />
                 @endforeach
             </tbody>
         </table>
         <div>
             @if ($allocations instanceof \Illuminate\Pagination\LengthAwarePaginator)
-                @if ($filterCheck != true)
-                    {{ $allocations->links() }}
-                @endif
+                {{ $allocations->links() }}
             @else
                 {{-- إذا لم يكن هناك روابط --}}
 
@@ -150,31 +161,31 @@
         </div>
     </div>
     {{-- مجموع المبالغ --}}
-    <div class="row justify-content-end m-3">
+    <div class="row justify-content-center m-3">
         <div class="col-3">
-            <table class="table align-items-center mb-0 table-hover table-bordered">
-                <tbody>
+            <table class="table align-items-center mb-0 table-bordered">
+                <tbody  style=" color: #fff;">
                     <tr>
-                        <th>المبالغ المخصصة</th>
-                        <td>
+                        <th  style="background: #27AE60;">المبالغ المخصصة</th>
+                        <td  style="background: #17a2b8;">
                             {{ number_format($amounts_allocated, 2) ?? 0 }}
                         </td>
                     </tr>
                     <tr>
-                        <th>المبالغ المستلمة</th>
-                        <td>
+                        <th  style="background: #27AE60;">المبالغ المستلمة</th>
+                        <td  style="background: #17a2b8;">
                             {{ number_format($amounts_received, 2) ?? 0 }}
                         </td>
                     </tr>
-                    <tr style="background: #ddd;">
-                        <th>المتبقي</th>
+                    <tr style="background: #ddd; color: #000;">
+                        <th >المتبقي</th>
                         <td>
                             {{ number_format($remaining, 2) ?? 0 }}
                         </td>
                     </tr>
-                    <tr class="text-danger">
-                        <th>نسبة التحصيل</th>
-                        <td>
+                    <tr>
+                        <th style="background: #C0392B;">نسبة التحصيل</th>
+                        <td  style="color: #C0392B; background: #ddd;">
                             {{ number_format($collection_rate, 2) ?? 0 }} %
                         </td>
                     </tr>

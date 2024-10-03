@@ -14,7 +14,7 @@ table#sticky thead {
     background-color: #f2f2f2;
     position: sticky;
     top: 0;
-    z-index: 1000; /* تأكد من بقاء الرأس فوق بقية المحتوى */
+    z-index: 5; /* تأكد من بقاء الرأس فوق بقية المحتوى */
 }
 
 table#sticky tbody {
@@ -34,6 +34,7 @@ table#sticky tbody tr {
     position: sticky;
     right: 0;
     z-index: 3; /* تأكد من أن العمود المثبت يظهر فوق الأعمدة الأخرى */
+    background: #eeeeeec7;
 }
 th.sticky {
     background-color: #f2f2f2 !important;
