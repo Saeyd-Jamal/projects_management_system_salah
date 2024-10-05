@@ -56,7 +56,7 @@
         <x-form.input type="number" class="number" min="0" step="0.01" name="total_dollar" wire:model="total_dollar" readonly/>
     </td>
     <td>
-        <x-form.input  type="number" style="width: 100px !important;" step="0.01" name="allocation" wire:model="allocation_field" wire:input="allocationFun" required />
+        <x-form.input  type="number" style="width: 120px !important;" step="0.01" name="allocation" wire:model="allocation_field" wire:input="allocationFun" required />
     </td>
     <td>
         <select class="form-control text-center" name="currency_allocation" id="currency_allocation" wire:model="currency_allocation" wire:input="allocationFun" style="width: 100px !important;">
@@ -67,7 +67,7 @@
         </select>
     </td>
     <td>
-        <x-form.input type="number" style="width: 100px !important;" step="0.01" name="amount" wire:model="amount" readonly/>
+        <x-form.input type="number" style="width: 120px !important;" step="0.01" name="amount" wire:model="amount" readonly/>
     </td>
     <td>
         <x-form.input type="number" min="0" style="width: 100px !important;" name="number_beneficiaries" :value="$allocation->number_beneficiaries" wire:input="update('number_beneficiaries', $event.target.value)"/>
@@ -82,7 +82,7 @@
         <x-form.textarea name="implementation_statement" :value="$allocation->implementation_statement"  rows="1" wire:input="update('implementation_statement', $event.target.value)" />
     </td>
     <td>
-        <x-form.input type="number" step="0.01" style="width: 100px !important;" name="amount_received" :value="$allocation->amount_received" wire:input="update('amount_received', $event.target.value)" />
+        <x-form.input type="number" step="0.01" style="width: 120px !important;" name="amount_received" :value="$allocation->amount_received" wire:input="update('amount_received', $event.target.value)" />
     </td>
     <td>
         <select class="form-control text-center" style="width: 100px !important;" name="currency_received" id="currency_received" wire:model="currency_received" wire:input="update('currency_received', $event.target.value)">

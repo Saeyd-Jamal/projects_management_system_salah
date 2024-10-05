@@ -88,7 +88,7 @@
         </form>
     </div>
     <div class="table-container">
-        <table class="table align-items-center mb-0 table-hover table-bordered"  id="sticky">
+        <table class="table align-items-center mb-0 table-hover table-bordered "  id="sticky">
             <thead>
                 <style>
                     table th {

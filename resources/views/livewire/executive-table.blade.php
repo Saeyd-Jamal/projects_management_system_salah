@@ -71,7 +71,7 @@
         <x-form.input type="number" class="number" min="0" step="0.01" name="price"  wire:model="price" wire:input="total"/>
     </td>
     <td>
-        <x-form.input type="number" style="width: 75px !important;"  step="0.01" name="total_ils" wire:model="total_ils" wire:input="update('total_ils', $event.target.value)"/>
+        <x-form.input type="number" style="width: 100px !important;"  step="0.01" name="total_ils" wire:model="total_ils" wire:input="update('total_ils', $event.target.value)"/>
     </td>
     <td>
         <x-form.input name="received" style="width: 76px !important;"  list="received_list" :value="$executive->received" wire:input="update('received', $event.target.value)" />
@@ -85,7 +85,7 @@
         <x-form.textarea name="notes" :value="$executive->notes" rows="2" wire:input="update('notes', $event.target.value)" />
     </td>
     <td>
-        <x-form.input type="number" step="0.01"  style="width: 76px !important;" name="amount_payments"  :value="$executive->amount_payments" wire:input="update('amount_payments', $event.target.value)"/>
+        <x-form.input type="number" step="0.01"  style="width: 100px !important;" name="amount_payments"  :value="$executive->amount_payments" wire:input="update('amount_payments', $event.target.value)"/>
     </td>
     <td>
         <x-form.textarea name="payment_mechanism" :value="$executive->payment_mechanism" rows="2" wire:input="update('payment_mechanism', $event.target.value)" />

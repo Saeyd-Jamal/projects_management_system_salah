@@ -15,10 +15,10 @@
                     @csrf
                     <div class="row">
                         <div class="form-group col-md-3">
-                            <x-form.input type="month" value="{{date('Y') . '-01'}}" name="month" label="الشهر المطلوب (الشهر الاول)" />
+                            <x-form.input type="month" name="month" label="الشهر المطلوب (الشهر الاول)" />
                         </div>
                         <div class="form-group col-md-3">
-                            <x-form.input type="month" value="{{date('Y') . '-12'}}"  name="to_month" label="الى شهر" />
+                            <x-form.input type="month"  name="to_month" label="الى شهر" />
                         </div>
                         <div class="form-group col-md-3">
                             <label for="broker">الاسم المختصر</label>
@@ -87,7 +87,7 @@
                                     <option value="executives">التنفيذات</option>
                                     <option value="brokers_balance">ارصدة المؤسسات الداعمة</option>
                                     <option value="traders_reve">التجار</option>
-                                    <option value="detection_items_month">الأصناف حسب الأشهر</option>
+                                    <option value="detection_items_month">تقرير كميات أصناف المشاريع المنفذة</option>
                                     <option value="total">الإجمالي</option>
                                     <option value="areas">المناطق</option>
                                     <option value="item_balances">أرصدة الأصناف</option>

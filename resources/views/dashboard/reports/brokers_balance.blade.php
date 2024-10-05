@@ -113,29 +113,29 @@
             </thead>
             <tbody>
                 @foreach ($brokers as $broker)
-                @php
-                    $allocation = App\Models\Allocation::where('broker_name', $broker)->get();
-                    $amount = $allocation->sum('amount');
-                    $amount_received = $allocation->sum('amount_received');
+                    @php
+                        $allocation = App\Models\Allocation::where('broker_name', $broker)->get();
+                        $amount = $allocation->sum('amount');
+                        $amount_received = $allocation->sum('amount_received');
 
-                    //  لحل مشكلة القسمة
-                    $amount = ($amount == 0 ? 1 : $amount);
-                    $amount_received = ($amount_received == 0 ? 1 : $amount_received);
-                    $totalAmount = ($allocationsTotal['amount'] == 0 ? 1 : $allocationsTotal['amount']); ;
-                @endphp
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $broker }}</td>
-                        <td>{{ number_format($amount / $totalAmount,5) * 100 }} %</td>
-                        <td>{{ number_format($amount,2) }}</td>
-                        <td>{{ number_format($amount_received,2) }}</td>
-                        <td>
-                            {{ number_format($amount - $amount_received,2) }}
-                        </td>
-                        <td>
-                            {{ number_format($amount_received / $amount,5) * 100 }} %
-                        </td>
-                    </tr>
+                        //  لحل مشكلة القسمة
+                        $amount = ($amount == 0 ? 1 : $amount);
+                        $amount_received = ($amount_received == 0 ? 1 : $amount_received);
+                        $totalAmount = ($allocationsTotal['amount'] == 0 ? 1 : $allocationsTotal['amount']); ;
+                    @endphp
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $broker }}</td>
+                            <td>{{ number_format($amount / $totalAmount,5) * 100 }} %</td>
+                            <td>{{ number_format($amount,2) }}</td>
+                            <td>{{ number_format($amount_received,2) }}</td>
+                            <td>
+                                {{ number_format($amount - $amount_received,2) }}
+                            </td>
+                            <td>
+                                {{ number_format($amount_received / $amount,5) * 100 }} %
+                            </td>
+                        </tr>
                 @endforeach
             </tbody>
             <tfoot>

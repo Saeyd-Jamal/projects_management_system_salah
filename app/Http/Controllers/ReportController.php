@@ -2,11 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AllocationExport;
+use App\Exports\AreasExport;
+use App\Exports\ModelExport;
+use App\Exports\BrokersBalanceExport;
+use App\Exports\DetectionItemsExport;
+use App\Exports\ExecutivesExport;
+use App\Exports\TotalExport;
+use App\Exports\TradersReveExport;
 use App\Models\Allocation;
 use App\Models\Currency;
 use App\Models\Executive;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf as PDF;
 
 class ReportController extends Controller
@@ -45,6 +55,12 @@ class ReportController extends Controller
         if(isset($data["item"])){
             $allocations = $allocations->whereIn("item_name",$data["item"]);
         }
+        if($data["month"] != null){
+            $allocations = $allocations->where("date_allocation",">=",Carbon::parse($data["month"]));
+        }
+        if($data["to_month"] != null){
+            $allocations = $allocations->where("date_allocation","<=",Carbon::parse($data["to_month"]));
+        }
         return $allocations;
     }
 
@@ -67,6 +83,12 @@ class ReportController extends Controller
         }
         if(isset($data["received"])){
             $executives = $executives->whereIn("received",$data["received"]);
+        }
+        if($data["month"] != null){
+            $executives = $executives->where("implementation_date",">=",Carbon::parse($data["month"]));
+        }
+        if($data["to_month"] != null){
+            $executives = $executives->where("implementation_date","<=",Carbon::parse($data["to_month"]));
         }
         return $executives;
     }
@@ -105,10 +127,9 @@ class ReportController extends Controller
     public function export(Request $request)
     {
         $time = Carbon::now();
-
-        $month = $request->month;
-        $to_month = $request->to_month;
-        $year = Carbon::parse($request->month)->format('Y');
+        $month = $request->month ?? Carbon::now()->format('Y-m');
+        $to_month = $request->to_month ?? Carbon::now()->format('Y-m');
+        $year = ($request->month != null) ? Carbon::parse($request->month)->format('Y') : Carbon::now()->format('Y');
 
         $allocations = $this->filterAllocations($request->all());
         $executives = $this->filterExecutives($request->all());
@@ -132,7 +153,7 @@ class ReportController extends Controller
                 'amount_received' => collect($allocationsTotal->pluck('amount_received')->toArray())->sum(),
             ];
 
-            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
+            if($request->export_type == 'view'){
                 $pdf = PDF::loadView('dashboard.reports.brokers_balance',['allocations' => $allocations,'allocationsTotal' => $allocationsTotalArray,'brokers' => $brokers,'month' => $month,'to_month' => $to_month],[],
                 [
                     'mode' => 'utf-8',
@@ -151,6 +172,10 @@ class ReportController extends Controller
                     'default_font' => 'Arial',
                 ]);
                 return $pdf->stream('كشف ارصدة المؤسسات الداعمة _ '.$time.'.pdf');
+            }
+            if($request->export_type == 'export_excel'){
+                $filename = 'كشف أرصد المؤسسات الداعمة _ ' . $time .'.xlsx';
+                return Excel::download(new BrokersBalanceExport($allocations,$allocationsTotalArray,$brokers), $filename);
             }
         }
 
@@ -173,7 +198,7 @@ class ReportController extends Controller
                 'amount_payments' => collect($executivesTotal->pluck('amount_payments')->toArray())->sum(),
             ];
 
-            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
+            if($request->export_type == 'view'){
                 $pdf = PDF::loadView('dashboard.reports.traders_reve',['executives' => $executives,'executivesTotal' => $executivesTotalArray,'accounts' => $accounts,'month' => $month,'to_month' => $to_month],[],
                 [
                     'mode' => 'utf-8',
@@ -193,17 +218,20 @@ class ReportController extends Controller
                 ]);
                 return $pdf->stream('كشف التجار _ '.$time.'.pdf');
             }
+            if($request->export_type == 'export_excel'){
+                $filename = 'كشف التجار _ ' . $time .'.xlsx';
+                return Excel::download(new TradersReveExport($executives,$executivesTotalArray,$accounts), $filename);
+            }
         }
 
         //  الأصناف حسب الأشهر
         if($request->report_type == 'detection_items_month'){
 
-            $items = $executives->whereBetween('month', [$month, $to_month])->select('item_name')->distinct()->pluck('item_name')->toArray();
+            $items = $executives->select('item_name')->distinct()->pluck('item_name')->toArray();
+            $months = $executives->whereBetween('implementation_date', [$year . '-01-01', $year . '-12-31'])->select('month')->distinct()->pluck('month')->toArray();
+            $executives = $this->filterExecutives($request->all())->whereBetween('implementation_date', [$year . '-01-01', $year . '-12-31'])->get();
 
-            $months = $executives->whereBetween('month', [$month, $to_month])->select('month')->distinct()->pluck('month')->toArray();
-
-            $executives = $this->filterExecutives($request->all())->whereBetween('month', [$month, $to_month])->get();
-
+            $lastYear = Carbon::now()->subYear()->format('Y');
             $executivesTotalArray = [
                 "01" => $executives->where('month', $year . '-01')->sum('quantity') ?? '0',
                 '02' => $executives->where('month', $year . '-02')->sum('quantity') ?? '0',
@@ -217,12 +245,12 @@ class ReportController extends Controller
                 '10' => $executives->where('month', $year . '-10')->sum('quantity') ?? '0',
                 '11' => $executives->where('month', $year . '-11')->sum('quantity') ?? '0',
                 '12' => $executives->where('month', $year . '-12')->sum('quantity') ?? '0',
+                "$lastYear" => $this->filterExecutives($request->all())->whereBetween('month', [$lastYear . '-01', $lastYear . '-12'])->sum('quantity') ?? '0',
                 'quantity' => $executives->sum('quantity') ?? '0',
                 'total_ils' => $this->filterExecutives($request->all())->get()->sum('total_ils') ?? '0',
             ];
-
-            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
-                $pdf = PDF::loadView('dashboard.reports.detection_items_month',['executives' => $executives,'executivesTotal' => $executivesTotalArray,'items' => $items,'month' => $month,'to_month' => $to_month,'months' => $months,'monthNameAr' => $this->monthNameAr],[],
+            if($request->export_type == 'view'){
+                $pdf = PDF::loadView('dashboard.reports.detection_items_month',['executives' => $executives,'executivesTotal' => $executivesTotalArray,'items' => $items,'year' => $year,'lastYear' => $lastYear,'month' => $month,'to_month' => $to_month,'months' => $months,'monthNameAr' => $this->monthNameAr],[],
                 [
                     'mode' => 'utf-8',
                     'format' => 'A4-L',
@@ -232,14 +260,19 @@ class ReportController extends Controller
                 return $pdf->stream();
             }
             if($request->export_type == 'export_pdf'){
-                $pdf = PDF::loadView('dashboard.reports.detection_items_month',['executives' => $executives,'executivesTotal' => $executivesTotalArray,'items' => $items,'month' => $month,'to_month' => $to_month,'months' => $months,'monthNameAr' => $this->monthNameAr],[],
+                $pdf = PDF::loadView('dashboard.reports.detection_items_month',['executives' => $executives,'executivesTotal' => $executivesTotalArray,'items' => $items,'year' => $year,'lastYear' => $lastYear,'month' => $month,'to_month' => $to_month,'months' => $months,'monthNameAr' => $this->monthNameAr],[],
                 [
                     'mode' => 'utf-8',
                     'format' => 'A4-L',
                     'default_font_size' => 12,
                     'default_font' => 'Arial',
                 ]);
-                return $pdf->stream('كشف الأصناف حسب الأشهر _ '.$time.'.pdf');
+                return $pdf->stream('تقرير كميات أصناف المشاريع المنفذة  _ '.$time.'.pdf');
+            }
+            if($request->export_type == 'export_excel'){
+
+                $filename = 'تقرير كميات أصناف المشاريع المنفذة _ ' . $time .'.xlsx';
+                return Excel::download(new DetectionItemsExport($year, $lastYear, $months, $this->monthNameAr,$items, $executives), $filename);
             }
         }
 
@@ -261,7 +294,7 @@ class ReportController extends Controller
             $executives = $this->filterExecutives($request->all());
             $allocations = $this->filterAllocations($request->all());
 
-            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
+            if($request->export_type == 'view'){
                 $pdf = PDF::loadView('dashboard.reports.total',['executives' => $executives,'executivesTotal' => $executivesTotalArray,'allocations' => $allocations,'items' => $items,'month' => $month,'to_month' => $to_month],[],
                 [
                     'mode' => 'utf-8',
@@ -281,6 +314,10 @@ class ReportController extends Controller
                 ]);
                 return $pdf->stream('كشف الإجمالي _ '.$time.'.pdf');
             }
+            if($request->export_type == 'export_excel'){
+                $filename = 'كشف الإجمالي _ ' . $time .'.xlsx';
+                return Excel::download(new TotalExport($items), $filename);
+            }
         }
 
 
@@ -289,11 +326,13 @@ class ReportController extends Controller
 
             $items = $executives->select('item_name')->distinct()->pluck('item_name')->toArray();
             $items = array_slice($items, 0, 10);
-            $areas = $executives->select('received')->distinct()->pluck('received')->toArray();
-
+            $areas = array_filter(
+                $executives->select('received')->distinct()->pluck('received')->toArray(),
+                fn($value) => !is_null($value) && $value !== ''
+            );
             $executives = $this->filterExecutives($request->all());
 
-            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
+            if($request->export_type == 'view'){
                 $pdf = PDF::loadView('dashboard.reports.areas',['executives' => $executives,'items' => $items,'month' => $month,'to_month' => $to_month,'areas' => $areas],[],
                 [
                     'mode' => 'utf-8',
@@ -312,6 +351,10 @@ class ReportController extends Controller
                     'default_font' => 'Arial',
                 ]);
                 return $pdf->stream('كشف الأصناف حسب المناطق _ '.$time.'.pdf');
+            }
+            if($request->export_type == 'export_excel'){
+                $filename = 'كشف الأصناف حسب المناطق _ ' . $time .'.xlsx';
+                return Excel::download(new AreasExport($areas,$items), $filename);
             }
         }
 
@@ -383,7 +426,8 @@ class ReportController extends Controller
 
 
 
-            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
+            if($request->export_type == 'view'){
+                $allocations = $this->filterAllocations($request->all())->limit(500)->get();
                 $pdf = PDF::loadView('dashboard.reports.allocations',['allocations' => $allocations,'allocationsTotal' => $allocationsTotal,'amounts_allocated' => $amounts_allocated,'amounts_received' => $amounts_received,'collection_rate' => $collection_rate,'remaining' => $remaining,'month' => $month,'to_month' => $to_month],[],
                 [
                     'mode' => 'utf-8',
@@ -394,6 +438,7 @@ class ReportController extends Controller
                 return $pdf->stream();
             }
             if($request->export_type == 'export_pdf'){
+                $allocations = $this->filterAllocations($request->all())->limit(500)->get();
                 $pdf = PDF::loadView('dashboard.reports.allocations',['allocations' => $allocations,'month' => $month,'to_month' => $to_month],[],
                 [
                     'mode' => 'utf-8',
@@ -401,7 +446,11 @@ class ReportController extends Controller
                     'default_font_size' => 12,
                     'default_font' => 'Arial',
                 ]);
-                return $pdf->stream('كشف الأصناف حسب الأشهر _ '.$time.'.pdf');
+                return $pdf->stream('كشف التخصيصات _ '.$time.'.pdf');
+            }
+            if($request->export_type == 'export_excel'){
+                $filename = 'كشف التخصيصات _ ' . $time .'.xlsx';
+                return Excel::download(new AllocationExport($allocations), $filename);
             }
         }
 
@@ -424,7 +473,9 @@ class ReportController extends Controller
 
 
 
-            if($request->export_type == 'view' || $request->export_type == 'export_excel'){
+            if($request->export_type == 'view'){
+                $executives = $this->filterExecutives($request->all())->limit(500)->get();
+
                 $pdf = PDF::loadView('dashboard.reports.executives',['executives' => $executives,'executivesTotal' => $executivesTotal,'total_amounts' => $total_amounts,'total_payments' => $total_payments,'remaining_balance' => $remaining_balance,'ILS' => $ILS,'month' => $month,'to_month' => $to_month],[],
                 [
                     'mode' => 'utf-8',
@@ -435,14 +486,19 @@ class ReportController extends Controller
                 return $pdf->stream();
             }
             if($request->export_type == 'export_pdf'){
-                $pdf = PDF::loadView('dashboard.reports.allocations',['allocations' => $allocations,'month' => $month,'to_month' => $to_month],[],
+                $executives = $this->filterExecutives($request->all())->limit(500)->get();
+                $pdf = PDF::loadView('dashboard.reports.executives',['executives' => $executives,'executivesTotal' => $executivesTotal,'total_amounts' => $total_amounts,'total_payments' => $total_payments,'remaining_balance' => $remaining_balance,'ILS' => $ILS,'month' => $month,'to_month' => $to_month],[],
                 [
                     'mode' => 'utf-8',
                     'format' => 'A4-L',
                     'default_font_size' => 12,
                     'default_font' => 'Arial',
                 ]);
-                return $pdf->stream('كشف الأصناف حسب الأشهر _ '.$time.'.pdf');
+                return $pdf->stream('كشف التنفيذات _ '.$time.'.pdf');
+            }
+            if($request->export_type == 'export_excel'){
+                $filename = 'كشف التنفيذات _ ' . $time .'.xlsx';
+                return Excel::download(new ExecutivesExport($executives), $filename);
             }
         }
 

@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>كشف الأصناف حسب الأشهر</title>
+    <title>تقرير بأعداد وكميات أصناف المشاريع المنفذة</title>
     <style>
         body {
             font-family: 'XBRiyaz', sans-serif;
@@ -91,19 +91,26 @@
                 <tr>
                     <td colspan="5" style="border:0;">
                         <p>
-                            <span>قسم المشاريع</span> /
-                            <span>كشف الأصناف حسب الأشهر</span>
+                            <span>جمعية دار اليتيم الفلسطيني</span>
                         </p>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="{{ 4 + count($months) }}" align="center" style="color: #000;border:0;">
-                        <h1>كشف الأصناف حسب الأشهر</h1>
+                    <td colspan="5" style="border:0;">
+                        <p>
+                            <span>تقرير إغاثات حملة طوفان الأقصى</span>
+                        </p>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="{{ 5 + count($months) }}" align="center" style="color: #000;border:0;">
+                        <h2>تقرير بأعداد وكميات أصناف المشاريع المنفذة</h2>
                     </td>
                 </tr>
                 <tr style="background: #dddddd;">
                     <th>#</th>
                     <th>الأصناف</th>
+                    <th>{{$lastYear}}</th>
                     @foreach ($months as $month)
                         <th>{{ $monthNameAr[Carbon\Carbon::parse($month)->format('m')] }}</th>
                     @endforeach
@@ -114,15 +121,18 @@
             <tbody>
                 @foreach ($items as $item)
                     @php
-                        $executive = App\Models\Executive::where('item_name', $item)->get();
-                        $quantity = $executive->sum('quantity');
-                        $total_ils = $executive->sum('total_ils');
+                        $executive = App\Models\Executive::whereBetween('month', [$year . '-01', $year . '-12'])->where('item_name', $item)->get();
+                        $executiveLastYear = App\Models\Executive::whereBetween('month', [$lastYear . '-01', $lastYear . '-12'])->where('item_name', $item)->get();
+                        $quantity = $executive->sum('quantity') + $executiveLastYear->sum('quantity');
+                        $total_ils = $executive->sum('total_ils') + $executiveLastYear->sum('total_ils');
+
                     @endphp
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $item }}</td>
+                        <td>{{ $executiveLastYear->sum('quantity') }}</td>
                         @foreach ($months as $month)
-                            <td>{{ number_format($executive->where('month', $month)->sum('quantity'),0) }}</td>
+                            <td>{{ number_format($executive->where('month', Carbon\Carbon::parse($month)->format('Y-m'))->sum('quantity'),0) }}</td>
                         @endforeach
                         <td>{{ number_format($quantity,0) }}</td>
                         <td>{{ number_format($total_ils,0) }}</td>
@@ -132,6 +142,7 @@
             <tfoot>
                 <tr>
                     <td colspan="2" align="right">الإجمالي</td>
+                    <td>{{ number_format($executivesTotal[$lastYear],0) }}</td>
                     @foreach ($months as $month)
                         <td>{{ number_format($executivesTotal[Carbon\Carbon::parse($month)->format('m')],0) }}</td>
                     @endforeach
