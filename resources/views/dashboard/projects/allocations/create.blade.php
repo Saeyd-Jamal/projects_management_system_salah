@@ -11,6 +11,7 @@
         </form>
     </div>
     <hr>
+    @can('import','App\\Models\Allocation')
     <h3>رفع ملف اكسيل</h3>
     <div class="row">
         {{-- Excel  --}}
@@ -31,4 +32,6 @@
             </div>
         </div>
     </div>
+    @endcan
+
 </x-front-layout>

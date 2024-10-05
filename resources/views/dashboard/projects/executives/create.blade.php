@@ -10,6 +10,7 @@
             <livewire:executive-form :executive="$executive" />
         </form>
     </div>
+    @can('import','App\\Models\Executive')
     <h3>رفع ملف اكسيل</h3>
     <div class="row">
         {{-- Excel  --}}
@@ -30,4 +31,6 @@
             </div>
         </div>
     </div>
+    @endcan
+
 </x-front-layout>

@@ -14,6 +14,7 @@ use App\Models\Allocation;
 use App\Models\Currency;
 use App\Models\Executive;
 use Carbon\Carbon;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -21,6 +22,7 @@ use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf as PDF;
 
 class ReportController extends Controller
 {
+    use AuthorizesRequests;
     protected $monthNameAr;
 
     public function __construct(){
@@ -97,6 +99,7 @@ class ReportController extends Controller
 
     public function index()
     {
+        $this->authorize('reports.view');
         // البيانات من نموذج Allocation
         $brokersFromAllocation = Allocation::select('broker_name')->distinct()->pluck('broker_name')->toArray();
         $organizations = Allocation::select('organization_name')->distinct()->pluck('organization_name')->toArray();
