@@ -86,7 +86,6 @@
                         <option value="25">25</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
-                        <option value="all">الكل</option>
                     </select>
                 </div>
             </div>
@@ -109,8 +108,8 @@
                     <th class="text-secondary  opacity-7 text-center sticky" style="right: 0px;">#</th>
                     <th  class="sticky" style="right: 36.5px;">التاريخ</th>
                     {{-- <th>رقم الموازنة</th> --}}
-                    <th  class="sticky" style="right: 161px;">المؤسسة</th>
-                    <th class="sticky" style="right: 360px;" >الحساب</th>
+                    <th  class="sticky" style="right: @can('update','App\\Models\Executive') 161px @else 132.5px @endcan;">المؤسسة</th>
+                    <th class="sticky" style="right: @can('update','App\\Models\Executive') 360px @else 252px @endcan;" >الحساب</th>
                     <th>الاسم</th>
                     <th>المشروع</th>
                     <th>التفصيل..</th>
@@ -152,8 +151,9 @@
                 }
             </style>
             <tbody>
+                {{-- $accounts, $affiliate_names, $receiveds, $details, $brokers, $projects, $items, $currencies --}}
                 @foreach ($executives as $index => $executive)
-                    <livewire:executive-table :executive="$executive"  :index="$index" wire:key="executive-{{ $executive->id }}"  />
+                    <livewire:executive-table :executive="$executive" :index="$index" wire:key="executive-{{ $executive->id }}" :accounts="$accounts" :affiliate="$affiliates" :receiveds="$receiveds" :details="$details" :brokers="$brokers" :projects="$projects" :items="$items" :currencies="$currencies" />
                 @endforeach
             </tbody>
         </table>

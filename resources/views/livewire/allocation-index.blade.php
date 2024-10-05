@@ -75,7 +75,6 @@
                         <option value="25">25</option>
                         <option value="50">50</option>
                         <option value="100">100</option>
-                        <option value="all">الكل</option>
                     </select>
                 </div>
             </div>
@@ -98,8 +97,8 @@
                 <tr>
                     <th class="text-secondary opacity-7 text-center">#</th>
                     <th  class="sticky" style="right: 0px;">تاريخ التخصيص</th>
-                    <th  class="sticky" style="right: 145px;">رقم الموازنة</th>
-                    <th  class="sticky" style="right: 235px;">الاسم المختصر</th>
+                    <th  class="sticky" style="right: @can('update','App\\Models\Allocation') 145px @else 96px @endcan;">رقم الموازنة</th>
+                    <th  class="sticky" style="right:  @can('update','App\\Models\Allocation') 235px @else 161px @endcan;">الاسم المختصر</th>
                     <th>المؤسسة</th>
                     <th>المشروع</th>
                     <th>الصنف</th>
@@ -114,7 +113,6 @@
                     <th>تاريخ القبض</th>
                     <th>بيان</th>
                     <th>المبلغ المقبوض</th>
-                    <th>العملة</th>
                     <th>ملاحظات</th>
                     <th>اسم المستخدم</th>
                     <th>المدير المستلم</th>
@@ -147,7 +145,7 @@
             </style>
             <tbody>
                 @foreach ($allocations as $index => $allocation)
-                    <livewire:allocation-table :allocation="$allocation" :index="$index" wire:key="allocation-{{ $allocation->id }}" />
+                    <livewire:allocation-table :allocation="$allocation" :index="$index" wire:key="allocation-{{ $allocation->id }}" :brokers="$brokers" :organizations="$organizations" :projects="$projects" :items="$items" :currencies="$currencies" />
                 @endforeach
             </tbody>
         </table>

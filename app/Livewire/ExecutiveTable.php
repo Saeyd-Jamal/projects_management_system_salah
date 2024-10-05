@@ -39,27 +39,25 @@ class ExecutiveTable extends Component
     public $items;
     public $currencies;
 
-    public function __construct()
-    {
-        // get data from executive table
-        $this->accounts = Executive::select('account')->distinct()->pluck('account')->toArray();
-        $this->affiliate_names = Executive::select('affiliate_name')->distinct()->pluck('affiliate_name')->toArray();
-        $this->receiveds = Executive::select('received')->distinct()->pluck('received')->toArray();
-        $this->details = Executive::select('detail')->distinct()->pluck('detail')->toArray();
 
-        // get data from models
-        $this->brokers = Executive::select('broker_name')->distinct()->pluck('broker_name')->toArray();
-        $this->projects = Executive::select('project_name')->distinct()->pluck('project_name')->toArray();
-        $this->items =  Executive::select('item_name')->distinct()->pluck('item_name')->toArray();
-        $this->currencies = Currency::get();
-    }
-
-    public function mount($executive , $index, $btn_label = 'إضافة', $editForm = false)
+    public function mount($executive , $index,$accounts, $affiliate, $receiveds, $details, $brokers, $projects, $items, $currencies, $btn_label = 'إضافة', $editForm = false)
     {
         $this->executive = $executive;
         $this->index = $index;
         $this->btn_label = $btn_label;
         $this->editForm = $editForm;
+
+        // get data from executive table
+        $this->accounts = $accounts;
+        $this->affiliate_names = $affiliate;
+        $this->receiveds = $receiveds;
+        $this->details = $details;
+
+        // get data from models
+        $this->brokers = $brokers;
+        $this->projects = $projects;
+        $this->items =  $items;
+        $this->currencies = $currencies;
 
 
         $this->implementation_date =  $this->executive->implementation_date ?? Carbon::now()->format('Y-m-d');

@@ -60,6 +60,8 @@ class ExecutiveIndex extends Component
     public $brokers;
     public $projects;
     public $items;
+    public $currencies;
+
 
     public function mount(){
 
@@ -74,6 +76,8 @@ class ExecutiveIndex extends Component
         $this->brokers = Executive::select('broker_name')->distinct()->pluck('broker_name')->toArray();
         $this->projects = Executive::select('project_name')->distinct()->pluck('project_name')->toArray();
         $this->items =  Executive::select('item_name')->distinct()->pluck('item_name')->toArray();
+        $this->currencies = Currency::get();
+
     }
     // دالة الفلتر
     public function filter()

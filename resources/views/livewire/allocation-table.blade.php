@@ -1,9 +1,10 @@
 <tr>
+    @can('update','App\\Models\Allocation')
     <td  class="text-center">
         {{ $index + 1 }}
     </td>
     <td class="sticky" style="right: 0px;">
-        <x-form.input type="date" name="date_allocation" required :value="$allocation->date_allocation" wire:input="update('date_allocation', $event.target.value)" />
+        <x-form.input type="date" name="date_allocation" required :value="$allocation->date_allocation" wire:input="update('date_allocation', $event.target.value)" @endcan />
     </td>
     <td class="sticky" style="right: 145px;">
         <x-form.input type="number" name="budget_number" :value="$allocation->budget_number" placeholder="رقم الموزانة : 1212" class="number" required wire:input="budget_number_check($event.target.value)" />
@@ -85,14 +86,6 @@
         <x-form.input type="number" step="0.01" style="width: 120px !important;" name="amount_received" :value="$allocation->amount_received" wire:input="update('amount_received', $event.target.value)" />
     </td>
     <td>
-        <select class="form-control text-center" style="width: 100px !important;" name="currency_received" id="currency_received" wire:model="currency_received" wire:input="update('currency_received', $event.target.value)">
-            <option label="فتح القائمة">
-            @foreach ($currencies as $currency)
-                <option value="{{ $currency->code }}" @selected($currency->code == $allocation->currency_received || $currency->code == "USD")>{{ $currency->name }}</option>
-            @endforeach
-        </select>
-    </td>
-    <td>
         <x-form.textarea name="notes" :value="$allocation->notes" rows="1"  wire:input="update('notes', $event.target.value)" />
     </td>
     <td>{{ $allocation->user_name }}</td>
@@ -115,4 +108,77 @@
             @endcan
         </div>
     </td>
+    @endcan
+
+
+
+    @cannot('update','App\\Models\Allocation')
+    <style>
+        td{
+            white-space: nowrap;
+        }
+    </style>
+    <td  class="text-center">
+        {{ $index + 1 }}
+    </td>
+    <td style="right: 0px;" class="sticky">
+        {{ $allocation->date_allocation }}
+    </td>
+    <td style="right: 96px;" class="sticky">
+        {{ $allocation->budget_number }}
+    </td>
+    <td style="right: 161px;" class="sticky">
+        {{ $allocation->broker_name }}
+    </td>
+    <td>
+        {{ $allocation->organization_name }}
+    </td>
+    <td>
+        {{ $allocation->project_name }}
+    </td>
+    <td>
+        {{ $allocation->item_name }}
+    </td>
+    <td>
+        {{ $allocation->quantity }}
+    </td>
+    <td>
+        {{ $allocation->price }}
+    </td>
+    <td>
+        {{ $allocation->total_dollar }}
+    </td>
+    <td>
+        {{ $allocation->allocation }}
+    </td>
+    <td>
+        {{ $allocation->currency_allocation }}
+    </td>
+    <td>
+        {{ $allocation->amount }}
+    </td>
+    <td>
+        {{ $allocation->number_beneficiaries }}
+    </td>
+    <td>
+        {{ $allocation->implementation_items }}
+    </td>
+    <td>
+        {{ $allocation->date_implementation }}
+    </td>
+    <td>
+        {{ $allocation->implementation_statement }}
+    </td>
+    <td>
+        {{ $allocation->amount_received }}
+    </td>
+    <td>
+        {{ $allocation->notes }}
+    </td>
+    <td>{{ $allocation->user_name }}</td>
+    <td>{{ $allocation->manager_name }}</td>
+    <td class="align-middle">
+
+    </td>
+    @endcannot
 </tr>

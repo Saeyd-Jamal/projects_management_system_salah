@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Allocation;
+use App\Models\Currency;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Carbon\Carbon;
@@ -43,6 +44,7 @@ class AllocationIndex extends Component
     public $organizations;
     public $projects;
     public $items;
+    public $currencies;
 
     public function mount(){
 
@@ -51,6 +53,8 @@ class AllocationIndex extends Component
         $this->organizations = Allocation::select('organization_name')->distinct()->pluck('organization_name')->toArray();
         $this->projects = Allocation::select('project_name')->distinct()->pluck('project_name')->toArray();
         $this->items =  Allocation::select('item_name')->distinct()->pluck('item_name')->toArray();
+        $this->currencies = Currency::get();
+
     }
     // دالة الفلتر
     public function filter()

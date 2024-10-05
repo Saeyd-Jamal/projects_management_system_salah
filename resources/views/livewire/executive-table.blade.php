@@ -1,5 +1,6 @@
 
 <tr>
+    @can('update','App\Models\Executive')
     <td  class="text-center sticky"  style="right: 0px;">
         {{ $index + 1 }}
     </td>
@@ -110,4 +111,66 @@
             @endcan
         </div>
     </td>
+    @endcan
+
+
+
+    @cannot('update','App\\Models\Executive')
+    <style>
+        td{
+            white-space: nowrap;
+        }
+    </style>
+    <td  class="text-center sticky"  style="right: 0px;">
+        {{ $index + 1 }}
+    </td>
+    <td  class="sticky" style="right: 36.5px;">
+        {{ $executive->implementation_date }}
+    </td>
+    <td class="sticky" style="right: 132.5px">
+        {{ $executive->broker_name }}
+    </td>
+    <td  class="sticky" style="right: 252px;">
+        {{ $executive->account }}
+    </td>
+    <td>
+        {{ $executive->affiliate_name }}
+    </td>
+    <td>
+        {{ $executive->project_name }}
+    </td>
+    <td>
+        {{ $executive->detail }}
+    </td>
+    <td>
+        {{ $executive->item_name }}
+    </td>
+    <td>
+        {{ $executive->quantity }}
+    </td>
+    <td>
+        {{ $executive->price }}
+    </td>
+    <td>
+        {{ $executive->total_ils }}
+    </td>
+    <td>
+        {{ $executive->received }}
+    </td>
+    <td>
+        {{ $executive->notes }}
+    </td>
+    <td>
+        {{ $executive->amount_payments }}
+    </td>
+    <td>
+        {{ $executive->payment_mechanism }}
+    </td>
+    <td>{{ $executive->user_name }}</td>
+    <td>{{ $executive->manager_name }}</td>
+    <td class="align-middle">
+
+    </td>
+    @endcannot
+
 </tr>

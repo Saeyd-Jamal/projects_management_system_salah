@@ -9,11 +9,14 @@ use App\Models\Item;
 use App\Models\Organization;
 use App\Models\Project;
 use Carbon\Carbon;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class AllocationTable extends Component
 {
+    use AuthorizesRequests;
+
     public $allocation;
     public $index;
 
@@ -37,20 +40,21 @@ class AllocationTable extends Component
     public $items;
     public $currencies;
 
-    public function mount($allocation, $index)
+    public function mount($allocation, $index,$brokers, $organizations, $projects, $items, $currencies)
     {
         $this->allocation = $allocation;
         $this->index = $index;
-        
+
         // get data from models
-        $this->brokers = Allocation::select('broker_name')->distinct()->pluck('broker_name')->toArray();
-        $this->organizations = Allocation::select('organization_name')->distinct()->pluck('organization_name')->toArray();
-        $this->projects = Allocation::select('project_name')->distinct()->pluck('project_name')->toArray();
-        $this->items =  Allocation::select('item_name')->distinct()->pluck('item_name')->toArray();
-        $this->currencies = Currency::get();
+        $this->brokers = $brokers;
+        $this->organizations = $organizations;
+        $this->projects = $projects;
+        $this->items =  $items;
+        $this->currencies = $currencies;
 
         $this->date_allocation =  $this->allocation->date_allocation ?? Carbon::now()->format('Y-m-d');
         $this->budget_number = $this->allocation->budget_number ?? (Allocation::latest()->first() ? Allocation::latest()->first()->budget_number + 1 : 1);
+
         // fields
         $this->quantity = $this->allocation->quantity ?? '';
         $this->price = $this->allocation->price ?? '';
@@ -59,17 +63,12 @@ class AllocationTable extends Component
         $this->amount = $this->allocation->amount ?? '';
 
         if(($this->allocation->currency_allocation ?? null) != null){
-            $currency = Currency::where('code', $this->allocation->currency_allocation)->first();
+            $currency =  $currencies->where('code', $this->allocation->currency_allocation)->first();
             $this->currency_allocation = $currency->code;
         }else{
             $this->currency_allocation =  'USD';
         }
-        if(($this->allocation->currency_received ?? null) != null){
-            $currency = Currency::where('code', $this->allocation->currency_received)->first();
-            $this->currency_received = $currency->code;
-        }else{
-            $this->currency_received =  'USD';
-        }
+
     }
 
     public function budget_number_check($value){
@@ -99,6 +98,9 @@ class AllocationTable extends Component
         $this->update('currency_allocation_value', $currency_allocation_value);
         $this->update('amount', $this->amount);
     }
+
+
+
     public function allocationFun(){
         $currency_allocation_value = Currency::where('code', $this->currency_allocation)->first()->value;
         if($this->allocation_field != ''){
@@ -109,17 +111,15 @@ class AllocationTable extends Component
         $this->update('currency_allocation_value', $currency_allocation_value);
         $this->update('amount', $this->amount);
     }
-    public function update($name, $value){
-        if($name == 'currency_received'){
-            $this->update('currency_received', $value);
-            $currency_received_value = Currency::where('code', $this->currency_received)->first()->value;
-            $this->update('currency_received_value', $currency_received_value);
-        }else{
-            $this->allocation->$name = $value;
-        }
-        $this->allocation->save();
 
+
+
+    public function update($name, $value){
+        $this->allocation->$name = $value;
+        $this->allocation->save();
     }
+
+
     public function render()
     {
         return view('livewire.allocation-table');
