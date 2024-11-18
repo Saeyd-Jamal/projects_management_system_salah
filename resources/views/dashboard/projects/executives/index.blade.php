@@ -302,10 +302,10 @@
                                 <td></td>
                                 <td class='text-white' id="total_quantity"></td>
                                 <td></td>
-                                <td class='text-white' id="total_total_ils"></td>
+                                <td class='text-white total_total_ils'></td>
                                 <td></td>
                                 <td></td>
-                                <td class='text-white' id="total_amount_payments"></td>
+                                <td class='text-white total_amount_payments'></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -317,6 +317,50 @@
             </div>
         </div>
     </div>
+    {{-- مجموع المبالغ --}}
+    <div class="row justify-content-end m-3">
+        <div class="col-3">
+            <table class="table align-items-center mb-0 table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th style="background: #27AE60;color: #000">بالشيكل</th>
+                        <th style="background: #C0392B;color: #fff !important;">بالدولار</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <th style="background: #27AE60;">اجمالي مبالغ شيكل</th>
+                        <td style="background: #17a2b8; color: #fff;" class="total_total_ils">
+                        </td>
+                        <td class="text-danger total_total_dollars" style="background: #ddd">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="background: #27AE60;">اجمالي الدفعات شيكل</th>
+                        <td style="background: #17a2b8;  color: #fff;" class="total_amount_payments">
+                        </td>
+                        <td class="text-danger total_amount_payments_dollars" style="background: #ddd">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="background: #27AE60;">الرصيد المتبقي شيكل</th>
+                        <td  style="background: #17a2b8;  color: #fff;" class="remaining">
+                        </td>
+                        <td class="text-danger remaining_dollars" style="background: #ddd">
+                        </td>
+                    </tr>
+                    <tr class="text-danger" style="background: #ddd">
+                        <th colspan="2">سعر الدولار / الشيكل</th>
+                        <td>
+                            {{number_format(1 / $ILS,2) ?? 0}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
 
 
@@ -325,6 +369,7 @@
     <script src="{{asset('js/jquery.dataTables.min.js')}}"></script>
     <script type="text/javascript">
         $(document).ready(function() {
+            let ils = {{ $ILS }};
             let formatNumber = (number,min = 0) => {
                 // التحقق إذا كانت القيمة فارغة أو غير صالحة كرقم
                 if (number === null || number === undefined || isNaN(number)) {
@@ -441,11 +486,17 @@
                             return intVal(a) + intVal(b);
                         }, 0);
 
+                    let remaining = total_total_ils_sum - total_amount_payments_sum;
+
                     // 4. عرض النتائج في `tfoot`
                     $('#count_executives').html(formatNumber(rowCount)); // عدد الأسطر
                     $('#total_quantity').html(formatNumber(total_quantity_sum));
-                    $('#total_total_ils').html(formatNumber(total_total_ils_sum,2));
-                    $('#total_amount_payments').html(formatNumber(total_amount_payments_sum,2));
+                    $('.total_total_ils').html(formatNumber(total_total_ils_sum,2));
+                    $('.total_total_dollars').html(formatNumber((total_total_ils_sum * ils),2));
+                    $('.total_amount_payments').html(formatNumber(total_amount_payments_sum,2));
+                    $('.total_amount_payments_dollars').html(formatNumber((total_amount_payments_sum * ils),2));
+                    $('.remaining').html(formatNumber(remaining,2));
+                    $('.remaining_dollars').html(formatNumber((remaining * ils),2));
                 }
             });
 

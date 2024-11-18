@@ -27,7 +27,6 @@ class ExecutiveController extends Controller
             // جلب بيانات المستخدمين من الجدول
             $executives = Executive::query();
 
-
             // التصفية بناءً على التواريخ
             if ($request->from_date != null && $request->to_date != null) {
                 $executives->whereBetween('implementation_date', [$request->from_date, $request->to_date]);
@@ -44,8 +43,7 @@ class ExecutiveController extends Controller
                     ->make(true);
         }
 
-
-
+        $ILS = Currency::where('code', 'ILS')->first()->value;
         // get data from executive table
         $accounts = Executive::select('account')->distinct()->pluck('account')->toArray();
         $affiliates = Executive::select('affiliate_name')->distinct()->pluck('affiliate_name')->toArray();
@@ -57,7 +55,7 @@ class ExecutiveController extends Controller
         $projects = Executive::select('project_name')->distinct()->pluck('project_name')->toArray();
         $items =  Executive::select('item_name')->distinct()->pluck('item_name')->toArray();
 
-        return view('dashboard.projects.executives.index', compact('accounts', 'affiliates', 'receiveds', 'details', 'brokers', 'projects', 'items'));
+        return view('dashboard.projects.executives.index', compact('ILS','accounts', 'affiliates', 'receiveds', 'details', 'brokers', 'projects', 'items'));
     }
 
     /**

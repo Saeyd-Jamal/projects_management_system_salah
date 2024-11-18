@@ -227,12 +227,12 @@
                                 <td></td>
                                 <td class='text-white' id="total_allocation"></td>
                                 <td></td>
-                                <td class='text-white' id="total_amount"></td>
+                                <td class='text-white total_amount'></td>
                                 <td class='text-white' id="total_number_beneficiaries"></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td class='text-white' id="total_amount_received"></td>
+                                <td class='text-white total_amount_received'></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -244,11 +244,38 @@
             </div>
         </div>
     </div>
-
-    {{-- @include('dashboard.projects.allocations.editModal') --}}
-
+    <div class="row justify-content-end m-3">
+        <div class="col-3">
+            <table class="table align-items-center mb-0 table-bordered">
+                <tbody  style=" color: #fff;">
+                    <tr>
+                        <th  style="background: #27AE60;">المبالغ المخصصة</th>
+                        <td  style="background: #17a2b8;" class="total_amount">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th  style="background: #27AE60;">المبالغ المستلمة</th>
+                        <td  style="background: #17a2b8;" class="total_amount_received">
+                        </td>
+                    </tr>
+                    <tr style="background: #ddd; color: #000;">
+                        <th >المتبقي</th>
+                        <td class="remaining">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th style="background: #C0392B;">نسبة التحصيل</th>
+                        <td style="color: #C0392B; background: #ddd;">
+                            <span class="remaining_percent"></span>%
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
     @push('scripts')
+
     <!-- DataTables JS -->
     <script src="{{asset('js/jquery.dataTables.min.js')}}"></script>
     <script type="text/javascript">
@@ -402,15 +429,23 @@
                             return intVal(a) + intVal(b);
                         }, 0);
 
-
-
+                    // المتبقي
+                    let remaining = total_amount_sum - total_amount_received_sum;
+                    let remaining_percent = ((total_amount_sum - total_amount_received_sum) / total_amount_sum) * 100;
                     // 4. عرض النتائج في `tfoot`
-                    $('#count_allocations').html(formatNumber(rowCount)); // عدد الأسطر
-                    $('#total_quantity').html(formatNumber(total_quantity_sum)); // عدد الأسطر
-                    $('#total_allocation').html(formatNumber(total_allocation_sum,2)); // عدد الأسطر
-                    $('#total_amount').html(formatNumber(total_amount_sum,2)); // عدد الأسطر
-                    $('#total_number_beneficiaries').html(formatNumber(total_number_beneficiaries_sum)); // عدد الأسطر
-                    $('#total_amount_received').html(formatNumber(total_amount_received_sum,2)); // عدد الأسطر
+
+                    $('#count_allocations').html(formatNumber(rowCount));
+                    $('#total_quantity').html(formatNumber(total_quantity_sum));
+                    $('#total_allocation').html(formatNumber(total_allocation_sum,2));
+                    $('.total_amount').html(formatNumber(total_amount_sum,2));
+                    $('#total_number_beneficiaries').html(formatNumber(total_number_beneficiaries_sum));
+                    $('.total_amount_received').html(formatNumber(total_amount_received_sum,2));
+
+                    $('.remaining').html(formatNumber(remaining,2));
+                    $('.remaining_percent').html(formatNumber(remaining_percent,2));
+
+
+                    // $('#allocations-table_filter').addClass('d-none');
                 }
             });
             $('#allocations-table_filter').addClass('d-none');
@@ -453,45 +488,6 @@
                     },
                 });
             }
-            $(document).on('click', '.open-modal', function () {
-                const id = $(this).data('id'); // الحصول على ID المشروع من الزر
-
-                // إرسال طلب AJAX لجلب بيانات المشروع
-                $.ajax({
-                    url: "{{ route('allocations.show', ':id') }}".replace(':id', id), // API endpoint لجلب البيانات
-                    type: 'GET',
-                    success: function (response) {
-                        // استخراج البيانات من الرسالة
-
-                        // فتح الـ Modal
-                        // $('#editModal').modal('show');
-                        alert('حدث');
-                    },
-                    error: function () {
-                        alert('حدث خطأ أثناء جلب البيانات!');
-                    }
-                });
-            });
-
-            // حفظ البيانات عند الضغط على زر "حفظ"
-            $('#saveProject').on('click', function () {
-                const formData = $('#editForm').serialize(); // جمع البيانات من الفورم
-
-                // إرسال طلب AJAX لتحديث البيانات
-                $.ajax({
-                    url: `/dashboard/projects/allocations/update`, // API endpoint للتحديث
-                    type: 'POST',
-                    data: formData,
-                    success: function () {
-                        alert('تم تحديث المشروع بنجاح!');
-                        $('#editModal').modal('hide');
-                        location.reload(); // إعادة تحميل الصفحة لتحديث الجدول
-                    },
-                    error: function () {
-                        alert('حدث خطأ أثناء تحديث المشروع!');
-                    }
-                });
-            });
         });
     </script>
     <script>
