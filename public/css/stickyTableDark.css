@@ -62,12 +62,12 @@ th.sticky,td.sticky {
     position: sticky;
     right: 0;
     z-index: 3; /* تأكد من أن العمود المثبت يظهر فوق الأعمدة الأخرى */
-    background: #eeeeeec7;
+    background: #1d1d1dc7;
     border-color: #06060675 !important;
 }
 th.sticky {
     background-color: #5b9bd5 !important;
 }
 td.sticky {
-    background-color: white !important;
+    background-color: #2f2f2f !important;
 }

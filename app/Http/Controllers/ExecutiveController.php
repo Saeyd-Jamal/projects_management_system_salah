@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\ExecutivesImport;
+use App\Models\Currency;
 use App\Models\Executive;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\Facades\DataTables;
 
 class ExecutiveController extends Controller
 {
@@ -18,11 +20,44 @@ class ExecutiveController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('view', Executive::class);
-        $executives = Executive::paginate(10);
-        return view('dashboard.projects.executives.index', compact('executives'));
+        if($request->ajax()) {
+            // جلب بيانات المستخدمين من الجدول
+            $executives = Executive::query();
+
+
+            // التصفية بناءً على التواريخ
+            if ($request->from_date != null && $request->to_date != null) {
+                $executives->whereBetween('implementation_date', [$request->from_date, $request->to_date]);
+            }
+
+            return DataTables::of($executives)
+                    ->addIndexColumn()  // إضافة عمود الترقيم التلقائي
+                    ->addColumn('edit', function ($executive) {
+                        return $executive->id;
+                    })
+                    ->addColumn('delete', function ($executive) {
+                        return $executive->id;
+                    })
+                    ->make(true);
+        }
+
+
+
+        // get data from executive table
+        $accounts = Executive::select('account')->distinct()->pluck('account')->toArray();
+        $affiliates = Executive::select('affiliate_name')->distinct()->pluck('affiliate_name')->toArray();
+        $details = Executive::select('detail')->distinct()->pluck('detail')->toArray();
+        $receiveds = Executive::select('received')->distinct()->pluck('received')->toArray();
+
+        // get data from models
+        $brokers = Executive::select('broker_name')->distinct()->pluck('broker_name')->toArray();
+        $projects = Executive::select('project_name')->distinct()->pluck('project_name')->toArray();
+        $items =  Executive::select('item_name')->distinct()->pluck('item_name')->toArray();
+
+        return view('dashboard.projects.executives.index', compact('accounts', 'affiliates', 'receiveds', 'details', 'brokers', 'projects', 'items'));
     }
 
     /**

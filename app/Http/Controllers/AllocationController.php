@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use Yajra\DataTables\Facades\DataTables;
 
 class AllocationController extends Controller
 {
@@ -23,12 +24,41 @@ class AllocationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('view', Allocation::class);
-        $allocations = Allocation::paginate(10);
-        
-        return view('dashboard.projects.allocations.index', compact('allocations'));
+
+        if($request->ajax()) {
+                // جلب بيانات المستخدمين من الجدول
+            $allocations = Allocation::query()->orderBy('date_allocation', 'asc');;
+
+
+            // التصفية بناءً على التواريخ
+            if ($request->from_date != null && $request->to_date != null) {
+                $allocations->whereBetween('date_allocation', [$request->from_date, $request->to_date]);
+            }
+
+            return DataTables::of($allocations)
+                    ->addIndexColumn()  // إضافة عمود الترقيم التلقائي
+                    ->addColumn('edit', function ($allocation) {
+                        return $allocation->id;
+                    })
+                    ->addColumn('currency_allocation_name', function ($allocation) {
+                        return Currency::where('code', $allocation->currency_allocation)->first()->name;
+                    })
+                    ->addColumn('delete', function ($allocation) {
+                        return $allocation->id;
+                    })
+                    ->make(true);
+        }
+
+        $brokers = Allocation::select('broker_name')->distinct()->pluck('broker_name')->toArray();
+        $organizations = Allocation::select('organization_name')->distinct()->pluck('organization_name')->toArray();
+        $projects = Allocation::select('project_name')->distinct()->pluck('project_name')->toArray();
+        $items =  Allocation::select('item_name')->distinct()->pluck('item_name')->toArray();
+        $currencies = Currency::get();
+
+        return view('dashboard.projects.allocations.index', compact('brokers', 'organizations', 'projects', 'items', 'currencies'));
     }
 
     /**
@@ -95,9 +125,11 @@ class AllocationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Allocation $allocation)
+    public function show(Request $request, Allocation $allocation)
     {
-        //
+        if($request->ajax()){
+            return response()->json($allocation);
+        }
     }
 
     /**
@@ -160,21 +192,31 @@ class AllocationController extends Controller
         ]);
 
         $allocation->update($request->all());
+        if($request->ajax()) {
+            return response()->json(['message' => 'تم التحديث بنجاح']);
+        }
         return redirect()->route('allocations.index')->with('success', 'تمت عملية التعديل بنجاح');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Allocation $allocation)
+    public function destroy(Request $request, $id)
     {
         $this->authorize('delete', Allocation::class);
-        $files = json_decode($allocation->files, true) ?? [];
-        $year = Carbon::parse($allocation->date_allocation)->format('Y');
-        foreach ($files as $file) {
-            Storage::delete($file);
+        // $files = json_decode($allocation->files, true) ?? [];
+        // $year = Carbon::parse($allocation->date_allocation)->format('Y');
+        // foreach ($files as $file) {
+        //     Storage::delete($file);
+        // }
+        // Storage::deleteDirectory('files/allocations/' . $year . '/' . $allocation->budget_number);
+
+        $allocation = Allocation::findOrFail($id);
+
+        if($request->ajax()) {
+            $allocation->delete();
+            return response()->json(['success' => 'تمت عملية الحذف بنجاح']);
         }
-        Storage::deleteDirectory('files/allocations/' . $year . '/' . $allocation->budget_number);
         $allocation->delete();
         return redirect()->route('allocations.index')->with('danger', 'تمت عملية الحذف بنجاح');
     }
