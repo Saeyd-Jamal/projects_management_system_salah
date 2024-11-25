@@ -15,17 +15,18 @@
         </div>
         <div class="form-group col-md-3">
             <label for="broker_name">الإسم المختصر</label>
-            <x-form.input name="broker_name" list="brokers_list" :value="$allocation->broker_name" required/>
-            <datalist id="brokers_list">
+            <input type="text" name="broker_name" id="broker_name" value="" class="form-control form-control-alternative" list="brokers_listA" required="required">
+            <datalist id="brokers_listA">
                 @foreach ($brokers as $broker)
                     <option value="{{ $broker }}">
                 @endforeach
             </datalist>
         </div>
+        <div class="form-group col-md-3"></div>
         <div class="form-group col-md-3">
             <label for="organization_name">المؤسسة</label>
-            <x-form.input name="organization_name" list="organizations_list" :value="$allocation->organization_name" required/>
-            <datalist id="organizations_list">
+            <x-form.input name="organization_name" list="organizations_listA" :value="$allocation->organization_name" required/>
+            <datalist id="organizations_listA">
                 @foreach ($organizations as $organization)
                     <option value="{{ $organization }}">
                 @endforeach
@@ -50,16 +51,16 @@
             </datalist>
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" name="quantity" label="الكمية" wire:model="quantity" wire:input="total"/>
+            <x-form.input type="text" min="0" name="quantity" label="الكمية" wire:model="quantity" wire:input="total"  wire:blur="calculate('quantity')" />
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" step="0.01" name="price" label="سعر الوحدة$"  wire:model="price" wire:input="total"  />
+            <x-form.input type="text" min="0" step="0.01" name="price" label="سعر الوحدة$"  wire:model="price" wire:input="total" wire:blur="calculate('price')"  />
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" step="0.01" name="total_dollar" label="الإجمالي ب $" wire:model="total_dollar" readonly/>
+            <x-form.input type="text" min="0" step="0.01" name="total_dollar" label="الإجمالي ب $" wire:model="total_dollar" readonly/>
         </div>
         <div class="form-group col-md-3">
-            <x-form.input  type="number" min="0" step="0.01" name="allocation" label="التخصيص" wire:model="allocation_field" wire:input="allocationFun" required />
+            <x-form.input  type="text" min="0" step="0.01" name="allocation" label="التخصيص" wire:model="allocation_field" wire:input="allocationFun" required wire:blur="calculate('allocation')"  />
         </div>
         <div class="form-group col-md-3">
             <label for="currency_allocation">العملة</label>
@@ -74,7 +75,7 @@
             <x-form.input type="number" min="0" step="0.01" name="amount" label="المبلغ $" wire:model="amount" readonly/>
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" name="number_beneficiaries" label="عدد المستفيدين" :value="$allocation->number_beneficiaries"/>
+            <x-form.input type="text" min="0" name="number_beneficiaries" label="عدد المستفيدين" :value="$allocation->number_beneficiaries" />
         </div>
         <div class="form-group col-md-6">
             <x-form.textarea name="implementation_items" label="بنوذ التنفيد" :value="$allocation->implementation_items" />
@@ -87,16 +88,7 @@
             <x-form.input type="date" name="date_implementation" label="تاريخ القبض" :value="$allocation->date_implementation" />
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" step="0.01" name="amount_received" label="المبلغ المقبوض" :value="$allocation->amount_received"/>
-        </div>
-        <div class="form-group col-md-3">
-            <label for="currency_received">العملة</label>
-            <select class="form-control text-center" name="currency_received" id="currency_received" wire:model="currency_received">
-                <option label="فتح القائمة">
-                @foreach ($currencies as $currency)
-                    <option value="{{ $currency->code }}" @selected($currency->code == $allocation->currency_received || $currency->code == "USD")>{{ $currency->name }}</option>
-                @endforeach
-            </select>
+            <x-form.input type="text" min="0" step="0.01" name="amount_received" label="المبلغ المقبوض" :value="$allocation->amount_received" />
         </div>
         <div class="form-group col-md-6">
             <x-form.textarea name="implementation_statement" label="بيان" :value="$allocation->implementation_statement" />
@@ -128,7 +120,7 @@
             @endif
         </button>
     </div>
-    <div class="form-group col-md-4">
+    {{-- <div class="form-group col-md-4">
         <x-form.input type="file" name="filesArray[]" label="رفع ملفات للتخصيص" multiple />
-    </div>
+    </div> --}}
 </div>

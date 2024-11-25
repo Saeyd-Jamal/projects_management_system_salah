@@ -1,11 +1,11 @@
 @include('layouts.partials.header', ['title' => Config::get('app.name', 'دار اليتيم الفلسطيني')])
-<main class="main-content  mt-0">
-    <section style="margin: 38px 0;">
+<main class="main-content  m-0">
+    <section>
         <div class="page-header min-vh-75">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8">
+            <div class="container" style="height: 100vh;">
+                <div class="row h-100 align-items-center">
+                    <div class="col-md-6"  style="height: 40%;">
+                        <div class="oblique position-absolute top-0 h-100 d-md-block d-none me-n8 w-100">
                             <style>
                                 #oblique-cover {
                                     background-size: cover;

@@ -64,11 +64,16 @@ class AllocationController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Request $request)
     {
         $this->authorize('create', Allocation::class);
         $allocation = new Allocation();
-
+        if($request->ajax()){
+            $allocation->budget_number =  Allocation::latest()->first() ? Allocation::latest()->first()->budget_number + 1 : 1;
+            $allocation->date_allocation =  Carbon::now()->format('Y-m-d');
+            $allocation->currency_allocation =  'USD';
+            return $allocation;
+        }
         return view('dashboard.projects.allocations.create', compact('allocation'));
     }
 
@@ -91,34 +96,34 @@ class AllocationController extends Controller
             'date_implementation' => 'nullable|date',
             'implementation_statement' => 'nullable|string',
             'amount_received' => 'nullable|numeric',
-            'currency_received' => 'required|exists:currencies,code',
             'notes' => 'nullable|string',
             'number_beneficiaries' => 'nullable|integer',
         ]);
         $currency_allocation_value = Currency::where('code', $request->currency_allocation)->first()->value;
-        $currency_received_value = Currency::where('code', $request->currency_received)->first()->value;
 
-        // رفع الملفات للتخصيص
-        $files = [];
-        $year = Carbon::parse($request->date_allocation)->format('Y');
-        if ($request->hasFile('filesArray')) {
-            foreach ($request->file('filesArray') as $file) {
-                $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-                $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
-                $filepath = $file->storeAs("files/allocations/$year/$request->budget_number", $filenameExtension, 'public');
-                $files[$file->getClientOriginalName()] = $filepath;
-            }
-        }
+        // // رفع الملفات للتخصيص
+        // $files = [];
+        // $year = Carbon::parse($request->date_allocation)->format('Y');
+        // if ($request->hasFile('filesArray')) {
+        //     foreach ($request->file('filesArray') as $file) {
+        //         $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+        //         $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
+        //         $filepath = $file->storeAs("files/allocations/$year/$request->budget_number", $filenameExtension, 'public');
+        //         $files[$file->getClientOriginalName()] = $filepath;
+        //     }
+        // }
 
         $request->merge([
             'currency_allocation_value' => $currency_allocation_value,
-            'currency_received_value' => $currency_received_value,
             'user_id' => Auth::user()->id,
             'user_name' => Auth::user()->name,
-            'files' => json_encode($files),
+            // 'files' => json_encode($files),
         ]);
 
         $allocation = Allocation::create($request->all());
+        if($request->ajax()) {
+            return response()->json(['message' => 'تم الإضافة بنجاح']);
+        }
         return redirect()->route('allocations.index')->with('success', 'تمت عملية الاضافة بنجاح');
     }
 
@@ -135,8 +140,13 @@ class AllocationController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Allocation $allocation)
+    public function edit(Request $request, Allocation $allocation)
     {
+        if($request->ajax()) {
+            $allocation->currency_allocation_name = Currency::where('code', $allocation->currency_allocation)->first()->name;
+            $allocation->user = $allocation->user();
+            return response()->json($allocation);
+        }
         $this->authorize('update', Allocation::class);
         $editForm = true;
         $btn_label = 'تعديل';
@@ -163,32 +173,29 @@ class AllocationController extends Controller
             'date_implementation' => 'nullable|date',
             'implementation_statement' => 'nullable|string',
             'amount_received' => 'nullable|numeric',
-            'currency_received' => 'required|exists:currencies,code',
             'notes' => 'nullable|string',
             'number_beneficiaries' => 'nullable|integer',
         ]);
         $currency_allocation_value = Currency::where('code', $request->currency_allocation)->first()->value;
-        $currency_received_value = Currency::where('code', $request->currency_received)->first()->value;
 
 
         // رفع الملفات للتخصيص
-        $files = json_decode($allocation->files, true) ?? [];
+        // $files = json_decode($allocation->files, true) ?? [];
 
-        $year = Carbon::parse($request->date_allocation)->format('Y');
+        // $year = Carbon::parse($request->date_allocation)->format('Y');
 
-        if ($request->hasFile('filesArray')) {
-            foreach ($request->file('filesArray') as $file) {
-                $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-                $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
-                $filepath = $file->storeAs("files/allocations/$year/$request->budget_number", $filenameExtension, 'public');
-                $files[$file->getClientOriginalName()] = $filepath;
-            }
-        }
+        // if ($request->hasFile('filesArray')) {
+        //     foreach ($request->file('filesArray') as $file) {
+        //         $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+        //         $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
+        //         $filepath = $file->storeAs("files/allocations/$year/$request->budget_number", $filenameExtension, 'public');
+        //         $files[$file->getClientOriginalName()] = $filepath;
+        //     }
+        // }
 
         $request->merge([
             'currency_allocation_value' => $currency_allocation_value,
-            'currency_received_value' => $currency_received_value,
-            'files' => $files,
+            // 'files' => $files,
         ]);
 
         $allocation->update($request->all());
@@ -212,12 +219,11 @@ class AllocationController extends Controller
         // Storage::deleteDirectory('files/allocations/' . $year . '/' . $allocation->budget_number);
 
         $allocation = Allocation::findOrFail($id);
+        $allocation->delete();
 
         if($request->ajax()) {
-            $allocation->delete();
             return response()->json(['success' => 'تمت عملية الحذف بنجاح']);
         }
-        $allocation->delete();
         return redirect()->route('allocations.index')->with('danger', 'تمت عملية الحذف بنجاح');
     }
 

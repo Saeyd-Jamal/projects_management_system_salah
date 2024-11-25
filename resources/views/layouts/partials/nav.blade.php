@@ -1,4 +1,21 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white flex-row border-bottom shadow">
+<style>
+    .navbar-light .navbar-nav .nav-item > .nav-link{
+        color: #fff !important;
+        transition: all 0.3s ease-in-out;
+    }
+    .navbar-light .navbar-nav .nav-item > .nav-link:hover {
+        color: #fff !important;
+        background-color: #303030 !important;
+    }
+    .dropdown-menu .nav-link{
+        color: #000 !important;
+    }
+    .dropdown-menu .nav-link:hover{
+        color: #fff !important;
+        background-color: #303030 !important;
+    }
+</style>
+<nav class="navbar navbar-expand-lg navbar-light bg-dark flex-row border-bottom shadow">
     <div class="container-fluid">
         <a class="navbar-brand mx-lg-1 mr-0"  href="{{ route('home') }}">
             <img src="{{ asset('img/logo.png') }}" style="max-width: 46px;">
@@ -6,11 +23,17 @@
         <button class="navbar-toggler mt-2 mr-auto toggle-sidebar text-muted">
             <i class="fe fe-menu navbar-toggler-icon"></i>
         </button>
-        <div class="navbar-slide bg-white ml-lg-4" id="navbarSupportedContent">
+        <div class="navbar-slide bg-dark text-white ml-lg-4" id="navbarSupportedContent">
             <a href="#" class="btn toggle-sidebar d-lg-none text-muted ml-2 mt-3" data-toggle="toggle">
                 <i class="fe fe-x"><span class="sr-only"></span></i>
             </a>
             <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link d-flex align-items-center" href="{{route('home')}}">
+                        <i class="fe fe-home fe-16"></i>
+                        <span class="ml-3 item-text">الصفحة الرئيسية</span>
+                    </a>
+                </li>
                 @can('view','App\\Models\AccreditationProject')
                     <li class="nav-item">
                         <a class="nav-link d-flex align-items-center" href="{{route('accreditations.index')}}">
@@ -78,13 +101,8 @@
         </div>
         <ul class="navbar-nav d-flex flex-row nav">
             {{ $extra_nav ?? '' }}
-            <li class="nav-item">
-                <a class="nav-link text-muted my-2" href="./#" id="modeSwitcher" data-mode="light">
-                    <i class="fe fe-sun fe-16"></i>
-                </a>
-            </li>
             @auth
-            <li class="nav-item dropdown">
+            <li class="nav-item dropdown d-flex align-items-center justify-content-center ">
                 <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink"
                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="avatar avatar-sm mt-2">

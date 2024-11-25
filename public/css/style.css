@@ -1,5 +1,6 @@
-.dropdown-menu.show{
+.filterDropdownMenu.dropdown-menu.show{
     display: flex ;
     justify-content: space-between;
     align-items: center;
+    top: 20px !important;
 }

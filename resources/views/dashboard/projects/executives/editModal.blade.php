@@ -11,11 +11,11 @@
             </div>
         </div> --}}
         <div class="form-group col-md-3">
-            <x-form.input type="date" name="implementation_date" label="التاريخ" required wire:model="implementation_date" />
+            <x-form.input type="date" name="implementation_date" label="التاريخ" required />
         </div>
         <div class="form-group col-md-3">
             <label for="broker_name">الإسم المختصر</label>
-            <x-form.input name="broker_name" list="brokers_list" :value="$executive->broker_name" required />
+            <x-form.input name="broker_name" list="brokers_list" required />
             <datalist id="brokers_list">
                 @foreach ($brokers as $broker)
                     <option value="{{ $broker }}">
@@ -23,7 +23,7 @@
             </datalist>
         </div>
         <div class="form-group col-md-3">
-            <x-form.input name="account" label="الحساب" list="account_list" :value="$executive->account" required />
+            <x-form.input name="account" label="الحساب" list="account_list" required />
             <datalist id="account_list">
                 @foreach ($accounts as $account)
                     <option value="{{ $account }}">
@@ -31,18 +31,16 @@
             </datalist>
         </div>
         <div class="form-group col-md-3">
-        </div>
-        <div class="form-group col-md-3">
-            <x-form.input name="affiliate_name" label="الاسم" list="affiliate_name_list" :value="$executive->affiliate_name" required />
+            <x-form.input name="affiliate_name" label="الاسم" list="affiliate_name_list" required />
             <datalist id="affiliate_name_list">
-                @foreach ($affiliate_names as $affiliate_name)
+                @foreach ($affiliates as $affiliate_name)
                     <option value="{{ $affiliate_name }}">
                 @endforeach
             </datalist>
         </div>
         <div class="form-group col-md-3">
             <label for="project_name">المشروع</label>
-            <x-form.input name="project_name" list="projects_list" :value="$executive->project_name" required />
+            <x-form.input name="project_name" list="projects_list" required />
             <datalist id="projects_list">
                 @foreach ($projects as $project)
                     <option value="{{ $project }}">
@@ -50,7 +48,7 @@
             </datalist>
         </div>
         <div class="form-group col-md-3">
-            <x-form.input name="detail" label="التفصيل.." list="detail_list" :value="$executive->detail" />
+            <x-form.input name="detail" label="التفصيل.." list="detail_list" />
             <datalist id="detail_list">
                 @foreach ($details as $detail)
                     <option value="{{ $detail }}">
@@ -58,10 +56,8 @@
             </datalist>
         </div>
         <div class="form-group col-md-3">
-        </div>
-        <div class="form-group col-md-3">
             <label for="item_name">الصنف</label>
-            <x-form.input name="item_name" list="items_list" :value="$executive->item_name" required />
+            <x-form.input name="item_name" list="items_list" required />
             <datalist id="items_list">
                 @foreach ($items as $item)
                     <option value="{{ $item }}">
@@ -69,16 +65,16 @@
             </datalist>
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="text" wire:blur="calculate('quantity')"  name="quantity" label="الكمية" wire:model="quantity"/>
+            <x-form.input type="text" class="calculation"  name="quantity" label="الكمية"/>
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="text" wire:blur="calculate('price')"   min="0" step="0.01" name="price" label="سعر الوحدة ₪"  wire:model="price" />
+            <x-form.input type="text" class="calculation"  min="0" step="0.01" name="price" label="سعر الوحدة ₪" />
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="text" wire:blur="calculate('total_ils')"   min="0" step="0.01" name="total_ils" label="الإجمالي ب ₪" wire:model="total_ils"/>
+            <x-form.input type="text" class="calculation"  min="0" step="0.01" name="total_ils" label="الإجمالي ب ₪" />
         </div>
         <div class="form-group col-md-3">
-            <x-form.input name="received" label="المستلم" list="received_list" :value="$executive->received" />
+            <x-form.input name="received" label="المستلم" list="received_list" />
             <datalist id="received_list">
                 @foreach ($receiveds as $received)
                     <option value="{{ $received }}">
@@ -86,39 +82,42 @@
             </datalist>
         </div>
         <div class="form-group col-md-12">
-            <x-form.textarea name="notes" label="ملاجظات" :value="$executive->notes" rows="2" />
+            <x-form.textarea name="notes" label="ملاجظات" rows="2" />
         </div>
     </div>
     <hr>
     <h3>بنود الدفع</h3>
     <div class="row">
         <div class="form-group col-md-3">
-            <x-form.input type="text" class="calculation" min="0" step="0.01" name="amount_payments" label="الدفعات" :value="$executive->amount_payments"/>
+            <x-form.input type="text" class="calculation" min="0" step="0.01" name="amount_payments" label="الدفعات" />
         </div>
         <div class="form-group col-md-6">
-            <x-form.textarea name="payment_mechanism" label="آلية الدفع" :value="$executive->payment_mechanism" rows="2"  />
+            <x-form.textarea name="payment_mechanism" label="آلية الدفع" rows="2"  />
         </div>
     </div>
     <hr>
     <div class="row">
-        @if($editForm == true)
-        <div class="form-group col-md-3">
-            <x-form.input name="user_id" label="اسم المستخدم" :value="$executive->user->name" disabled />
+        <div class="form-group col-md-3 editForm">
+            <x-form.input name="user_id" label="اسم المستخدم" disabled />
         </div>
-        <div class="form-group col-md-3">
-            <x-form.input name="manager_name" label="المدير المستلم" :value="$executive->manager_name" disabled />
+        <div class="form-group col-md-3 editForm">
+            <x-form.input name="manager_name" label="المدير المستلم" disabled />
         </div>
-        @endif
     </div>
-    <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary m-0">
-            @if ($btn_label != null)
-                <i class="fa-solid fa-pen-to-square"></i>
-                {{$btn_label}}
-            @else
-                <i class="fa-solid fa-plus"></i>
-                اضافة
-            @endif
+    <div class="d-flex justify-content-end"  id="btns_form">
+        @can('import','App\\Models\Executive')
+        <button type="button" class="btn mb-2 btn-secondary mx-2" id="import_excel_btn">
+            <i class="fe fe-upload"></i>
+            رفع ملف اكسيل
+        </button>
+        @endcan
+        <button aria-label="" type="button" class="btn btn-danger px-2" data-dismiss="modal" aria-hidden="true">
+            <span aria-hidden="true">×</span>
+            إغلاق
+        </button>
+        <button type="button" id="update" class="btn btn-primary mx-2">
+            <i class="fe fe-edit"></i>
+            تعديل
         </button>
     </div>
     {{-- <div class="form-group col-md-4">

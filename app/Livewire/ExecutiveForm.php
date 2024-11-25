@@ -68,11 +68,30 @@ class ExecutiveForm extends Component
         $this->price = $this->executive->price ?? '';
         $this->total_ils = $this->executive->total_ils ?? '';
 
-
     }
 
     public function total(){
-        $this->total_ils = ($this->quantity == '' ? 0 : $this->quantity)    * ($this->price == '' ? 0 : $this->price);
+        if(is_numeric($this->quantity) && is_numeric($this->price)){
+            $this->total_ils = ($this->quantity == '' ? 0 : $this->quantity)    * ($this->price == '' ? 0 : $this->price);
+        }
+    }
+    public function calculate($field)
+    {
+        try {
+            // تحديد الحقل الذي تسبب في الحدث وتحديث قيمته فقط
+            if ($field === 'quantity') {
+                $this->quantity = eval("return {$this->quantity};");
+                $this->total();
+            } elseif ($field === 'price') {
+                $this->price = eval("return {$this->price};");
+                $this->total();
+            } elseif ($field === 'total_ils') {
+                $this->total_ils = eval("return {$this->total_ils};");
+            }
+        } catch (\Throwable $e) {
+            // إرسال رسالة تنبيه للمستخدم
+            $this->dispatchBrowserEvent('alert', ['message' => 'يرجى إدخال معادلة صحيحة!']);
+        }
     }
     public function render()
     {

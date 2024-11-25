@@ -94,17 +94,43 @@ class AllocationForm extends Component
     }
 
     public function total(){
-        $this->total_dollar = ($this->quantity == '' ? 0 : $this->quantity)    * ($this->price == '' ? 0 : $this->price);
-        $currency_allocation_value = Currency::where('code', $this->currency_allocation)->first()->value;
-        $this->allocation_field = $this->total_dollar / $currency_allocation_value;
-        $this->amount = $this->allocation_field * $currency_allocation_value;
-    }
-    public function allocationFun(){
-        $currency_allocation_value = Currency::where('code', $this->currency_allocation)->first()->value;
-        if($this->allocation_field != ''){
+        if(is_numeric($this->quantity) && is_numeric($this->price)){
+            $this->total_dollar = ($this->quantity == '' ? 0 : $this->quantity)    * ($this->price == '' ? 0 : $this->price);
+            $currency_allocation_value = Currency::where('code', $this->currency_allocation)->first()->value;
+            $this->allocation_field = $this->total_dollar / $currency_allocation_value;
             $this->amount = $this->allocation_field * $currency_allocation_value;
         }
+
     }
+    public function allocationFun(){
+        if(is_numeric($this->allocation_field)){
+            $currency_allocation_value = Currency::where('code', $this->currency_allocation)->first()->value;
+            if($this->allocation_field != ''){
+                $this->amount = $this->allocation_field * $currency_allocation_value;
+            }
+        }
+    }
+
+    public function calculate($field)
+    {
+        try {
+            // تحديد الحقل الذي تسبب في الحدث وتحديث قيمته فقط
+            if ($field === 'quantity') {
+                $this->quantity = eval("return {$this->quantity};");
+                $this->total();
+            } elseif ($field === 'price') {
+                $this->price = eval("return {$this->price};");
+                $this->total();
+            } elseif ($field === 'allocation') {
+                $this->allocation_field = eval("return {$this->allocation_field};");
+                $this->allocationFun();
+            }
+        } catch (\Throwable $e) {
+            // إرسال رسالة تنبيه للمستخدم
+            $this->dispatchBrowserEvent('alert', ['message' => 'يرجى إدخال معادلة صحيحة!']);
+        }
+    }
+
     public function render()
     {
         return view('livewire.allocation-form');

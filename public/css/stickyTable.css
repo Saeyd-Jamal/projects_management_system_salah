@@ -30,7 +30,7 @@ tfoot td{
 
 table.sticky tbody {
     display: table-row-group;
-    max-height: 400px; /* تعيين الارتفاع الأقصى للجزء القابل للتمرير */
+    min-height: calc(100vh - 219px); /* تعيين الارتفاع الأقصى للجزء القابل للتمرير */
     overflow-y: auto; /* السماح بالتمرير العمودي */
 }
 

@@ -50,23 +50,24 @@
             </datalist>
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" name="quantity" label="الكمية"/>
+            <x-form.input type="text" class="calculation" min="0" name="quantity" label="الكمية" />
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" step="0.01" name="price" label="سعر الوحدة$"   />
+            <x-form.input type="text" class="calculation" min="0" step="0.01" name="price" label="سعر الوحدة$"   />
         </div>
         <div class="form-group col-md-3">
             <x-form.input type="number" min="0" step="0.01" name="total_dollar" label="الإجمالي ب $"  readonly/>
         </div>
         <div class="form-group col-md-3">
-            <x-form.input  type="number" min="0" step="0.01" name="allocation" label="التخصيص"required />
+            <x-form.input  type="text" class="calculation" min="0" step="0.01" name="allocation" label="التخصيص" required />
         </div>
         <div class="form-group col-md-3">
             <label for="currency_allocation">العملة</label>
             <select class="form-control text-center" name="currency_allocation" id="currency_allocation">
                 <option label="فتح القائمة">
                 @foreach ($currencies as $currency)
-                    <option value="{{ $currency->code }}" @selected($currency->code == $allocation->currency_allocation || $currency->code == "USD")>{{ $currency->name }}</option>
+                    {{-- <option value="{{ $currency->code }}" @selected($currency->code == $allocation->currency_allocation || $currency->code == "USD")>{{ $currency->name }}</option> --}}
+                    <option value="{{ $currency->code }}" data-val="{{$currency->value}}">{{ $currency->name }}</option>
                 @endforeach
             </select>
         </div>
@@ -74,61 +75,55 @@
             <x-form.input type="number" min="0" step="0.01" name="amount" label="المبلغ $" readonly />
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" name="number_beneficiaries" label="عدد المستفيدين" />
+            <x-form.input type="text" class="calculation" min="0" name="number_beneficiaries" label="عدد المستفيدين" />
         </div>
         <div class="form-group col-md-6">
-            <x-form.textarea name="implementation_items" label="بنوذ التنفيد" :value="$allocation->implementation_items" />
+            <x-form.textarea name="implementation_items" label="بنوذ التنفيد" />
         </div>
     </div>
     <hr>
     <h3>بنود القبض</h3>
     <div class="row">
         <div class="form-group col-md-3">
-            <x-form.input type="date" name="date_implementation" label="تاريخ القبض" :value="$allocation->date_implementation" />
+            <x-form.input type="date" name="date_implementation" label="تاريخ القبض"  />
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" step="0.01" name="amount_received" label="المبلغ المقبوض" :value="$allocation->amount_received"/>
-        </div>
-        <div class="form-group col-md-3">
-            <label for="currency_received">العملة</label>
-            <select class="form-control text-center" name="currency_received" id="currency_received" wire:model="currency_received">
-                <option label="فتح القائمة">
-                @foreach ($currencies as $currency)
-                    <option value="{{ $currency->code }}" @selected($currency->code == $allocation->currency_received || $currency->code == "USD")>{{ $currency->name }}</option>
-                @endforeach
-            </select>
+            <x-form.input type="text" class="calculation" min="0" step="0.01" name="amount_received" label="المبلغ المقبوض" />
         </div>
         <div class="form-group col-md-6">
-            <x-form.textarea name="implementation_statement" label="بيان" :value="$allocation->implementation_statement" />
+            <x-form.textarea name="implementation_statement" label="بيان"  />
         </div>
     </div>
     <hr>
 
     <div class="row">
-        @if($editForm == true)
-        <div class="form-group col-md-3">
-            <x-form.input name="user_id" label="اسم المستخدم" :value="($allocation->user->name ?? '')" disabled />
+        <div class="form-group col-md-3 editForm">
+            <x-form.input name="user_id" label="اسم المستخدم"  disabled />
         </div>
-        <div class="form-group col-md-3">
-            <x-form.input name="manager_name" label="المدير المستلم" :value="$allocation->manager_name" disabled />
+        <div class="form-group col-md-3 editForm">
+            <x-form.input name="manager_name" label="المدير المستلم" disabled />
         </div>
-        @endif
         <div class="form-group col-md-12">
-            <x-form.textarea name="notes" label="ملاجظات عن التخصيص" :value="$allocation->notes" />
+            <x-form.textarea name="notes" label="ملاجظات عن التخصيص" />
         </div>
     </div>
-    <div class="d-flex justify-content-end">
-        <button type="submit" class="btn btn-primary m-0">
-            @if ($btn_label != null)
-                <i class="fa-solid fa-pen-to-square"></i>
-                {{$btn_label}}
-            @else
-                <i class="fa-solid fa-plus"></i>
-                اضافة
-            @endif
+    <div class="d-flex justify-content-end" id="btns_form">
+        @can('import','App\\Models\Allocation')
+        <button type="button" class="btn mb-2 btn-secondary mx-2" id="import_excel_btn">
+            <i class="fe fe-upload"></i>
+            رفع ملف اكسيل
+        </button>
+        @endcan
+        <button aria-label="" type="button" class="btn btn-danger px-2" data-dismiss="modal" aria-hidden="true">
+            <span aria-hidden="true">×</span>
+            إغلاق
+        </button>
+        <button type="button" id="update" class="btn btn-primary mx-2">
+            <i class="fe fe-edit"></i>
+            تعديل
         </button>
     </div>
-    <div class="form-group col-md-4">
+    {{-- <div class="form-group col-md-4">
         <x-form.input type="file" name="filesArray[]" label="رفع ملفات للتخصيص" multiple />
-    </div>
+    </div> --}}
 </div>
