@@ -35,18 +35,18 @@
                             <tbody>
                                 @foreach ($accreditations as $accreditation)
                                 <tr>
-                                    <td class="text-center">
+                                    <td class="text-center d-flex justify-content-center align-items-center">
                                         @can('update', 'App\\Models\AccreditationProject')
                                         <a href="{{route('accreditations.edit', $accreditation->id)}}" class="btn btn-success btn-sm p-2">
-                                            <i class="fa-solid fa-pen-to-square"></i>
+                                            <i class="fe fe-edit"></i>
                                         </a>
                                         @endcan
                                         @can('delete', 'App\\Models\AccreditationProject')
                                         <form action="{{route('accreditations.destroy', $accreditation->id)}}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm p-2">
-                                                <i class="fa-solid fa-trash"></i>
+                                            <button type="submit" class="btn btn-danger btn-sm p-2 mx-2">
+                                                <i class="fe fe-trash"></i>
                                             </button>
                                         </form>
                                         @endcan

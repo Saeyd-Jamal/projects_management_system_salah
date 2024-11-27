@@ -24,6 +24,6 @@
             </div>
             @endcan
         </form>
-        <livewire:files :files="$files" :obj="$accreditation" />
+        {{-- <livewire:files :files="$files" :obj="$accreditation" /> --}}
     </div>
 </x-front-layout>

@@ -61,7 +61,7 @@ class AllocationForm extends Component
 
 
         $this->date_allocation =  $this->allocation->date_allocation ?? Carbon::now()->format('Y-m-d');
-        $this->budget_number = $this->allocation->budget_number ?? (Allocation::latest()->first() ? Allocation::latest()->first()->budget_number + 1 : 1);
+        $this->budget_number = $this->allocation->budget_number ?? (Allocation::orderBy('budget_number', 'desc')->first() ? Allocation::orderBy('budget_number', 'desc')->first()->budget_number + 1 : 1);
         // fields
         $this->quantity = $this->allocation->quantity ?? '';
         $this->price = $this->allocation->price ?? '';

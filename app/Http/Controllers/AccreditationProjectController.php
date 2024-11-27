@@ -64,30 +64,27 @@ class AccreditationProjectController extends Controller
                 'date_implementation' => 'nullable|date',
                 'implementation_statement' => 'nullable|string',
                 'amount_received' => 'nullable|numeric',
-                'currency_received' => 'required|exists:currencies,code',
                 'notes' => 'nullable|string',
                 'number_beneficiaries' => 'nullable|integer',
             ]);
             $currency_allocation_value = Currency::where('code', $request->currency_allocation)->first()->value;
-            $currency_received_value = Currency::where('code', $request->currency_received)->first()->value;
 
             // رفع الملفات للتخصيص
-            $files = [];
-            $year = Carbon::parse($request->date_allocation)->format('Y');
-            if ($request->hasFile('filesArray')) {
-                foreach ($request->file('filesArray') as $file) {
-                    $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-                    $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
-                    $filepath = $file->storeAs("files/allocations/$year/$request->budget_number", $filenameExtension, 'public');
-                    $files[$file->getClientOriginalName()] = $filepath;
-                }
-            }
+            // $files = [];
+            // $year = Carbon::parse($request->date_allocation)->format('Y');
+            // if ($request->hasFile('filesArray')) {
+            //     foreach ($request->file('filesArray') as $file) {
+            //         $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+            //         $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
+            //         $filepath = $file->storeAs("files/allocations/$year/$request->budget_number", $filenameExtension, 'public');
+            //         $files[$file->getClientOriginalName()] = $filepath;
+            //     }
+            // }
             $request->merge([
                 'currency_allocation_value' => $currency_allocation_value,
-                'currency_received_value' => $currency_received_value,
                 'user_id' => Auth::user()->id,
                 'user_name' => Auth::user()->name,
-                'files' => json_encode($files),
+                // 'files' => json_encode($files),
             ]);
         }
 
@@ -110,25 +107,25 @@ class AccreditationProjectController extends Controller
                 'payment_mechanism' => 'nullable|string',
             ]);
 
-            $id = Executive::latest()->first() ? Executive::latest()->first()->id + 1 : 1;
-            // رفع الملفات للتخصيص
-            $files = [];
-            $year = Carbon::parse($request->implementation_date)->format('Y');
-            if ($request->hasFile('filesArray')) {
-                foreach ($request->file('filesArray') as $file) {
-                    $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-                    $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
-                    $filepath = $file->storeAs("files/executives/$year/$id", $filenameExtension, 'public');
-                    $files[$file->getClientOriginalName()] = $filepath;
-                }
-            }
+            // $id = Executive::latest()->first() ? Executive::latest()->first()->id + 1 : 1;
+            // // رفع الملفات للتخصيص
+            // $files = [];
+            // $year = Carbon::parse($request->implementation_date)->format('Y');
+            // if ($request->hasFile('filesArray')) {
+            //     foreach ($request->file('filesArray') as $file) {
+            //         $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+            //         $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
+            //         $filepath = $file->storeAs("files/executives/$year/$id", $filenameExtension, 'public');
+            //         $files[$file->getClientOriginalName()] = $filepath;
+            //     }
+            // }
             $month = Carbon::parse($request->implementation_date)->format('m');
             $request->merge([
                 'month' => $month,
                 'user_id' => Auth::user()->id,
                 'user_name' => Auth::user()->name,
-                'files' => json_encode($files),
-                'notes' => ($request->notes ?? '') . ' id=' . $id,
+                // 'files' => json_encode($files),
+                // 'notes' => ($request->notes ?? '') . ' id=' . $id,
             ]);
         }
 
@@ -178,31 +175,27 @@ class AccreditationProjectController extends Controller
                 'date_implementation' => 'nullable|date',
                 'implementation_statement' => 'nullable|string',
                 'amount_received' => 'nullable|numeric',
-                'currency_received' => 'required|exists:currencies,code',
                 'notes' => 'nullable|string',
                 'number_beneficiaries' => 'nullable|integer',
             ]);
             $currency_allocation_value = Currency::where('code', $request->currency_allocation)->first()->value;
-            $currency_received_value = Currency::where('code', $request->currency_received)->first()->value;
-            // رفع الملفات للتخصيص
-            $files = json_decode($accreditation->files, true) ?? [];
+            // // رفع الملفات للتخصيص
+            // $files = json_decode($accreditation->files, true) ?? [];
 
-            $year = Carbon::parse($request->date_allocation)->format('Y');
+            // $year = Carbon::parse($request->date_allocation)->format('Y');
 
-            if ($request->hasFile('filesArray')) {
-                foreach ($request->file('filesArray') as $file) {
-                    $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-                    $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
-                    $filepath = $file->storeAs("files/allocations/$year/$request->budget_number", $filenameExtension, 'public');
-                    $files[$file->getClientOriginalName()] = $filepath;
-                }
-            }
+            // if ($request->hasFile('filesArray')) {
+            //     foreach ($request->file('filesArray') as $file) {
+            //         $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+            //         $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
+            //         $filepath = $file->storeAs("files/allocations/$year/$request->budget_number", $filenameExtension, 'public');
+            //         $files[$file->getClientOriginalName()] = $filepath;
+            //     }
+            // }
 
             $request->merge([
                 'currency_allocation_value' => $currency_allocation_value,
-                'currency_received_value' => $currency_received_value,
-                'files' => $files,
-
+                // 'files' => $files,
             ]);
 
             if($request->adoption == true){
@@ -236,34 +229,34 @@ class AccreditationProjectController extends Controller
             ]);
 
 
-            $notes = $request->notes;
-            $searchTerm = 'id=';
+            // $notes = $request->notes;
+            // $searchTerm = 'id=';
 
-            $startPos = strpos($notes, $searchTerm);
+            // $startPos = strpos($notes, $searchTerm);
 
-            if ($startPos !== false) {
-                $startPos += strlen($searchTerm);
-                $extractedText = substr($notes, $startPos);
-                $id  = $extractedText;
-            }
+            // if ($startPos !== false) {
+            //     $startPos += strlen($searchTerm);
+            //     $extractedText = substr($notes, $startPos);
+            //     $id  = $extractedText;
+            // }
 
-            // رفع الملفات للتخصيص
-            $files = json_decode($accreditation->files, true) ?? [];
-            $year = Carbon::parse($request->implementation_date)->format('Y');
-            if ($request->hasFile('filesArray')) {
-                foreach ($request->file('filesArray') as $file) {
-                    $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-                    $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
-                    $filepath = $file->storeAs("files/executives/$year/$id", $filenameExtension, 'public');
-                    $files[$file->getClientOriginalName()] = $filepath;
-                }
-            }
+            // // رفع الملفات للتخصيص
+            // $files = json_decode($accreditation->files, true) ?? [];
+            // $year = Carbon::parse($request->implementation_date)->format('Y');
+            // if ($request->hasFile('filesArray')) {
+            //     foreach ($request->file('filesArray') as $file) {
+            //         $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
+            //         $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
+            //         $filepath = $file->storeAs("files/executives/$year/$id", $filenameExtension, 'public');
+            //         $files[$file->getClientOriginalName()] = $filepath;
+            //     }
+            // }
 
             $month = Carbon::parse($request->implementation_date)->format('m');
 
             $request->merge([
                 'month' => $month,
-                'files' => json_encode($files),
+                // 'files' => json_encode($files),
             ]);
 
             if($request->adoption == true){
@@ -272,7 +265,7 @@ class AccreditationProjectController extends Controller
                     'user_id' => $accreditation->user_id,
                     'user_name' => $accreditation->user_name,
                 ]);
-                $request['notes'] = "";
+                // $request['notes'] = "";
                 Executive::create($request->all());
                 $accreditation->delete();
             }else{

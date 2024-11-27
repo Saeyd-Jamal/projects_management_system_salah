@@ -69,7 +69,7 @@ class AllocationController extends Controller
         $this->authorize('create', Allocation::class);
         $allocation = new Allocation();
         if($request->ajax()){
-            $allocation->budget_number =  Allocation::latest()->first() ? Allocation::latest()->first()->budget_number + 1 : 1;
+            $allocation->budget_number =  Allocation::orderBy('budget_number', 'desc')->first() ? Allocation::orderBy('budget_number', 'desc')->first()->budget_number + 1 : 1;
             $allocation->date_allocation =  Carbon::now()->format('Y-m-d');
             $allocation->currency_allocation =  'USD';
             return $allocation;

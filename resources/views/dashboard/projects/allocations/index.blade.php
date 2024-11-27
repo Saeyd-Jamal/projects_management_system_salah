@@ -435,8 +435,12 @@
                             // return ` <button class="btn btn-sm btn-primary open-modal" data-bs-toggle="modal" data-id="${data}">تعديل <i class="fa fa-edit"></i></button>`;}
                             // let link = `<a href="{{ route('allocations.edit', ':allocation') }}"
                             // class="btn btn-sm btn-icon text-primary"><i class="fe fe-edit"></i></a>`.replace(':allocation', data);
+                            @can('CREATE','App\\Models\Allocation')
                             let link = `<button class="btn btn-sm btn-icon text-primary edit_row"  data-id=":allocation"><i class="fe fe-edit"></i></button>`.replace(':allocation', data);
                             return link ;
+                            @else
+                            return '';
+                            @endcan
                         }
                         },
                         { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false}, // عمود الترقيم التلقائي
@@ -476,12 +480,16 @@
                             orderable: false,
                             searchable: false,
                             render: function (data, type, row) {
+                                @can('delete','App\\Models\Allocation')
                                 return `
                                     <button
                                         class="btn btn-icon text-danger delete_row"
                                         data-id="${data}">
                                         <i class="fe fe-trash"></i>
                                     </button>`;
+                                @else
+                                return '';
+                                @endcan
                             },
                         },
                     ],

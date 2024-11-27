@@ -15,7 +15,7 @@
         </div>
         <div class="form-group col-md-3">
             <label for="broker_name">الإسم المختصر</label>
-            <input type="text" name="broker_name" id="broker_name" value="" class="form-control form-control-alternative" list="brokers_listA" required="required">
+            <input type="text" name="broker_name" id="broker_name" value="{{$allocation->broker_name}}" class="form-control form-control-alternative" list="brokers_listA" required="required">
             <datalist id="brokers_listA">
                 @foreach ($brokers as $broker)
                     <option value="{{ $broker }}">

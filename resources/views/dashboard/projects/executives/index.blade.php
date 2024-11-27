@@ -510,8 +510,12 @@
                 columns: [
                     { data: 'edit', name: 'edit', orderable: false, searchable: false, render: function(data, type, row) {
                             // let link = `<a href="{{ route('executives.edit', ':executive') }}" class="btn btn-sm btn-primary">تعديل <i class="fa fa-edit"></i></a>`.replace(':executive', data);
+                            @can('CREATE','App\\Models\Executive')
                             let link = `<button class="btn btn-sm btn-icon text-primary edit_row"  data-id=":executive"><i class="fe fe-edit"></i></button>`.replace(':executive', data);
                             return link ;
+                            @else
+                            return '';
+                            @endcan
                         }
                     },
                     { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, class: 'sticky'}, // عمود الترقيم التلقائي
@@ -541,12 +545,16 @@
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row) {
+                            @can('delete','App\\Models\Executive')
                             return `
                                 <button
                                     class="btn btn-danger text-white delete_row"
                                     data-id="${data}">
                                     <i class="fe fe-trash"></i>
                                 </button>`;
+                            @else
+                            return '';
+                            @endcan
                         },
                     },
                 ],
