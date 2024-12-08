@@ -1,58 +1,79 @@
+@push('styles')
+<style>
+    #user-roles{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: minmax(auto, auto);
+        gap: 10px 45px;
+    }
+</style>
+@endpush
 <div class="row">
-    <div class="form-group col-md-6">
-        <x-form.input type="text" name="name" label="الاسم" :value="$user->name" placeholder="إملأ الاسم" autofocus required />
+    <div class="form-group p-3 col-4">
+        <x-form.input label="الاسم" :value="$user->name"  name="name" placeholder="محمد ...." required autofocus/>
     </div>
-    <div class="form-group col-md-6">
-        <label for="username">اسم المستخدم</label>
-        <input
-            type="text"
-            name="username"
-            id="username"
-            value="{{old('username', $user->username)}}"
-            class="form-control form-control-alternative"
-            placeholder="إملأ اسم المستخدم"
-
-            required="required"
-        >
+    <div class="form-group p-3 col-4">
+        <x-form.input label="اسم المستخدم" :value="$user->username"  name="username" placeholder="username" required/>
     </div>
-
-    <div class="form-group col-md-6">
-        <x-form.input type="password" name="password" label="كلمة السر"  placeholder="إملأ كلمة السر" />
+    <div class="form-group p-3 col-4">
+        <x-form.input type="email" label="البريد الالكتروني" :value="$user->email"  name="email" placeholder="example@gmail.com"/>
     </div>
-    <div class="form-group col-md-6">
-        <x-form.input type="email" name="email" label="الإيميل" :value="$user->email" placeholder="إملأ الإيميل"  />
-    </div>
-    <div class="form-group col-md-6">
-        <x-form.input type="text" name="phone" label="رقم الهاتف" :value="$user->phone" placeholder="+972 59 431 8545"   />
+    <div class="form-group p-3 col-4">
+        @if (isset($btn_label))
+        <x-form.input type="password" label="كلمة المرور" name="password" placeholder="****"  />
+        @else
+        <x-form.input type="password" label="كلمة المرور" name="password" placeholder="****" required />
+        @endif
     </div>
 
-    <div class="form-group col-md-6">
-        <label for="role_id">الصلاحية</label>
-        <select name="role_id" label="الصلاحية" class="form-control">
-            <option value="">اختر الصلاحية</option>
-            @foreach ($roles as $role)
-                <option value="{{$role->id}}" {{old('role_id', ($user->roles()->first() != null ? $user->roles()->first()->id : null )) == $role->id ? 'selected' : ''}}>{{$role->name}}</option>
-            @endforeach
-        </select>
+    @if (!isset($btn_label))
+    <div class="form-group p-3 col-4">
+        <x-form.input type="password" label="تأكيد كلمة المرور"  name="confirm_password" placeholder="****" required/>
     </div>
-    <div class="form-group col-md-6">
+    @endif
+    <div class="form-group col-md-4">
         <x-form.input type="file" class="form-control-file" name="avatarFile" label="الصورة الشخصية"/>
         @if ($user->avatar)
             <img class="mt-3" src="{{$user->avatar_url}}" alt="..." height="100px">
         @endif
     </div>
 
-
 </div>
-<div class="d-flex justify-content-end">
-    <button type="submit" class="btn btn-primary m-0">
-        @if (isset($btn_label))
-            <i class="fa-solid fa-pen-to-square"></i>
-            {{$btn_label}}
-        @else
-            <i class="fa-solid fa-plus"></i>
-            اضافة
-        @endif
-    </button>
+<div class="row ml-3">
+    <fieldset id="user-roles" class="col-12">
+        <legend>الصلاحيات</legend>
+        @foreach (app('abilities') as $abilities_name => $ability_array)
+            <div class="mb-4">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <div class="row flex-column align-items-start pl-2 pr-2">
+                            <legend>{{$ability_array['name']}}</legend>
+                            @foreach ($ability_array as $ability_name => $ability)
+                                @if ($ability_name != 'name')
+                                <div class="custom-control custom-checkbox" style="margin-right: 0;">
+                                    <input class="custom-control-input" type="checkbox" name="abilities[]" id="ability-{{$abilities_name . '.' . $ability_name}}" value="{{$abilities_name . '.' . $ability_name}}" @checked(in_array($abilities_name . '.' . $ability_name, $user->roles()->pluck('role_name')->toArray())) >
+                                    <label class="custom-control-label" for="ability-{{$abilities_name . '.' . $ability_name}}">
+                                        {{$ability}}
+                                    </label>
+                                </div>
+                                @endif
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+        @endforeach
+    </fieldset>
+</div>
+
+<div class="row align-items-center mb-2">
+    <div class="col">
+        <h2 class="h5 page-title"></h2>
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">
+            {{$btn_label ?? "أضف"}}
+        </button>
+    </div>
 </div>

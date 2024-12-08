@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
 use App\Models\RoleUser;
 use App\Models\User;
-use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Illuminate\Foundation\Configuration\Middleware;
-use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -22,7 +20,7 @@ class UserController extends Controller
     public function index()
     {
         $this->authorize('view', User::class);
-        $users = User::get();
+        $users = User::paginate(10);
         return view('dashboard.users.index', compact('users'));
     }
 
@@ -34,15 +32,13 @@ class UserController extends Controller
         if(Auth::user()->id != $user->id){
             abort(403);
         }
-        $roles = Role::get();
-        return view('dashboard.users.profile', compact('user', 'roles'));
+        return view('dashboard.users.profile', compact('user'));
     }
-    public function create()
+    public function create(Request $request)
     {
         $this->authorize('create', User::class);
         $user = new User();
-        $roles = Role::get();
-        return view('dashboard.users.create', compact('user', 'roles'));
+        return view('dashboard.users.create', compact('user'));
     }
 
     /**
@@ -52,29 +48,39 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
         $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|unique:users,username,' . $request->post('id') . ',id',
+            'name' => 'required',
+            'username' => 'required|string|unique:users,username',
+            'password' => 'required|same:confirm_password',
+            'confirm_password' => 'required|same:password',
+        ],[
+            'password.same' => 'كلمة المرور غير متطابقة',
+            'confirm_password.same' => 'كلمة المرور غير متطابقة',
         ]);
+        DB::beginTransaction();
+        try{
+            if($request->hasFile('avatarFile')){
+                $imageFile = $request->file('avatarFile');
+                $imageName =  "users_" . Str::slug($request->post('username')) . '.' . $imageFile->extension();
+                $imagePath = $imageFile->storeAs('users',$imageName, 'public');
 
-        if($request->hasFile('avatarFile')){
-            $imageFile = $request->file('avatarFile');
-            $imageName =  "users_" . Str::slug($request->post('username')) . '.' . $imageFile->extension();
-            $imagePath = $imageFile->storeAs('users',$imageName, 'public');
-
-            $request->merge([
-                'avatar' => $imagePath,
-            ]);
-        }
-        if($request->password == null){
-            $user = User::create($request->except('password'));
-        }else{
+                $request->merge([
+                    'avatar' => $imagePath,
+                ]);
+            }
             $user = User::create($request->all());
+            foreach ($request->abilities as $role) {
+                RoleUser::create([
+                    'role_name' => $role,
+                    'user_id' => $user->id,
+                    'ability' => 'allow',
+                ]);
+            }
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollBack();
+            return redirect()->back()->with('danger', $e->getMessage());
         }
-        RoleUser::create([
-            'user_id' => $user->id,
-            'role_id' => $request->post('role_id'),
-        ]);
-        return redirect()->route('users.index')->with('success', 'تمت إنشاء مستخدم بنجاح');
+        return redirect()->route('users.index')->with('success', 'تم اضافة مستخدم جديد');
     }
 
     /**
@@ -82,22 +88,17 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-
         //
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(User $user)
+    public function edit(Request $request, User $user)
     {
-        if($user->id == 1 && Auth::user()->id != 1){
-            abort(403);
-        }
-        $this->authorize('update', $user);
-        $btn_label = 'تعديل';
-        $roles = Role::get();
-        return view('dashboard.users.edit', compact('user' , 'btn_label', 'roles'));
+        $this->authorize('edit', User::class);
+        $btn_label = "تعديل";
+        return view('dashboard.users.edit', compact('user', 'btn_label'));
     }
 
     /**
@@ -105,53 +106,69 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        if(Auth::user()->id != $user->id){
-            $this->authorize('update', $user);
-        }
+        $this->authorize('edit', User::class);
         $request->validate([
-            'name' => 'required|string|max:255',
-            'username' => 'required|unique:users,username,' . $user->id . ',id',
+            'name' => 'required',
+            'username' => 'required|string|unique:users,username,'.$user->id,
         ]);
+        DB::beginTransaction();
+        try{
+            if($request->hasFile('avatarFile')){
+                $image_old = $user->avatar;
+                if($image_old != null){
+                    Storage::delete('public/'.$image_old);
+                }
+                $imageFile = $request->file('avatarFile');
+                $imageName =  "users_" . Str::slug($request->post('username')) . '.' . $imageFile->extension();
+                $imagePath = $imageFile->storeAs('users',$imageName, 'public');
 
-        if($request->hasFile('avatarFile')){
-            $image_old = $user->avatar;
-            if($image_old != null){
-                Storage::delete('public/'.$image_old);
+                $request->merge([
+                    'avatar' => $imagePath,
+                ]);
             }
-            $imageFile = $request->file('avatarFile');
-            $imageName =  "users_" . Str::slug($request->post('username')) . '.' . $imageFile->extension();
-            $imagePath = $imageFile->storeAs('users',$imageName, 'public');
-
-            $request->merge([
-                'avatar' => $imagePath,
-            ]);
+            if($request->password == null){
+                $user->update($request->except('password'));
+            }else{
+                $user->update($request->all());
+            }
+            if ($request->abilities != null) {
+                $role_old = RoleUser::where('user_id', $user->id)->pluck('role_name')->toArray();
+                $role_new = $request->abilities;
+                foreach ($role_old as $role) {
+                    if (!in_array($role, $role_new)) {
+                        RoleUser::where('user_id', $user->id)->where('role_name', $role)->delete();
+                    }
+                }
+                foreach ($role_new as $role) {
+                    $role_f = RoleUser::where('user_id', $user->id)->where('role_name', $role)->first();
+                    if ($role_f == null) {
+                        RoleUser::create([
+                            'role_name' => $role,
+                            'user_id' => $user->id,
+                            'ability' => 'allow',
+                        ]);
+                    }else{
+                        $role_f->update(['ability' => 'allow']);
+                    }
+                }
+            }else{
+                RoleUser::where('user_id', $user->id)->delete();
+            }
+            DB::commit();
+        }catch(\Exception $e){
+            DB::rollBack();
+            throw $e;
         }
-
-        if($request->password == null){
-            $user->update($request->except('password'));
-        }else{
-            $user->update($request->all());
-        }
-        if($request->post('role_id') != null){
-            RoleUser::updateOrCreate([
-                'user_id' => $user->id,
-            ],[
-                'role_id' => $request->post('role_id'),
-            ]);
-            return redirect()->route('users.index')->with('success', 'تمت تحديث مستخدم بنجاح');
-        }else{
-            return redirect()->route('home')->with('success', 'تمت تحديث بياناتك الشخصية بنجاح');
-        }
-
+        return redirect()->route('users.index')->with('success', 'تم تعديل المستخدم');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(Request $request, User $user)
     {
-        $this->authorize('delete', $user);
+        $this->authorize('delete', User::class);
         $user->delete();
-        return redirect()->route('users.index')->with('danger', 'تم حذف المستخدم بنجاح');
+        return redirect()->route('users.index')->with('success', 'تم حذف المستخدم');
     }
 }

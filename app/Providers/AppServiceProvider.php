@@ -33,7 +33,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Gate::define('reports.view', function ($user) {
-            return $user->roles()->with('permissions')->first()->permissions->where('name','reports.view')->first() == null ? false : true;
+            return ($user->roles->where('role_name','reports.view')->first() == null) ? false : true;
         });
 
     }

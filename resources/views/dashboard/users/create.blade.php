@@ -1,13 +1,14 @@
 <x-front-layout>
-    <x-slot:breadcrumb>
-        <li><a href="{{ route('users.index') }}">المستخدمين</a></li>
-        <li><a href="#">انشاء مستخدم جديد</a></li>
-    </x-slot:breadcrumb>
-
+    <div class="row align-items-center mb-2">
+        <div class="col">
+            <h2 class="mb-2 page-title">إنشاء مستخدم جديد</h2>
+        </div>
+    </div>
     <div class="row">
-        <form action="{{ route('users.store') }}" method="post" enctype="multipart/form-data">
+        <form action="{{route('users.store')}}" method="post" class="col-12">
             @csrf
-            @include('dashboard.users._form')
+            @include("dashboard.users._form")
         </form>
     </div>
+
 </x-front-layout>

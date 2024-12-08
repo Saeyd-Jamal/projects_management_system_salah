@@ -88,31 +88,6 @@
                 <div class="card-body table-container p-0">
                     <table id="executives-table" class="table table-striped table-bordered table-hover sticky" style="width:100%; height: calc(100vh - 100px);">
                         <thead>
-                                {{-- <th class="sticky" style="right:  220px;">
-                                    <div class='d-flex align-items-center justify-content-between'>
-                                        <span>الاسم المختصر</span>
-                                        <div class='filter-dropdown ml-4'>
-                                            <div class="dropdown">
-                                                <button class="btn" style="padding: 0; margin: 0; border: none;" type="button" id="broker_filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
-                                                </button>
-                                                <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="broker_filter">
-                                                    <input type="text" name="broker_name" class="form-control mr-2  py-0 px-2" list="brokers_list" style="width: 200px"/>
-                                                    <datalist id="brokers_list">
-                                                        @foreach ($brokers as $broker)
-                                                            <option value="{{$broker}}" >
-                                                        @endforeach
-                                                    </datalist>
-                                                    <div>
-                                                        <button class='btn btn-success text-white filter-apply-btn' data-target="4" data-field="broker_name">
-                                                            <i class='fe fe-check'></i>
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </th> --}}
                             <tr>
                                 <th></th>
                                 <th class="text-white  opacity-7 text-center sticky" style="right: 0px;"  id="nth1">#</th>
@@ -155,7 +130,7 @@
                                                         @endforeach
                                                     </datalist>
                                                     <div>
-                                                        <button class='btn btn-success text-white filter-apply-btn' data-target="4" data-field="broker_name">
+                                                        <button class='btn btn-success text-white filter-apply-btn' data-target="3" data-field="broker_name">
                                                             <i class='fe fe-check'></i>
                                                         </button>
                                                     </div>
@@ -510,7 +485,7 @@
                 columns: [
                     { data: 'edit', name: 'edit', orderable: false, searchable: false, render: function(data, type, row) {
                             // let link = `<a href="{{ route('executives.edit', ':executive') }}" class="btn btn-sm btn-primary">تعديل <i class="fa fa-edit"></i></a>`.replace(':executive', data);
-                            @can('CREATE','App\\Models\Executive')
+                            @can('update','App\\Models\Executive')
                             let link = `<button class="btn btn-sm btn-icon text-primary edit_row"  data-id=":executive"><i class="fe fe-edit"></i></button>`.replace(':executive', data);
                             return link ;
                             @else
@@ -618,6 +593,12 @@
                     $('.remaining').html(formatNumber(remaining,2));
                     $('.remaining_dollars').html(formatNumber((remaining * ils),2));
                 }
+            });
+            // عندما يتم رسم الجدول (بعد تحميل البيانات أو تحديثها)
+            table.on('draw', function() {
+                // التمرير إلى آخر سطر في الجدول
+                let tableContainer = $('#executives-table');
+                tableContainer.scrollTop(tableContainer[0].scrollHeight);
             });
             $('#executives-table_filter').addClass('d-none');
             // نسخ وظيفة الزر إلى الزر المخصص

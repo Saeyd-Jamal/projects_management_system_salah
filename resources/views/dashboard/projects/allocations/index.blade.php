@@ -435,7 +435,7 @@
                             // return ` <button class="btn btn-sm btn-primary open-modal" data-bs-toggle="modal" data-id="${data}">تعديل <i class="fa fa-edit"></i></button>`;}
                             // let link = `<a href="{{ route('allocations.edit', ':allocation') }}"
                             // class="btn btn-sm btn-icon text-primary"><i class="fe fe-edit"></i></a>`.replace(':allocation', data);
-                            @can('CREATE','App\\Models\Allocation')
+                            @can('update','App\\Models\Allocation')
                             let link = `<button class="btn btn-sm btn-icon text-primary edit_row"  data-id=":allocation"><i class="fe fe-edit"></i></button>`.replace(':allocation', data);
                             return link ;
                             @else
@@ -573,6 +573,12 @@
 
                         // $('#allocations-table_filter').addClass('d-none');
                     }
+                });
+                // عندما يتم رسم الجدول (بعد تحميل البيانات أو تحديثها)
+                table.on('draw', function() {
+                    // التمرير إلى آخر سطر في الجدول
+                    let tableContainer = $('#allocations-table');
+                    tableContainer.scrollTop(tableContainer[0].scrollHeight);
                 });
                 // نسخ وظيفة الزر إلى الزر المخصص
                 $('#excel-export').on('click', function () {

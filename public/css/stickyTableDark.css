@@ -21,7 +21,7 @@ table.sticky tfoot {
     background-color: #5b9bd5;
     position: sticky;
     bottom: -3px;
-    z-index: 4; /* تأكد من بقاء الرأس فوق بقية المحتوى */
+    z-index: 3; /* تأكد من بقاء الرأس فوق بقية المحتوى */
 }
 tfoot td{
     font-weight: 800 !important;

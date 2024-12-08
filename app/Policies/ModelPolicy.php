@@ -25,7 +25,8 @@ class ModelPolicy
 
         $ability = $class_name . '.' . Str::kebab($name);
         $user = $arguments[0];
-
-        return ($user->roles()->with('permissions')->first()->permissions->where('name',$ability)->first() == null) ? false : true;
+        if ($user instanceof User) {
+            return ($user->roles->where('role_name',$ability)->first() == null) ? false : true;
+        }
     }
 }

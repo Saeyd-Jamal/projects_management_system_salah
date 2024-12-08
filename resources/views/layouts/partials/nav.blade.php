@@ -75,9 +75,6 @@
                         @can('view','App\\Models\User')
                             <a class="nav-link pl-lg-2" href="{{route('users.index')}}"><span class="ml-1">المستخدمين</span></a>
                         @endcan
-                        @can('view','App\\Models\Role')
-                            <a class="nav-link pl-lg-2" href="{{route('roles.index')}}"><span class="ml-1">الصلاحيات</span></a>
-                        @endcan
                         @can('view','App\\Models\Currency')
                             <a class="nav-link pl-lg-2" href="{{route('currencies.index')}}"><span class="ml-1">العملات</span></a>
                         @endcan

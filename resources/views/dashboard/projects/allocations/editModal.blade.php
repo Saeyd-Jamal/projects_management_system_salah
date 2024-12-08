@@ -98,7 +98,7 @@
 
     <div class="row">
         <div class="form-group col-md-3 editForm">
-            <x-form.input name="user_id" label="اسم المستخدم"  disabled />
+            <x-form.input name="user_name" label="اسم المستخدم"  disabled />
         </div>
         <div class="form-group col-md-3 editForm">
             <x-form.input name="manager_name" label="المدير المستلم" disabled />
