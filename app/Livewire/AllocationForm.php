@@ -27,7 +27,7 @@ class AllocationForm extends Component
     public $allocation_field;
     public $amount;
     public $currency_allocation;
-    public $currency_received;
+    public $currency_allocation_value;
 
     // inputs edit form
     public $editForm = false;
@@ -67,19 +67,16 @@ class AllocationForm extends Component
         $this->price = $this->allocation->price ?? '';
         $this->total_dollar = $this->allocation->total_dollar ?? '';
         $this->allocation_field = $this->allocation->allocation ?? '';
+        $this->currency_allocation_value = $this->allocation->currency_allocation_value ?? '';
         $this->amount = $this->allocation->amount ?? '';
 
         if(($this->allocation->currency_allocation ?? null) != null){
             $currency = Currency::where('code', $this->allocation->currency_allocation)->first();
             $this->currency_allocation = $currency->code;
+            $this->currency_allocation_value = 1 / $currency->value ?? '';
         }else{
             $this->currency_allocation =  'USD';
-        }
-        if(($this->allocation->currency_received ?? null) != null){
-            $currency = Currency::where('code', $this->allocation->currency_received)->first();
-            $this->currency_received = $currency->code;
-        }else{
-            $this->currency_received =  'USD';
+            $this->currency_allocation_value = '1';
         }
     }
 
@@ -96,17 +93,21 @@ class AllocationForm extends Component
     public function total(){
         if(is_numeric($this->quantity) && is_numeric($this->price)){
             $this->total_dollar = ($this->quantity == '' ? 0 : $this->quantity)    * ($this->price == '' ? 0 : $this->price);
-            $currency_allocation_value = Currency::where('code', $this->currency_allocation)->first()->value;
+            $currency_allocation_value = $this->currency_allocation_value;
             $this->allocation_field = $this->total_dollar / $currency_allocation_value;
             $this->amount = $this->allocation_field * $currency_allocation_value;
         }
-
     }
+
+    public function changeCurrency(){
+        $currency_allocation_value = Currency::where('code', $this->currency_allocation)->first()->value;
+        $this->currency_allocation_value = 1 / $currency_allocation_value;
+    }
+
     public function allocationFun(){
         if(is_numeric($this->allocation_field)){
-            $currency_allocation_value = Currency::where('code', $this->currency_allocation)->first()->value;
             if($this->allocation_field != ''){
-                $this->amount = $this->allocation_field * $currency_allocation_value;
+                $this->amount = $this->allocation_field * $this->currency_allocation_value;
             }
         }
     }

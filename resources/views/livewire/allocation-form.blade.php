@@ -54,22 +54,25 @@
             <x-form.input type="text" min="0" name="quantity" label="الكمية" wire:model="quantity" wire:input="total"  wire:blur="calculate('quantity')" />
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="text" min="0" step="0.01" name="price" label="سعر الوحدة$"  wire:model="price" wire:input="total" wire:blur="calculate('price')"  />
+            <x-form.input type="text" min="0" step="0.01" name="price" label="سعر الوحدة"  wire:model="price" wire:input="total" wire:blur="calculate('price')"  />
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="text" min="0" step="0.01" name="total_dollar" label="الإجمالي ب $" wire:model="total_dollar" readonly/>
+            <x-form.input type="text" min="0" step="0.01" name="total_dollar" label="الإجمالي" wire:model="total_dollar" readonly/>
         </div>
         <div class="form-group col-md-3">
             <x-form.input  type="text" min="0" step="0.01" name="allocation" label="التخصيص" wire:model="allocation_field" wire:input="allocationFun" required wire:blur="calculate('allocation')"  />
         </div>
         <div class="form-group col-md-3">
             <label for="currency_allocation">العملة</label>
-            <select class="form-control text-center" name="currency_allocation" id="currency_allocation" wire:model="currency_allocation" wire:input="allocationFun">
+            <select class="form-control text-center" name="currency_allocation" id="currency_allocation" wire:model="currency_allocation" wire:input="changeCurrency">
                 <option label="فتح القائمة">
                 @foreach ($currencies as $currency)
                     <option value="{{ $currency->code }}" @selected($currency->code == $allocation->currency_allocation || $currency->code == "USD")>{{ $currency->name }}</option>
                 @endforeach
             </select>
+        </div>
+        <div class="form-group col-md-3">
+            <x-form.input type="number" min="0" step="0.01" name="currency_allocation_value" label="سعر الدولار للعملة" wire:model="currency_allocation_value" wire:input="allocationFun"/>
         </div>
         <div class="form-group col-md-3">
             <x-form.input type="number" min="0" step="0.01" name="amount" label="المبلغ $" wire:model="amount" readonly/>

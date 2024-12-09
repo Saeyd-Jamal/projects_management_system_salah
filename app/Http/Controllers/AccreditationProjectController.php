@@ -58,6 +58,7 @@ class AccreditationProjectController extends Controller
                 'total_dollar' => 'nullable|numeric',
                 'allocation' => 'nullable|numeric',
                 'currency_allocation' => 'required|exists:currencies,code',
+                'currency_allocation_value'  => 'required|numeric',
                 'amount' => 'nullable|numeric',
                 'implementation_items' => 'nullable|string',
                 'date_implementation' => 'nullable|date',
@@ -66,7 +67,6 @@ class AccreditationProjectController extends Controller
                 'notes' => 'nullable|string',
                 'number_beneficiaries' => 'nullable|integer',
             ]);
-            $currency_allocation_value = Currency::where('code', $request->currency_allocation)->first()->value;
 
             // رفع الملفات للتخصيص
             // $files = [];
@@ -80,7 +80,6 @@ class AccreditationProjectController extends Controller
             //     }
             // }
             $request->merge([
-                'currency_allocation_value' => $currency_allocation_value,
                 'user_id' => Auth::user()->id,
                 'user_name' => Auth::user()->name,
                 // 'files' => json_encode($files),
@@ -170,6 +169,7 @@ class AccreditationProjectController extends Controller
                 'total_dollar' => 'nullable|numeric',
                 'allocation' => 'nullable|numeric',
                 'currency_allocation' => 'required|exists:currencies,code',
+                'currency_allocation_value'  => 'required|numeric',
                 'amount' => 'nullable|numeric',
                 'implementation_items' => 'nullable|string',
                 'date_implementation' => 'nullable|date',
@@ -178,7 +178,6 @@ class AccreditationProjectController extends Controller
                 'notes' => 'nullable|string',
                 'number_beneficiaries' => 'nullable|integer',
             ]);
-            $currency_allocation_value = Currency::where('code', $request->currency_allocation)->first()->value;
             // // رفع الملفات للتخصيص
             // $files = json_decode($accreditation->files, true) ?? [];
 
@@ -194,7 +193,6 @@ class AccreditationProjectController extends Controller
             // }
 
             $request->merge([
-                'currency_allocation_value' => $currency_allocation_value,
                 // 'files' => $files,
             ]);
 
