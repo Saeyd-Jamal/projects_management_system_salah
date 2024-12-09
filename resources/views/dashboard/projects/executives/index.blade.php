@@ -329,43 +329,41 @@
     </div>
     {{-- مجموع المبالغ --}}
     <div class="row justify-content-end my-3">
-        <div class="col-4">
+        <div class="col-12">
             <table class="table align-items-center mb-0 table-hover table-bordered">
                 <thead>
-                    <tr>
+                    <tr style="background: #27AE60;">
                         <th></th>
-                        <th style="background: #27AE60;color: #000">بالشيكل</th>
-                        <th style="background: #C0392B;color: #fff !important;">بالدولار</th>
+                        <th>اجمالي مبالغ شيكل</th>
+                        <th>اجمالي الدفعات شيكل</th>
+                        <th>الرصيد المتبقي شيكل</th>
+                        <th>سعر الدولار / الشيكل</th>
                     </tr>
                 </thead>
-
                 <tbody>
-                    <tr>
-                        <th style="background: #27AE60;">اجمالي مبالغ شيكل</th>
-                        <td style="background: #17a2b8; color: #fff;" class="total_total_ils">
+                    <tr style="background: #17a2b8;">
+                        <th style="background: #27AE60;">بالشيكل</th>
+                        <td style="color: #fff;" class="total_total_ils">
                         </td>
-                        <td class="text-danger total_total_dollars" style="background: #ddd">
+                        <td style=" color: #fff;" class="total_amount_payments">
                         </td>
+                        <td  style=" color: #fff;" class="remaining">
+                        </td>
+                        <td></td>
                     </tr>
                     <tr>
-                        <th style="background: #27AE60;">اجمالي الدفعات شيكل</th>
-                        <td style="background: #17a2b8;  color: #fff;" class="total_amount_payments">
+                        <th style="background: #27AE60;">بالدولار</th>
+                        <td class="text-danger total_total_dollars" style="background: #ddd">
                         </td>
                         <td class="text-danger total_amount_payments_dollars" style="background: #ddd">
                         </td>
-                    </tr>
-                    <tr>
-                        <th style="background: #27AE60;">الرصيد المتبقي شيكل</th>
-                        <td  style="background: #17a2b8;  color: #fff;" class="remaining">
-                        </td>
                         <td class="text-danger remaining_dollars" style="background: #ddd">
                         </td>
-                    </tr>
-                    <tr class="text-danger" style="background: #ddd">
-                        <th colspan="2">سعر الدولار / الشيكل</th>
-                        <td>
+                        <td class="text-danger">
                             {{number_format(1 / $ILS,2) ?? 0}}
                         </td>
+                    </tr>
+                    <tr>
                     </tr>
                 </tbody>
             </table>

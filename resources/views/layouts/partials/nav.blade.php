@@ -15,7 +15,7 @@
         background-color: #303030 !important;
     }
 </style>
-<nav class="navbar navbar-expand-lg navbar-light bg-dark flex-row border-bottom shadow">
+<nav class="navbar navbar-expand-lg navbar-light bg-dark flex-row border-bottom shadow" style="position: fixed; width: 100%; top: 0; z-index: 99;">
     <div class="container-fluid">
         <a class="navbar-brand mx-lg-1 mr-0"  href="{{ route('home') }}">
             <img src="{{ asset('img/logo.png') }}" style="max-width: 46px;">
@@ -39,6 +39,9 @@
                         <a class="nav-link d-flex align-items-center" href="{{route('accreditations.index')}}">
                             <i class="fe fe-folder fe-16"></i>
                             <span class="ml-3 item-text">الإعتمادية</span>
+                            @if (App\Models\AccreditationProject::count() > 0)
+                            <span class="badge badge-primary py-2 px-3  mx-2 " style="font-size: 17px;">{{App\Models\AccreditationProject::count()}}</span>
+                            @endif
                         </a>
                     </li>
                 @endcan

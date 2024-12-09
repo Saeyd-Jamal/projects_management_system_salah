@@ -34,7 +34,6 @@ class AccreditationProjectController extends Controller
         $accreditation = new AccreditationProject();
         $allocation = new Allocation();
         $executive = new Executive();
-
         return view('dashboard.projects.accreditations.create', compact('accreditation', 'allocation', 'executive'));
     }
 
@@ -50,7 +49,7 @@ class AccreditationProjectController extends Controller
             $month = null;
         }
         if($request->type == 'allocation'){
-            $this->authorize('create', Allocation::class);
+            $this->authorize('allocation', AccreditationProject::class);
             $request->validate([
                 'date_allocation' => 'required|date',
                 'budget_number' => 'required|integer',
@@ -90,7 +89,7 @@ class AccreditationProjectController extends Controller
 
 
         if($request->type == 'executive'){
-            $this->authorize('create', Executive::class);
+            $this->authorize('execution', AccreditationProject::class);
             $request->validate([
                 'implementation_date' => 'required|date',
                 // 'budget_number' => 'required|integer',
@@ -162,6 +161,7 @@ class AccreditationProjectController extends Controller
 
         $this->authorize('update', AccreditationProject::class);
         if($request->type == 'allocation'){
+            $this->authorize('allocation', AccreditationProject::class);
             $request->validate([
                 'date_allocation' => 'required|date',
                 'budget_number' => 'required|integer',
@@ -212,6 +212,7 @@ class AccreditationProjectController extends Controller
         }
 
         if($request->type == 'executive'){
+            $this->authorize('execution', AccreditationProject::class);
             $request->validate([
                 'implementation_date' => 'required|date',
                 // 'budget_number' => 'required|integer',

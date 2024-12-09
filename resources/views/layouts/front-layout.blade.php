@@ -23,7 +23,7 @@
 <div class="wrapper">
     @include('layouts.partials.nav')
     {{-- @include('layouts.partials.aside') --}}
-    <main role="main" class="main-content">
+    <main role="main" class="main-content" style="padding-top: 73px;">
         <x-alert type="success" />
         <x-alert type="info" />
         <x-alert type="danger" />

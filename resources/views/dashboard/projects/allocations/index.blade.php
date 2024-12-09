@@ -283,27 +283,25 @@
         </div>
     </div>
     <div class="row justify-content-end m-3">
-        <div class="col-3">
+        <div class="col-12">
             <table class="table align-items-center mb-0 table-bordered">
+                <thead>
+                    <tr style="background: #27AE60;">
+                        <th>المبالغ المخصصة</th>
+                        <th>المبالغ المستلمة</th>
+                        <th>المتبقي</th>
+                        <th>نسبة التحصيل</th>
+                    </tr>
+                </thead>
                 <tbody  style=" color: #fff;">
                     <tr>
-                        <th  style="background: #27AE60;">المبالغ المخصصة</th>
-                        <td  style="background: #17a2b8;" class="total_amount">
+                        <td  style="background: #17a2b8; color: #fff !important;" class="total_amount">
                         </td>
-                    </tr>
-                    <tr>
-                        <th  style="background: #27AE60;">المبالغ المستلمة</th>
-                        <td  style="background: #17a2b8;" class="total_amount_received">
+                        <td  style="background: #17a2b8; color: #fff !important;" class="total_amount_received">
                         </td>
-                    </tr>
-                    <tr style="background: #ddd; color: #000;">
-                        <th >المتبقي</th>
-                        <td class="remaining">
+                        <td class="remaining" style="background: #ddd; color: #000;">
                         </td>
-                    </tr>
-                    <tr>
-                        <th style="background: #C0392B;">نسبة التحصيل</th>
-                        <td style="color: #C0392B; background: #ddd;">
+                        <td style="color: #C0392B !important; background: #ddd;">
                             <span class="remaining_percent"></span>%
                         </td>
                     </tr>
