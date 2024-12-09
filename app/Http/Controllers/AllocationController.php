@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\AllocationsImport;
+use App\Models\AccreditationProject;
 use App\Models\Allocation;
 use App\Models\Broker;
 use App\Models\Currency;
@@ -69,7 +70,11 @@ class AllocationController extends Controller
         $this->authorize('create', Allocation::class);
         $allocation = new Allocation();
         if($request->ajax()){
-            $allocation->budget_number =  Allocation::orderBy('budget_number', 'desc')->first() ? Allocation::orderBy('budget_number', 'desc')->first()->budget_number + 1 : 1;
+            if(AccreditationProject::where('type', 'allocation')->count() > 0){
+                $allocation->budget_number =  AccreditationProject::where('type', 'allocation')->orderBy('budget_number', 'desc')->first() ? AccreditationProject::where('type', 'allocation')->orderBy('budget_number', 'desc')->first()->budget_number + 1 : 1;
+            }else{
+                $allocation->budget_number =  Allocation::orderBy('budget_number', 'desc')->first() ? Allocation::orderBy('budget_number', 'desc')->first()->budget_number + 1 : 1;
+            }
             $allocation->date_allocation =  Carbon::now()->format('Y-m-d');
             $allocation->currency_allocation =  'USD';
             return $allocation;
@@ -99,8 +104,6 @@ class AllocationController extends Controller
             'notes' => 'nullable|string',
             'number_beneficiaries' => 'nullable|integer',
         ]);
-        $currency_allocation_value = Currency::where('code', $request->currency_allocation)->first()->value;
-
         // // رفع الملفات للتخصيص
         // $files = [];
         // $year = Carbon::parse($request->date_allocation)->format('Y');
@@ -114,7 +117,6 @@ class AllocationController extends Controller
         // }
 
         $request->merge([
-            'currency_allocation_value' => $currency_allocation_value,
             'user_id' => Auth::user()->id,
             'user_name' => Auth::user()->name,
             // 'files' => json_encode($files),
@@ -176,9 +178,6 @@ class AllocationController extends Controller
             'notes' => 'nullable|string',
             'number_beneficiaries' => 'nullable|integer',
         ]);
-        $currency_allocation_value = Currency::where('code', $request->currency_allocation)->first()->value;
-
-
         // رفع الملفات للتخصيص
         // $files = json_decode($allocation->files, true) ?? [];
 
@@ -194,7 +193,6 @@ class AllocationController extends Controller
         // }
 
         $request->merge([
-            'currency_allocation_value' => $currency_allocation_value,
             // 'files' => $files,
         ]);
 

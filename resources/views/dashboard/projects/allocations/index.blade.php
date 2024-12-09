@@ -237,9 +237,10 @@
                                 </th>
                                 <th>الكمية</th>
                                 <th>السعر</th>
-                                <th>إجمالي $</th>
+                                <th>إجمالي</th>
                                 <th>التخصيص</th>
                                 <th>العملة</th>
+                                <th>سعر العملة</th>
                                 <th>المبلغ $</th>
                                 <th>عدد المستفيدين</th>
                                 <th>بنود التنفيد</th>
@@ -264,6 +265,7 @@
                                 <td></td>
                                 <td></td>
                                 <td class='text-white' id="total_allocation"></td>
+                                <td></td>
                                 <td></td>
                                 <td class='text-white total_amount'></td>
                                 <td class='text-white' id="total_number_beneficiaries"></td>
@@ -460,6 +462,7 @@
                             return  formatNumber(data,2);
                         }},
                         { data: 'currency_allocation_name', name: 'currency_allocation_name'  , orderable: false},
+                        { data: 'currency_allocation_value', name: 'currency_allocation_value'  , orderable: false},
                         { data: 'amount', name: 'amount'  , orderable: false, render: function(data, type, row) {
                             return  formatNumber(data,2);
                         }},
@@ -683,6 +686,7 @@
                             allocation.allocation = response.allocation;
                             allocation.currency_allocation = response.currency_allocation;
                             allocation.currency_allocation_name = response.currency_allocation_name;
+                            allocation.currency_allocation_value = response.currency_allocation_value;
                             allocation.amount = response.amount;
                             allocation.number_beneficiaries = response.number_beneficiaries;
                             allocation.implementation_items = response.implementation_items;
@@ -743,17 +747,20 @@
                         quantity = parseFloat(quantity);
                         price = parseFloat(price);
                         let totalDollar = quantity * price;
-                        let currencyAllocation = parseFloat($('#currency_allocation option:selected').data('val')) || 0; //إذا كان الحقل فارغًا، اعتبر القيمة 0
+                        let currencyAllocation = $('#currency_allocation_value') || 0; //إذا كان الحقل فارغًا، اعتبر القيمة 0
                         $('#total_dollar').val(totalDollar);
                         $('#allocation').val(totalDollar);
                         $('#amount').val(totalDollar * currencyAllocation);
                     }
                 });
-                $('#allocation, #currency_allocation').on('input blur', function () {
+                $('#currency_allocation').on('input blur', function () {
+                    var currencyAllocation = parseFloat($('#currency_allocation option:selected').data('val')) || 0; //إذا كان الحقل فارغًا، اعتبر القيمة 0
+                    $('#currency_allocation_value').val(1 / currencyAllocation)
+                });
+                $('#allocation,#currency_allocation_value').on('input blur', function () {
                     // جلب القيم من الحقول
                     var allocation = parseFloat($('#allocation').val()) || 0; // إذا كان الحقل فارغًا، اعتبر القيمة 0
-                    var currencyAllocation = parseFloat($('#currency_allocation option:selected').data('val')) || 0; //إذا كان الحقل فارغًا، اعتبر القيمة 0
-                    var amount = allocation * currencyAllocation;
+                    var amount = allocation * $('#currency_allocation_value').val();
                     $('#amount').val(amount);
                 });
                 $(document).on('click', '#update', function () {

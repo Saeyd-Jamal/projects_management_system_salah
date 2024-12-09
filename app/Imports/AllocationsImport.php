@@ -27,12 +27,13 @@ class AllocationsImport implements ToModel,WithHeadingRow
     */
     public function model(array $row)
     {
-        ($row['alaaml'] == 'دولار') ? $row['alaaml'] = 'USD' : $row['alaaml'] = 'JOD';
-        ($row['alaaml'] == 'دينار أردني') ? $row['alaaml'] = 'JOD' : $row['alaaml'] = 'USD';
-        ($row['alaaml'] == 'دينار كويتي') ? $row['alaaml'] = 'KWD' : $row['alaaml'] = 'USD';
-        ($row['alaaml'] == 'شيكل') ? $row['alaaml'] = 'ILS' : $row['alaaml'] = 'USD';
-        ($row['alaaml'] == 'يورو') ? $row['alaaml'] = 'EUR' : $row['alaaml'] = 'USD';
-        $currency_allocation = Currency::where('code', $row['alaaml'])->first();
+        $alaaml = $row['alaaml'];
+        ($alaaml == 'دولار') ? $alaaml = 'USD' : $alaaml = 'USD';
+        ($alaaml == 'دينار أردني') ? $alaaml = 'JOD' : $alaaml = 'USD';
+        ($alaaml == 'دينار كويتي') ? $alaaml = 'KWD' : $alaaml = 'USD';
+        ($alaaml == 'شيكل') ? $alaaml = 'ILS' : $alaaml = 'USD';
+        ($alaaml == 'يورو') ? $alaaml = 'EUR' : $alaaml = 'USD';
+        $currency_allocation = Currency::where('code', $alaaml)->first();
 
         return new Allocation([
             'date_allocation' => $this->formatDate($row['tarykh_altkhsys']),

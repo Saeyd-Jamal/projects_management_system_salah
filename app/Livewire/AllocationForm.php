@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\AccreditationProject;
 use App\Models\Allocation;
 use App\Models\Broker;
 use App\Models\Currency;
@@ -61,7 +62,11 @@ class AllocationForm extends Component
 
 
         $this->date_allocation =  $this->allocation->date_allocation ?? Carbon::now()->format('Y-m-d');
-        $this->budget_number = $this->allocation->budget_number ?? (Allocation::orderBy('budget_number', 'desc')->first() ? Allocation::orderBy('budget_number', 'desc')->first()->budget_number + 1 : 1);
+        if(AccreditationProject::where('type', 'allocation')->count() > 0){
+            $this->budget_number  =  $this->allocation->budget_number ?? (AccreditationProject::where('type', 'allocation')->orderBy('budget_number', 'desc')->first() ? AccreditationProject::where('type', 'allocation')->orderBy('budget_number', 'desc')->first()->budget_number + 1 : 1);
+        }else{
+            $this->budget_number  =  $this->allocation->budget_number ?? (Allocation::orderBy('budget_number', 'desc')->first() ? Allocation::orderBy('budget_number', 'desc')->first()->budget_number + 1 : 1);
+        }
         // fields
         $this->quantity = $this->allocation->quantity ?? '';
         $this->price = $this->allocation->price ?? '';
@@ -93,8 +98,8 @@ class AllocationForm extends Component
     public function total(){
         if(is_numeric($this->quantity) && is_numeric($this->price)){
             $this->total_dollar = ($this->quantity == '' ? 0 : $this->quantity)    * ($this->price == '' ? 0 : $this->price);
-            $currency_allocation_value = $this->currency_allocation_value;
-            $this->allocation_field = $this->total_dollar / $currency_allocation_value;
+            $currency_allocation_value = 1 / $this->currency_allocation_value;
+            $this->allocation_field = $this->total_dollar;
             $this->amount = $this->allocation_field * $currency_allocation_value;
         }
     }
@@ -102,6 +107,7 @@ class AllocationForm extends Component
     public function changeCurrency(){
         $currency_allocation_value = Currency::where('code', $this->currency_allocation)->first()->value;
         $this->currency_allocation_value = 1 / $currency_allocation_value;
+        $this->allocationFun();
     }
 
     public function allocationFun(){

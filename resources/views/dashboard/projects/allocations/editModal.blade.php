@@ -72,6 +72,9 @@
             </select>
         </div>
         <div class="form-group col-md-3">
+            <x-form.input type="number" min="0" step="0.01" name="currency_allocation_value" label="سعر الدولار للعملة" />
+        </div>
+        <div class="form-group col-md-3">
             <x-form.input type="number" min="0" step="0.01" name="amount" label="المبلغ $" readonly />
         </div>
         <div class="form-group col-md-3">
