@@ -74,7 +74,7 @@
                             <x-form.input type="text" name="code" label="الرمز بالإنجليزي" placeholder="إملأ الرمز : USD"  required />
                         </div>
                         <div class="form-group col-md-12">
-                            <x-form.input type="number" min="0" step="0.01" name="value" label="القيمة مقابل الدولار" placeholder="إملأ القيمة : 3.6"  required />
+                            <x-form.input type="text" min="0" name="value" label="القيمة مقابل الدولار" placeholder="إملأ القيمة : 3.6"  required />
                         </div>
                     </div>
                 </div>

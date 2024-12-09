@@ -22,6 +22,7 @@
             }
             tbody td{
                 padding: 2px 5px !important;
+                color: #000 !important;
             }
             /* تعطيل مؤشر الفرز لرأس العمود */
             th.no-sort::after {
@@ -522,11 +523,11 @@
                         render: function (data, type, row) {
                             @can('delete','App\\Models\Executive')
                             return `
-                                <button
-                                    class="btn btn-danger text-white delete_row"
-                                    data-id="${data}">
-                                    <i class="fe fe-trash"></i>
-                                </button>`;
+                                    <button
+                                        class="btn btn-icon text-danger delete_row"
+                                        data-id="${data}">
+                                        <i class="fe fe-trash"></i>
+                                    </button>`;
                             @else
                             return '';
                             @endcan

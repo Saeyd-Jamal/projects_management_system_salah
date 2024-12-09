@@ -22,6 +22,7 @@
             }
             tbody td{
                 padding: 2px 5px !important;
+                color: #000 !important;
             }
             /* تعطيل مؤشر الفرز لرأس العمود */
             th.no-sort::after {
@@ -557,7 +558,8 @@
 
                         // المتبقي
                         let remaining = total_amount_sum - total_amount_received_sum;
-                        let remaining_percent = ((total_amount_sum - total_amount_received_sum) / total_amount_sum) * 100;
+                        let remaining_percent = (total_amount_received_sum / total_amount_sum) * 100;
+
                         // 4. عرض النتائج في `tfoot`
 
                         $('#count_allocations').html(formatNumber(rowCount));
