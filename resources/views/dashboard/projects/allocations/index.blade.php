@@ -462,7 +462,9 @@
                             return  formatNumber(data,2);
                         }},
                         { data: 'currency_allocation_name', name: 'currency_allocation_name'  , orderable: false},
-                        { data: 'currency_allocation_value', name: 'currency_allocation_value'  , orderable: false},
+                        { data: 'currency_allocation_value', name: 'currency_allocation_value'  , orderable: false, render: function(data, type, row) {
+                            return  formatNumber((1/data),2);
+                        }},
                         { data: 'amount', name: 'amount'  , orderable: false, render: function(data, type, row) {
                             return  formatNumber(data,2);
                         }},
@@ -533,25 +535,25 @@
                                 return intVal(a) + intVal(b);
                             }, 0);
 
-                        // total_amount 13
+                        // total_amount 14
                         var total_amount_sum = api
-                            .column(13, { page: 'current' }) // العمود الرابع
-                            .data()
-                            .reduce(function(a, b) {
-                                return intVal(a) + intVal(b);
-                            }, 0);
-
-                        // total_number_beneficiaries 14
-                        var total_number_beneficiaries_sum = api
                             .column(14, { page: 'current' }) // العمود الرابع
                             .data()
                             .reduce(function(a, b) {
                                 return intVal(a) + intVal(b);
                             }, 0);
 
-                        // total_amount_received 18
+                        // total_number_beneficiaries 15
+                        var total_number_beneficiaries_sum = api
+                            .column(15, { page: 'current' }) // العمود الرابع
+                            .data()
+                            .reduce(function(a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0);
+
+                        // total_amount_received 19
                         var total_amount_received_sum = api
-                            .column(18, { page: 'current' }) // العمود الخامس
+                            .column(19, { page: 'current' }) // العمود الخامس
                             .data()
                             .reduce(function(a, b) {
                                 return intVal(a) + intVal(b);

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\AllocationObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -34,6 +35,12 @@ class Allocation extends Model
         'manager_name',
     ];
 
+
+    public static function boot()
+    {
+        parent::boot();
+        Allocation::observe(AllocationObserver::class);
+    }
 
     // relationsheps
     public function user(){

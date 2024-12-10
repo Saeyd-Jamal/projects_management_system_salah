@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\ExecutiveObserver;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -30,6 +31,14 @@ class Executive extends Model
         'manager_name',
         'files',
     ];
+
+    public static function boot()
+    {
+        parent::boot();
+        Executive::observe(ExecutiveObserver::class);
+    }
+
+
 
     // relationsheps
     public function user(){

@@ -84,6 +84,9 @@
                         @can('view','App\\Models\Item')
                             <a class="nav-link pl-lg-2" href="{{route('items.index')}}"><span class="ml-1">الأصناف</span></a>
                         @endcan
+                        @can('view','App\\Models\Logs')
+                            <a class="nav-link pl-lg-2" href="{{route('logs.index')}}"><span class="ml-1">الأحداث</span></a>
+                        @endcan
                     </div>
                 </li>
                 {{-- <li class="nav-item dropdown more">

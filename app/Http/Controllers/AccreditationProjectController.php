@@ -6,6 +6,7 @@ use App\Models\AccreditationProject;
 use App\Models\Allocation;
 use App\Models\Currency;
 use App\Models\Executive;
+use App\Models\Logs;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
@@ -204,6 +205,13 @@ class AccreditationProjectController extends Controller
                 ]);
                 Allocation::create($request->all());
                 $accreditation->delete();
+                Logs::create([
+                    'type' => 'adoption' ,
+                    'message' => 'تم إعتماد مشروع للتخصيص ورقم الموازنة : ' . $accreditation->budget_number,
+                    'data' => 'allocation' ,
+                    'user_id' => Auth::user()->id,
+                    'user_name' => Auth::user()->name,
+                ]);
             }else{
                 $accreditation->update($request->all());
             }
@@ -267,6 +275,13 @@ class AccreditationProjectController extends Controller
                 // $request['notes'] = "";
                 Executive::create($request->all());
                 $accreditation->delete();
+                Logs::create([
+                    'type' => 'adoption' ,
+                    'message' => 'تم إعتماد مشروع جديد ورفعه الى التنفيذات لمؤسسة : ' . $accreditation->borker_name . " وتاريخ التنفيذ : " . $accreditation->implementation_date,
+                    'data' => 'executive' ,
+                    'user_id' => Auth::user()->id,
+                    'user_name' => Auth::user()->name,
+                ]);
             }else{
                 $accreditation->update($request->all());
             }

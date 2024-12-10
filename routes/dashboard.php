@@ -7,6 +7,7 @@ use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\ExecutiveController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\LogsController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\ReportController;
@@ -23,6 +24,9 @@ Route::group([
 ],function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('profile/{user}', [UserController::class, 'profile'])->name('users.profile');
+
+    Route::get('logs', [LogsController::class, 'index'])->name('logs.index');
+
 
     Route::post('allocations/import', [AllocationController::class, 'import'])->name('allocations.import');
     Route::post('executives/import', [ExecutiveController::class, 'import'])->name('executives.import');
