@@ -14,7 +14,18 @@
         </div>
     </div>
     <div class="row">
-
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    <div>
+                        {{$errors}}
+                    </div>
+                    @foreach ($errors->all() as $key => $error)
+                        <li>{{ $key }} : {{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         @if ($selectedForm === 'allocations')
             @if ($allocation)
                 <form action="{{ route('accreditations.store') }}" method="post" enctype="multipart/form-data">

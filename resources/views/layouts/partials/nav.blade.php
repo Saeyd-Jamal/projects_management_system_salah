@@ -39,12 +39,31 @@
                         <a class="nav-link d-flex align-items-center" href="{{route('accreditations.index')}}">
                             <i class="fe fe-folder fe-16"></i>
                             <span class="ml-3 item-text">الإعتمادية</span>
-                            @if (App\Models\AccreditationProject::count() > 0)
-                            <span class="badge badge-primary py-2 px-3  mx-2 " style="font-size: 17px;">{{App\Models\AccreditationProject::count()}}</span>
-                            @endif
+                            <span class="badge badge-primary py-2 px-3  mx-2 d-none {{App\Models\AccreditationProject::count() > 0 ? 'd-block' : ''}}" style="font-size: 17px;">{{App\Models\AccreditationProject::count()}}</span>
                         </a>
                     </li>
                 @endcan
+                @push('scripts')
+                    <script>
+                        $(document).ready(function () {
+                            setInterval(function () {
+                                let accreditations = $.ajax({
+                                    url: "{{route('accreditations.checkNew')}}",
+                                    method: "POST",
+                                    data: {
+                                        _token: "{{ csrf_token() }}"
+                                    },
+                                    success: function (data) {
+                                        if (data > 0) {
+                                            $('.badge').addClass('d-block');
+                                            $('.badge').text(data);
+                                        }
+                                    }
+                                })
+                            }, 10000);
+                        });
+                    </script>
+                @endpush
                 @can('view','App\\Models\Allocation')
                     <li class="nav-item">
                         <a class="nav-link d-flex align-items-center" href="{{route('allocations.index')}}">

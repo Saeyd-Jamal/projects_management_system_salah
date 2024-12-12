@@ -106,14 +106,17 @@ class AllocationForm extends Component
 
     public function changeCurrency(){
         $currency_allocation_value = Currency::where('code', $this->currency_allocation)->first()->value;
-        $this->currency_allocation_value = 1 / $currency_allocation_value;
+        $this->currency_allocation_value = (float) number_format((1 / $currency_allocation_value),4);
         $this->allocationFun();
     }
+
 
     public function allocationFun(){
         if(is_numeric($this->allocation_field)){
             if($this->allocation_field != ''){
-                $this->amount = $this->allocation_field * $this->currency_allocation_value;
+                $amount = number_format(($this->allocation_field / (float) $this->currency_allocation_value), 2, '.', '');
+                $formattedNumber = floatval($amount);
+                $this->amount = $formattedNumber;
             }
         }
     }

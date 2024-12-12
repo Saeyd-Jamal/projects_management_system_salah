@@ -54,9 +54,10 @@ class ExecutiveController extends Controller
         // get data from models
         $brokers = Executive::select('broker_name')->distinct()->pluck('broker_name')->toArray();
         $projects = Executive::select('project_name')->distinct()->pluck('project_name')->toArray();
+        $saends = Executive::select('project_name')->distinct()->pluck('project_name')->toArray();
         $items =  Executive::select('item_name')->distinct()->pluck('item_name')->toArray();
 
-        return view('dashboard.projects.executives.index', compact('ILS','accounts', 'affiliates', 'receiveds', 'details', 'brokers', 'projects', 'items'));
+        return view('dashboard.projects.executives.index', compact('ILS','accounts', 'affiliates', 'receiveds', 'details', 'brokers','saends', 'projects', 'items'));
     }
 
     /**

@@ -74,4 +74,25 @@
             </div>
         </div>
     </div>
+    @push('scripts')
+        <script>
+            $(document).ready(function () {
+                let accreditations_count = "{{ $accreditations->count() }}";
+                setInterval(function () {
+                    let accreditations = $.ajax({
+                        url: "{{route('accreditations.checkNew')}}",
+                        method: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function (data) {
+                            if(accreditations_count != data){
+                                window.location.reload();
+                            }
+                        }
+                    })
+                }, 10000);
+            });
+        </script>
+    @endpush
 </x-front-layout>

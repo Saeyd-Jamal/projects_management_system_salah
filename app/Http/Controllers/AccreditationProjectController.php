@@ -12,6 +12,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
 
 class AccreditationProjectController extends Controller
 {
@@ -299,5 +300,12 @@ class AccreditationProjectController extends Controller
         $this->authorize('delete', $accreditation);
         $accreditation->delete();
         return redirect()->route('accreditations.index')->with('danger', 'تم حذف المشروع بنجاح');
+    }
+
+    public function checkNew(Request $request){
+
+        $accreditations_count = AccreditationProject::count();
+
+        return response()->json($accreditations_count);
     }
 }

@@ -28,6 +28,7 @@ Route::group([
     Route::get('logs', [LogsController::class, 'index'])->name('logs.index');
 
 
+    Route::post('accreditations/checkNew', [AccreditationProjectController::class, 'checkNew'])->name('accreditations.checkNew');
     Route::post('allocations/import', [AllocationController::class, 'import'])->name('allocations.import');
     Route::post('executives/import', [ExecutiveController::class, 'import'])->name('executives.import');
 

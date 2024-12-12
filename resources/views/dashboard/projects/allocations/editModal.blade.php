@@ -35,7 +35,7 @@
             <label for="project_name">المشروع</label>
             <x-form.input name="project_name" list="projects_list"  required />
             <datalist id="projects_list">
-                @foreach ($projects as $project)
+                @foreach ($projs as $project)
                     <option value="{{ $project }}">
                 @endforeach
             </datalist>

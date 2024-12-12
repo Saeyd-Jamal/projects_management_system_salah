@@ -72,10 +72,11 @@
             </select>
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" step="0.01" name="currency_allocation_value" label="سعر الدولار للعملة" wire:model="currency_allocation_value" wire:input="allocationFun"/>
+            <x-form.input type="number" min="0" step="0.0000001" name="currency_allocation_value" label="سعر الدولار للعملة" wire:model="currency_allocation_value" wire:input="allocationFun"/>
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" step="0.01" name="amount" label="المبلغ $" wire:model="amount" readonly/>
+            <x-form.input type="number" min="0" step="0.0000001" name="amount" label="المبلغ $" wire:model="amount" readonly/>
+            {{-- <x-form.input type="text" name="amount" label="المبلغ $" wire:model="amount" readonly/> --}}
         </div>
         <div class="form-group col-md-3">
             <x-form.input type="text" min="0" name="number_beneficiaries" label="عدد المستفيدين" :value="$allocation->number_beneficiaries" />

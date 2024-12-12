@@ -53,13 +53,14 @@ class AllocationController extends Controller
                     ->make(true);
         }
 
+        $budgets = Allocation::select('budget_number')->distinct()->pluck('budget_number')->toArray();
         $brokers = Allocation::select('broker_name')->distinct()->pluck('broker_name')->toArray();
         $organizations = Allocation::select('organization_name')->distinct()->pluck('organization_name')->toArray();
-        $projects = Allocation::select('project_name')->distinct()->pluck('project_name')->toArray();
+        $projs = Allocation::select('project_name')->distinct()->pluck('project_name')->toArray();
         $items =  Allocation::select('item_name')->distinct()->pluck('item_name')->toArray();
         $currencies = Currency::get();
 
-        return view('dashboard.projects.allocations.index', compact('brokers', 'organizations', 'projects', 'items', 'currencies'));
+        return view('dashboard.projects.allocations.index', compact('budgets','brokers', 'organizations', 'projs', 'items', 'currencies'));
     }
 
     /**
@@ -77,6 +78,7 @@ class AllocationController extends Controller
             }
             $allocation->date_allocation =  Carbon::now()->format('Y-m-d');
             $allocation->currency_allocation =  'USD';
+            $allocation->currency_allocation_value =  '1';
             return $allocation;
         }
         return view('dashboard.projects.allocations.create', compact('allocation'));
