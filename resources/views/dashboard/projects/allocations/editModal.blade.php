@@ -72,7 +72,7 @@
             </select>
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" step="0.01" name="currency_allocation_value" label="سعر الدولار للعملة" />
+            <x-form.input type="number" min="0" step="0.000001" required name="currency_allocation_value" label="سعر الدولار للعملة" />
         </div>
         <div class="form-group col-md-3">
             <x-form.input type="number" min="0" step="0.01" name="amount" label="المبلغ $" readonly />
@@ -95,6 +95,9 @@
         </div>
         <div class="form-group col-md-6">
             <x-form.textarea name="implementation_statement" label="بيان"  />
+        </div>
+        <div class="form-group col-md-3">
+            <x-form.input type="number" min="0" name="arrest_receipt_number" label="رقم إيصال القبض" />
         </div>
     </div>
     <hr>

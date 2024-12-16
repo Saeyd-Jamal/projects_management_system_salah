@@ -236,4 +236,16 @@ class ExecutiveController extends Controller
         return redirect()->route('executives.index')->with('success', 'تمت عملية الاستيراد بنجاح');
     }
 
+    public function editMonth(){
+        $this->authorize('update', Executive::class);
+        $executives = Executive::get();
+        foreach($executives as $executive){
+            $date = Carbon::parse($executive->implementation_date)->format('Y-m-d');
+            $month = Carbon::parse($date)->format('Y-m');
+            $executive->update([
+                'month' => $month
+            ]);
+        }
+        return redirect()->route('executives.index')->with('success', 'تمت عملية التعديل بنجاح');
+    }
 }

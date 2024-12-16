@@ -72,7 +72,7 @@
             </select>
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" step="0.0000001" name="currency_allocation_value" label="سعر الدولار للعملة" wire:model="currency_allocation_value" wire:input="allocationFun"/>
+            <x-form.input type="text" min="0" required name="currency_allocation_value" label="سعر الدولار للعملة" wire:model="currency_allocation_value" wire:input="allocationFun" wire:blur="calculate('currency_allocation_value')" />
         </div>
         <div class="form-group col-md-3">
             <x-form.input type="number" min="0" step="0.0000001" name="amount" label="المبلغ $" wire:model="amount" readonly/>
@@ -96,6 +96,9 @@
         </div>
         <div class="form-group col-md-6">
             <x-form.textarea name="implementation_statement" label="بيان" :value="$allocation->implementation_statement" />
+        </div>
+        <div class="form-group col-md-3">
+            <x-form.input type="number" min="0" name="arrest_receipt_number" label="رقم إيصال القبض" :value="$allocation->arrest_receipt_number" />
         </div>
     </div>
     <hr>

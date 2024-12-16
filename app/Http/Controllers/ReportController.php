@@ -270,6 +270,7 @@ class ReportController extends Controller
                 'quantity' => $executives->sum('quantity') ?? '0',
                 'total_ils' => $this->filterExecutives($request->all())->get()->sum('total_ils') ?? '0',
             ];
+            
             if($request->export_type == 'view'){
                 $this->createLogs('الأصناف حسب الأشهر','pdf');
                 $pdf = PDF::loadView('dashboard.reports.detection_items_month',['executives' => $executives,'executivesTotal' => $executivesTotalArray,'items' => $items,'year' => $year,'lastYear' => $lastYear,'month' => $month,'to_month' => $to_month,'months' => $months,'monthNameAr' => $this->monthNameAr],[],

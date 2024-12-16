@@ -341,6 +341,7 @@
                                 <th>تاريخ القبض</th>
                                 <th>بيان</th>
                                 <th>المبلغ المقبوض</th>
+                                <th>رقم الإيصال</th>
                                 <th>ملاحظات</th>
                                 <th>اسم المستخدم</th>
                                 <th>المدير المستلم</th>
@@ -367,6 +368,7 @@
                                 <td></td>
                                 <td></td>
                                 <td class='text-white total_amount_received'></td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -462,8 +464,22 @@
         <script src="{{asset('js/vfs_fonts.js')}}"></script>
         <script src="{{asset('js/buttons.html5.min.js')}}"></script>
         <script src="{{asset('js/buttons.print.min.js')}}"></script>
+
+        <script src="{{asset('js/jquery.validate.min.js')}}"></script>
         <script type="text/javascript">
             $(document).ready(function() {
+                $.validator.messages.required = "هذا الحقل مطلوب";
+                $("#editForm").validate({
+                    rules: {
+                        name: {
+                            required: true,
+                            maxlength: 255,
+                        }
+                    },
+                    messages: {
+                        name: "يرجى إدخال اسم المستخدم",
+                    }
+                });
                 let formatNumber = (number,min = 0) => {
                     // التحقق إذا كانت القيمة فارغة أو غير صالحة كرقم
                     if (number === null || number === undefined || isNaN(number)) {
@@ -563,6 +579,9 @@
                         { data: 'implementation_statement', name: 'implementation_statement'  , orderable: false,},
                         { data: 'amount_received', name: 'amount_received'  , orderable: false, class: 'text-center', render: function(data, type, row) {
                             return  formatNumber(data,2);
+                        }},
+                        { data: 'arrest_receipt_number', name: 'arrest_receipt_number'  , orderable: false, class: 'text-center', render: function(data, type, row) {
+                            return  formatNumber(data,0);
                         }},
                         { data: 'notes', name: 'notes'  , orderable: false},
                         { data: 'user_name', name: 'user_name'  , orderable: false},
@@ -810,6 +829,7 @@
                     date_implementation : '',
                     implementation_statement : '',
                     amount_received : '',
+                    arrest_receipt_number : '',
                     notes : '',
                     user_name : '',
                     manager_name : '',
@@ -833,13 +853,14 @@
                             allocation.allocation = response.allocation;
                             allocation.currency_allocation = response.currency_allocation;
                             allocation.currency_allocation_name = response.currency_allocation_name;
-                            allocation.currency_allocation_value = response.currency_allocation_value;
+                            allocation.currency_allocation_value = formatNumber(1 / response.currency_allocation_value, 2);
                             allocation.amount = response.amount;
                             allocation.number_beneficiaries = response.number_beneficiaries;
                             allocation.implementation_items = response.implementation_items;
                             allocation.date_implementation = response.date_implementation;
                             allocation.implementation_statement = response.implementation_statement;
                             allocation.amount_received = response.amount_received;
+                            allocation.arrest_receipt_number = response.arrest_receipt_number;
                             allocation.notes = response.notes;
                             allocation.user_name = response.user_name;
                             allocation.manager_name = response.manager_name;
@@ -916,6 +937,8 @@
                         const input = $('#' + key); // البحث عن العنصر باستخدام id
                         if(key == 'id'){
                             //
+                        }else if(key == 'currency_allocation_value'){
+                            allocation['currency_allocation_value'] = 1 / $('#currency_allocation_value').val();
                         }else{
                             allocation[key] = input.val();
                         }
@@ -963,6 +986,7 @@
                             allocation.date_implementation = response.date_implementation;
                             allocation.implementation_statement = response.implementation_statement;
                             allocation.amount_received = response.amount_received;
+                            allocation.arrest_receipt_number = response.arrest_receipt_number;
                             allocation.notes = response.notes;
                             allocation.user_name = response.user_name;
                             allocation.manager_name = response.manager_name;
@@ -998,6 +1022,8 @@
                         const input = $('#' + key); // البحث عن العنصر باستخدام id
                         if(key == 'id'){
                             allocation['id'] = null;
+                        }else if(key == 'currency_allocation_value'){
+                            allocation['currency_allocation_value'] = 1 / $('#currency_allocation_value').val();
                         }else{
                             allocation[key] = input.val();
                         }

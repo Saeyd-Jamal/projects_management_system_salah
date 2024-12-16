@@ -134,6 +134,9 @@ class AllocationForm extends Component
             } elseif ($field === 'allocation') {
                 $this->allocation_field = eval("return {$this->allocation_field};");
                 $this->allocationFun();
+            }elseif ($field === 'currency_allocation_value') {
+                $this->currency_allocation_value = eval("return {$this->currency_allocation_value};");
+                $this->allocationFun();
             }
         } catch (\Throwable $e) {
             // إرسال رسالة تنبيه للمستخدم

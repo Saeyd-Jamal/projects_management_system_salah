@@ -68,9 +68,11 @@
                 font-weight: bold;
             }
         </style>
+        @if (isset($breadcrumb))
         <ul class="breadcrumb mx-3">
             {{ $breadcrumb ?? '' }}
         </ul>
+        @endif
         <div class="container-fluid">
             {{ $slot }}
         </div> <!-- .container-fluid -->

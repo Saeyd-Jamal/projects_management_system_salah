@@ -81,6 +81,7 @@ class AccreditationProjectController extends Controller
             //         $files[$file->getClientOriginalName()] = $filepath;
             //     }
             // }
+            $request['currency_allocation_value'] = 1 / $request->currency_allocation_value;
             $request->merge([
                 'user_id' => Auth::user()->id,
                 'user_name' => Auth::user()->name,
@@ -128,7 +129,7 @@ class AccreditationProjectController extends Controller
                 // 'notes' => ($request->notes ?? '') . ' id=' . $id,
             ]);
         }
-
+        dd($request->all());
         AccreditationProject::create($request->all());
         return redirect()->route('accreditations.index')->with('success', 'تمت إضافة مشروع جديد');
     }
@@ -197,7 +198,7 @@ class AccreditationProjectController extends Controller
             $request->merge([
                 // 'files' => $files,
             ]);
-
+            $request['currency_allocation_value'] = 1 / $request->currency_allocation_value;
             if($request->adoption == true){
                 $request->merge([
                     'manager_name' => Auth::user()->name,

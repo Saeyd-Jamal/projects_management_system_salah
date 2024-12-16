@@ -111,8 +111,8 @@
                     <th>#</th>
                     <th>الأصناف</th>
                     <th>{{$lastYear}}</th>
-                    @foreach ($months as $month)
-                        <th>{{ $monthNameAr[Carbon\Carbon::parse($month)->format('m')] }}</th>
+                    @foreach ($months as $monthV)
+                        <th>{{ $monthNameAr[Carbon\Carbon::parse($monthV)->format('m')] }}</th>
                     @endforeach
                     <th>إجمالي العدد</th>
                     <th>إجمالي المبلغ بالشيكل</th>
@@ -121,18 +121,17 @@
             <tbody>
                 @foreach ($items as $item)
                     @php
-                        $executive = App\Models\Executive::whereBetween('month', [$year . '-01', $year . '-12'])->where('item_name', $item)->get();
-                        $executiveLastYear = App\Models\Executive::whereBetween('month', [$lastYear . '-01', $lastYear . '-12'])->where('item_name', $item)->get();
+                        $executive = App\Models\Executive::whereBetween('implementation_date', [$year . '-01-01', $year . '-12-31'])->where('item_name', $item)->get();
+                        $executiveLastYear = App\Models\Executive::whereBetween('implementation_date', [ $lastYear .'-01-01',  $lastYear .'-12-31'])->where('item_name', $item)->get();
                         $quantity = $executive->sum('quantity') + $executiveLastYear->sum('quantity');
                         $total_ils = $executive->sum('total_ils') + $executiveLastYear->sum('total_ils');
-
                     @endphp
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $item }}</td>
                         <td>{{ $executiveLastYear->sum('quantity') }}</td>
-                        @foreach ($months as $month)
-                            <td>{{ number_format($executive->where('month', Carbon\Carbon::parse($month)->format('Y-m'))->sum('quantity'),0) }}</td>
+                        @foreach ($months as $month2)
+                            <td>{{ number_format($executive->where('month', Carbon\Carbon::parse($month2)->format('Y-m'))->sum('quantity'),0) }}</td>
                         @endforeach
                         <td>{{ number_format($quantity,0) }}</td>
                         <td>{{ number_format($total_ils,0) }}</td>

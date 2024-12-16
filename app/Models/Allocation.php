@@ -30,6 +30,7 @@ class Allocation extends Model
         'amount_received',
         'notes',
         'number_beneficiaries',
+        'arrest_receipt_number',
         'user_id',
         'user_name',
         'manager_name',

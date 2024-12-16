@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Logs;
 use App\Models\RoleUser;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -88,7 +89,9 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        //
+        $this->authorize('view', User::class);
+        $logs = Logs::where('user_id', $user->id)->paginate(10);
+        return view('dashboard.users.show', compact('user', 'logs'));
     }
 
     /**
