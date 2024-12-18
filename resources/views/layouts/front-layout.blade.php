@@ -23,7 +23,7 @@
 <div class="wrapper">
     @include('layouts.partials.nav')
     {{-- @include('layouts.partials.aside') --}}
-    <main role="main" class="main-content" style="padding-top: 73px;">
+    <main role="main" class="main-content mx-0 mb-0 p-0" style="margin-top: 50px !important;">
         <x-alert type="success" />
         <x-alert type="info" />
         <x-alert type="danger" />
@@ -73,7 +73,7 @@
             {{ $breadcrumb ?? '' }}
         </ul>
         @endif
-        <div class="container-fluid">
+        <div class="container-fluid py-0 px-3">
             {{ $slot }}
         </div> <!-- .container-fluid -->
         <div class="modal fade modal-notif modal-slide" tabindex="-1" role="dialog"

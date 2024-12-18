@@ -16,13 +16,22 @@
             .main-content{
                 margin: 15px 0 0 0 !important;
             }
+            table.dataTable th:not(.sticky) {
+                position: relative !important;
+            }
             table.dataTable th, table.dataTable td {
                 box-sizing: content-box !important;
                 white-space: nowrap !important;
             }
+            table.dataTable th .filter-dropdown{
+                position: absolute;
+                bottom: -2px;
+                left: 2px;
+            }
             tbody td{
                 padding: 2px 5px !important;
                 color: #000 !important;
+                font-size: 14px !important;
             }
             /* تعطيل مؤشر الفرز لرأس العمود */
             th.no-sort::after {
@@ -68,7 +77,7 @@
     @endpush
     <x-slot:extra_nav>
         <li class="nav-item">
-            <button type="button" class="btn btn-success text-white" id="excel-export" title="تصدير excel">
+            <button type="button" class="btn btn-icon btn-success text-white" id="excel-export" title="تصدير excel">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="16" height="16">
                     <path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-288-128 0c-17.7 0-32-14.3-32-32L224 0 64 0zM256 0l0 128 128 0L256 0zM155.7 250.2L192 302.1l36.3-51.9c7.6-10.9 22.6-13.5 33.4-5.9s13.5 22.6 5.9 33.4L221.3 344l46.4 66.2c7.6 10.9 5 25.8-5.9 33.4s-25.8 5-33.4-5.9L192 385.8l-36.3 51.9c-7.6 10.9-22.6 13.5-33.4 5.9s-13.5-22.6-5.9-33.4L162.7 344l-46.4-66.2c-7.6-10.9-5-25.8 5.9-33.4s25.8-5 33.4 5.9z"/>
                 </svg>
@@ -98,10 +107,10 @@
         </li>
     </x-slot:extra_nav>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12" style="padding: 0 2px;">
             <div class="card">
                 <div class="card-body table-container p-0">
-                    <table id="allocations-table" class="table table-striped table-bordered table-hover sticky" style="width:100%; height: calc(100vh - 100px);">
+                    <table id="allocations-table" class="table table-striped table-bordered table-hover sticky" style="width:100%; height: calc(100vh - 115px);">
                         <thead>
                             <tr>
                                 <th></th>
@@ -380,15 +389,15 @@
             </div>
         </div>
     </div>
-    <div class="row justify-content-end m-3">
-        <div class="col-12">
+    <div class="row justify-content-end m-0">
+        <div class="col-12 p-0">
             <table class="table align-items-center mb-0 table-bordered">
                 <thead>
                     <tr style="background: #27AE60;">
-                        <th>المبالغ المخصصة</th>
-                        <th>المبالغ المستلمة</th>
-                        <th>المتبقي</th>
-                        <th>نسبة التحصيل</th>
+                        <th class="p-1">المبالغ المخصصة</th>
+                        <th class="p-1">المبالغ المستلمة</th>
+                        <th class="p-1">المتبقي</th>
+                        <th class="p-1">نسبة التحصيل</th>
                     </tr>
                 </thead>
                 <tbody  style=" color: #fff;">
@@ -542,16 +551,16 @@
                     columns: [
                         { data: 'edit', name: 'edit', orderable: false, searchable: false, render: function(data, type, row) {
                             @can('update','App\\Models\Allocation')
-                            let link = `<button class="btn btn-sm btn-icon text-primary edit_row"  data-id=":allocation"><i class="fe fe-edit"></i></button>`.replace(':allocation', data);
+                            let link = `<button class="btn btn-sm p-1 btn-icon text-primary edit_row"  data-id=":allocation"><i class="fe fe-edit"></i></button>`.replace(':allocation', data);
                             return link ;
                             @else
                             return '';
                             @endcan
                         }
                         },
-                        { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false}, // عمود الترقيم التلقائي
-                        { data: 'date_allocation', name: 'date_allocation'  , orderable: false, class: 'sticky'},
-                        { data: 'budget_number', name: 'budget_number' , orderable: false, class: 'sticky'},
+                        { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, class: 'text-center'}, // عمود الترقيم التلقائي
+                        { data: 'date_allocation', name: 'date_allocation'  , orderable: false, class: 'sticky text-center'},
+                        { data: 'budget_number', name: 'budget_number' , orderable: false, class: 'sticky text-center'},
                         { data: 'broker_name', name: 'broker_name' , orderable: false, class: 'sticky' },
                         { data: 'organization_name', name: 'organization_name' , orderable: false, render: function(data, type, row) {
                             return  `<span class="organization">${data}</span>`;
@@ -595,7 +604,7 @@
                                 @can('delete','App\\Models\Allocation')
                                 return `
                                     <button
-                                        class="btn btn-icon text-danger delete_row"
+                                        class="btn btn-icon p-1 text-danger delete_row"
                                         data-id="${data}">
                                         <i class="fe fe-trash"></i>
                                     </button>`;

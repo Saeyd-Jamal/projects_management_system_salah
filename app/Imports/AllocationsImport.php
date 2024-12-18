@@ -34,14 +34,9 @@ class AllocationsImport implements ToModel,WithHeadingRow
         ($alaaml == 'شيكل') ? $alaaml = 'ILS' : $alaaml = 'USD';
         ($alaaml == 'يورو') ? $alaaml = 'EUR' : $alaaml = 'USD';
         $currency_allocation = Currency::where('code', $alaaml)->first();
-
-        return new Allocation([
-            'date_allocation' => $this->formatDate($row['tarykh_altkhsys']),
+        return Allocation::updateOrCreate([
             'budget_number' => $row['rkm_almoazn'],
-            'broker_name' => $row['alasm_almkhtsr'],
-            'organization_name' => $row['almoss'],
-            'project_name' => $row['mshroaa'],
-            'item_name' => $row['alsnf'],
+        ],[
             'quantity' => $row['alkmy'],
             'price' => $row['saar'],
             'total_dollar' => $row['agmaly_dolar'],
@@ -49,13 +44,29 @@ class AllocationsImport implements ToModel,WithHeadingRow
             'currency_allocation' => $currency_allocation != null ? $currency_allocation->code : null,
             'currency_allocation_value' => $currency_allocation != null ? $currency_allocation->value : null,
             'amount' => $row['almblgh_baldolar'],
-            'implementation_items' => $row['bnod_altnfyth'],
-            'date_implementation' => $this->formatDate($row['tarykh_alastlam'] ?? null),
-            'implementation_statement' => $row['byan'],
             'amount_received' => $row['almblgh_dolar'],
-            // 'notes' => $row['mlahthat'],
-            // 'number_beneficiaries' => $row['aadd_almstfydyn'],
         ]);
+        // return new Allocation([
+        //     'date_allocation' => $this->formatDate($row['tarykh_altkhsys']),
+        //     'budget_number' => $row['rkm_almoazn'],
+        //     'broker_name' => $row['alasm_almkhtsr'],
+        //     'organization_name' => $row['almoss'],
+        //     'project_name' => $row['mshroaa'],
+        //     'item_name' => $row['alsnf'],
+        //     'quantity' => $row['alkmy'],
+        //     'price' => $row['saar'],
+        //     'total_dollar' => $row['agmaly_dolar'],
+        //     'allocation' => $row['altkhsys'],
+        //     'currency_allocation' => $currency_allocation != null ? $currency_allocation->code : null,
+        //     'currency_allocation_value' => $currency_allocation != null ? $currency_allocation->value : null,
+        //     'amount' => $row['almblgh_baldolar'],
+        //     'implementation_items' => $row['bnod_altnfyth'],
+        //     'date_implementation' => $this->formatDate($row['tarykh_alastlam'] ?? null),
+        //     'implementation_statement' => $row['byan'],
+        //     'amount_received' => $row['almblgh_dolar'],
+        //     // 'notes' => $row['mlahthat'],
+        //     // 'number_beneficiaries' => $row['aadd_almstfydyn'],
+        // ]);
     }
     public function chunkSize(): int
     {

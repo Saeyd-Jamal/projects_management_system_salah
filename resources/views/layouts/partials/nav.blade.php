@@ -15,16 +15,16 @@
         background-color: #303030 !important;
     }
 </style>
-<nav class="navbar navbar-expand-lg navbar-light bg-dark flex-row border-bottom shadow" style="position: fixed; width: 100%; top: 0; z-index: 99;">
+<nav class="navbar navbar-expand-lg navbar-light bg-dark flex-row border-bottom shadow" style="position: fixed; width: 100%; top: 0; z-index: 99;padding: 0; margin: 0;">
     <div class="container-fluid">
-        <a class="navbar-brand mx-lg-1 mr-0"  href="{{ route('home') }}">
+        <a class="navbar-brand mx-lg-1 mr-0 my-0 py-0"  href="{{ route('home') }}">
             <img src="{{ asset('img/logo.png') }}" style="max-width: 46px;">
         </a>
         <button class="navbar-toggler mt-2 mr-auto toggle-sidebar text-muted">
             <i class="fe fe-menu navbar-toggler-icon"></i>
         </button>
-        <div class="navbar-slide bg-dark text-white ml-lg-4" id="navbarSupportedContent">
-            <a href="#" class="btn toggle-sidebar d-lg-none text-muted ml-2 mt-3" data-toggle="toggle">
+        <div class="navbar-slide bg-dark text-white ml-lg-4 my-0" id="navbarSupportedContent">
+            <a href="#" class="btn toggle-sidebar d-lg-none text-muted m-0 p-0" data-toggle="toggle">
                 <i class="fe fe-x"><span class="sr-only"></span></i>
             </a>
             <ul class="navbar-nav mr-auto">
@@ -39,7 +39,7 @@
                         <a class="nav-link d-flex align-items-center" href="{{route('accreditations.index')}}">
                             <i class="fe fe-folder fe-16"></i>
                             <span class="ml-3 item-text">الإعتمادية</span>
-                            <span class="badge badge-primary py-2 px-3  mx-2 d-none {{App\Models\AccreditationProject::count() > 0 ? 'd-block' : ''}}" style="font-size: 17px;">{{App\Models\AccreditationProject::count()}}</span>
+                            <span id="accreditations_count" class="badge badge-primary py-2 px-3  mx-2 d-none {{App\Models\AccreditationProject::count() > 0 ? 'd-block' : ''}}" style="font-size: 17px;">{{App\Models\AccreditationProject::count()}}</span>
                         </a>
                     </li>
                 @endcan
@@ -55,8 +55,8 @@
                                     },
                                     success: function (data) {
                                         if (data > 0) {
-                                            $('.badge').addClass('d-block');
-                                            $('.badge').text(data);
+                                            $('#accreditations_count').addClass('d-block');
+                                            $('#accreditations_count').text(data);
                                         }
                                     }
                                 })
@@ -121,11 +121,11 @@
                 </li> --}}
             </ul>
         </div>
-        <ul class="navbar-nav d-flex flex-row nav">
+        <ul class="navbar-nav d-flex align-items-center flex-row nav">
             {{ $extra_nav ?? '' }}
             @auth
             <li class="nav-item dropdown d-flex align-items-center justify-content-center ">
-                <a class="nav-link dropdown-toggle text-muted pr-0" href="#" id="navbarDropdownMenuLink"
+                <a class="nav-link dropdown-toggle text-muted p-0 m-0" href="#" id="navbarDropdownMenuLink"
                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="avatar avatar-sm mt-2">
                         <img src="{{ Auth::user()->avatar_url }}" alt="..." class="avatar-img rounded-circle">

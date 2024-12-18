@@ -129,7 +129,6 @@ class AccreditationProjectController extends Controller
                 // 'notes' => ($request->notes ?? '') . ' id=' . $id,
             ]);
         }
-        dd($request->all());
         AccreditationProject::create($request->all());
         return redirect()->route('accreditations.index')->with('success', 'تمت إضافة مشروع جديد');
     }

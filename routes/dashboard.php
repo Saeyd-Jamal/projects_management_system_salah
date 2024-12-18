@@ -31,7 +31,6 @@ Route::group([
     Route::post('accreditations/checkNew', [AccreditationProjectController::class, 'checkNew'])->name('accreditations.checkNew');
     Route::post('allocations/import', [AllocationController::class, 'import'])->name('allocations.import');
     Route::post('executives/import', [ExecutiveController::class, 'import'])->name('executives.import');
-    Route::get('executives/editMonth', [ExecutiveController::class, 'editMonth'])->name('executives.editMonth');
 
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::post('reports/export', [ReportController::class, 'export'])->name('reports.export');
