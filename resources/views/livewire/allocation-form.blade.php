@@ -14,7 +14,7 @@
             <x-form.input type="date" name="date_allocation" label="تاريخ التخصيص" required wire:model="date_allocation" />
         </div>
         <div class="form-group col-md-3">
-            <label for="broker_name">الإسم المختصر</label>
+            <label for="broker_name">المؤسسة</label>
             <input type="text" name="broker_name" id="broker_name" value="{{$allocation->broker_name}}" class="form-control form-control-alternative" list="brokers_listA" required="required">
             <datalist id="brokers_listA">
                 @foreach ($brokers as $broker)
@@ -24,7 +24,7 @@
         </div>
         <div class="form-group col-md-3"></div>
         <div class="form-group col-md-3">
-            <label for="organization_name">المؤسسة</label>
+            <label for="organization_name">المتبرع</label>
             <x-form.input name="organization_name" list="organizations_listA" :value="$allocation->organization_name" required/>
             <datalist id="organizations_listA">
                 @foreach ($organizations as $organization)

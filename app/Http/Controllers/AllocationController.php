@@ -38,6 +38,9 @@ class AllocationController extends Controller
             if ($request->from_date != null && $request->to_date != null) {
                 $allocations->whereBetween('date_allocation', [$request->from_date, $request->to_date]);
             }
+            if ($request->from_date_implementation != null && $request->to_date_implementation != null) {
+                $allocations->whereBetween('date_implementation', [$request->from_date_implementation, $request->to_date_implementation]);
+            }
 
             return DataTables::of($allocations)
                     ->addIndexColumn()  // إضافة عمود الترقيم التلقائي
@@ -45,7 +48,8 @@ class AllocationController extends Controller
                         return $allocation->id;
                     })
                     ->addColumn('currency_allocation_name', function ($allocation) {
-                        return Currency::where('code', $allocation->currency_allocation)->first()->name;
+                        $currency = Currency::where('code', $allocation->currency_allocation)->first();
+                        return $currency ? "$currency->name" : '';
                     })
                     ->addColumn('delete', function ($allocation) {
                         return $allocation->id;

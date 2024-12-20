@@ -79,6 +79,9 @@
                             @endforelse
                         </tbody>
                     </table>
+                    <div>
+                        {{ $logs->links() }}
+                    </div>
                 </div>
             </div>
         </div> <!-- /.col-12 -->

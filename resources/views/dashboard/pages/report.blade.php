@@ -13,6 +13,7 @@
             <div class="row justify-content-between">
                 <form action="{{route('reports.export')}}" method="post" class="col-12" target="_blank">
                     @csrf
+                    <h4>أساسي</h4>
                     <div class="row">
                         <div class="form-group col-md-3">
                             <x-form.input type="month" name="month" label="الشهر المطلوب (الشهر الاول)" />
@@ -21,7 +22,7 @@
                             <x-form.input type="month"  name="to_month" label="الى شهر" />
                         </div>
                         <div class="form-group col-md-3">
-                            <label for="broker">الاسم المختصر</label>
+                            <label for="broker">المؤسسة</label>
                             <select name="broker[]" id="broker" class="form-control select2-multi" multiple>
                                 @foreach ($brokers as $broker)
                                     <option value="{{ $broker }}">{{ $broker }}</option>
@@ -29,7 +30,7 @@
                             </select>
                         </div>
                         <div class="form-group col-md-3">
-                            <label for="organization">المؤسسة</label>
+                            <label for="organization">المتبرع (فقط للتخصيص)</label>
                             <select name="organization[]" id="organization" class="form-control select2-multi" multiple>
                                 @foreach ($organizations as $organization)
                                     <option value="{{ $organization }}">{{ $organization }}</option>
@@ -52,6 +53,9 @@
                                 @endforeach
                             </select>
                         </div>
+                    </div>
+                    <h4>التنفيذات</h4>
+                    <div class="row">
                         <div class="form-group col-md-3">
                             <label for="account">الحساب</label>
                             <select name="account[]" id="account" class="form-control select2-multi" multiple>
@@ -76,7 +80,9 @@
                                 @endforeach
                             </select>
                         </div>
-
+                    </div>
+                    <h4>إعدادات</h4>
+                    <div class="row">
                         {{-- إضافات --}}
                         <div class="form-group col-md-3">
                             <label for="report_type">نوع الكشف</label>
@@ -103,7 +109,6 @@
                             </select>
                         </div>
                     </div>
-
                     <div class="row align-items-center mb-2">
                         <div class="col">
                             <h2 class="h5 page-title"></h2>

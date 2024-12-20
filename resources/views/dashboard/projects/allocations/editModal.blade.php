@@ -14,7 +14,7 @@
             <x-form.input type="date" name="date_allocation" label="تاريخ التخصيص" required />
         </div>
         <div class="form-group col-md-3">
-            <label for="broker_name">الإسم المختصر</label>
+            <label for="broker_name">المؤسسة</label>
             <x-form.input name="broker_name" list="brokers_list" required/>
             <datalist id="brokers_list">
                 @foreach ($brokers as $broker)
@@ -23,7 +23,7 @@
             </datalist>
         </div>
         <div class="form-group col-md-3">
-            <label for="organization_name">المؤسسة</label>
+            <label for="organization_name">المتبرع</label>
             <x-form.input name="organization_name" list="organizations_list" required/>
             <datalist id="organizations_list">
                 @foreach ($organizations as $organization)
@@ -53,10 +53,10 @@
             <x-form.input type="text" class="calculation" min="0" name="quantity" label="الكمية" />
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="text" class="calculation" min="0" step="0.01" name="price" label="سعر الوحدة$"   />
+            <x-form.input type="text" class="calculation" min="0" step="0.01" name="price" label="سعر الوحدة"   />
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" step="0.01" name="total_dollar" label="الإجمالي ب $"  readonly/>
+            <x-form.input type="number" min="0" step="0.01" name="total_dollar" label="الإجمالي"  readonly/>
         </div>
         <div class="form-group col-md-3">
             <x-form.input  type="text" class="calculation" min="0" step="0.01" name="allocation" label="التخصيص" required />
@@ -72,7 +72,7 @@
             </select>
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="number" min="0" step="0.000001" required name="currency_allocation_value" label="سعر الدولار للعملة" />
+            <x-form.input type="text" class="calculation" min="0" required name="currency_allocation_value" label="سعر الدولار للعملة" />
         </div>
         <div class="form-group col-md-3">
             <x-form.input type="number" min="0" step="0.01" name="amount" label="المبلغ $" readonly />
@@ -93,12 +93,13 @@
         <div class="form-group col-md-3">
             <x-form.input type="text" class="calculation" min="0" step="0.01" name="amount_received" label="المبلغ المقبوض" />
         </div>
-        <div class="form-group col-md-6">
-            <x-form.textarea name="implementation_statement" label="بيان"  />
-        </div>
         <div class="form-group col-md-3">
             <x-form.input type="number" min="0" name="arrest_receipt_number" label="رقم إيصال القبض" />
         </div>
+        <div class="form-group col-md-6">
+            <x-form.textarea name="implementation_statement" label="بيان"  />
+        </div>
+
     </div>
     <hr>
 

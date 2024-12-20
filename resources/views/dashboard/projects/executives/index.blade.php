@@ -1,81 +1,27 @@
 <x-front-layout>
     @push('styles')
         <!-- DataTables CSS -->
-        <link rel="stylesheet" href="{{asset('css/jquery.dataTables.min.css')}}">
-        {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css"> --}}
-        <link rel="stylesheet" href="{{asset('css/dataTables.bootstrap4.css')}}">
-        <link rel="stylesheet" href="{{asset('css/dataTables.dataTables.css')}}">
-        <link rel="stylesheet" href="{{asset('css/buttons.dataTables.css')}}">
+        <link rel="stylesheet" href="{{asset('css/datatable/jquery.dataTables.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/datatable/dataTables.bootstrap4.css')}}">
+        <link rel="stylesheet" href="{{asset('css/datatable/dataTables.dataTables.css')}}">
+        <link rel="stylesheet" href="{{asset('css/datatable/buttons.dataTables.css')}}">
+
         <link id="stickyTableLight" rel="stylesheet" href="{{ asset('css/stickyTable.css') }}">
         <link id="stickyTableDark" rel="stylesheet" href="{{ asset('css/stickyTableDark.css') }}" disabled>
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-        <style>
-            body{
-                font-family: 'Cairo', sans-serif;
-            }
-            .main-content{
-                margin: 15px 0 0 0 !important;
-            }
-            table.dataTable th, table.dataTable td {
-                box-sizing: content-box !important;
-                white-space: nowrap !important;
-            }
-            tbody td{
-                padding: 2px 5px !important;
-                color: #000 !important;
-            }
-            /* تعطيل مؤشر الفرز لرأس العمود */
-            th.no-sort::after {
-                display: none !important;
-            }
-            .breadcrumb{
-                display: none !important;
-            }
-            .filter-dropdown{
-                display: none;
-            }
-            table .dropdown-menu.show {
-                width: 245px;
-            }
-            .dropdown-menu.show  .search-checkbox{
-                padding: 2px 7px !important;
-                width: 70% !important;
-                margin: 0 !important;
-            }
-            .checkbox-list{
-                overflow: auto;
-                max-height: 200px;
-                max-width: 246px;
-            }
-            .dt-layout-row{
-                margin: 0 !important;
-            }
-            .dt-search{
-                display: none !important;
-            }
-            .organization{
-                width: 130px !important;
-                overflow: hidden;
-                display: block;
-
-                transition: all 0.5s ease-in-out;
-            }
-            .organization:hover {
-                width: 100% !important;
-            }
-        </style>
+        <link rel="stylesheet" href="{{ asset('css/datatableIndex.css') }}">
     @endpush
     <x-slot:extra_nav>
         <li class="nav-item">
-            <button type="button" class="btn btn-success text-white" id="excel-export" title="تصدير excel">
+            <button type="button" class="btn btn-icon btn-success text-white" id="excel-export" title="تصدير excel">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="16" height="16">
                     <path d="M64 0C28.7 0 0 28.7 0 64L0 448c0 35.3 28.7 64 64 64l256 0c35.3 0 64-28.7 64-64l0-288-128 0c-17.7 0-32-14.3-32-32L224 0 64 0zM256 0l0 128 128 0L256 0zM155.7 250.2L192 302.1l36.3-51.9c7.6-10.9 22.6-13.5 33.4-5.9s13.5 22.6 5.9 33.4L221.3 344l46.4 66.2c7.6 10.9 5 25.8-5.9 33.4s-25.8 5-33.4-5.9L192 385.8l-36.3 51.9c-7.6 10.9-22.6 13.5-33.4 5.9s-13.5-22.6-5.9-33.4L162.7 344l-46.4-66.2c-7.6-10.9-5-25.8 5.9-33.4s25.8-5 33.4 5.9z"/>
                 </svg>
             </button>
         </li>
         @can('create', 'App\\Models\Executive')
-        <li class="nav-item">
-            <button type="button" class="btn btn-icon text-success my-2" id="createNew">
+        <li class="nav-item mx-2">
+            <button type="button" class="btn btn-icon text-success m-0" id="createNew">
                 <i class="fe fe-plus fe-16"></i>
             </button>
         </li>
@@ -96,22 +42,24 @@
             <button type="button" class="btn" id="refreshData"><span class="fe fe-refresh-ccw fe-16 text-white"></span></button>
         </li>
     </x-slot:extra_nav>
+
+
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-12" style="padding: 0 2px;">
             <div class="card">
                 <div class="card-body table-container p-0">
-                    <table id="executives-table" class="table table-striped table-bordered table-hover sticky" style="width:100%; height: calc(100vh - 100px);">
+                    <table id="executives-table" class="table table-striped table-bordered table-hover sticky" style="width:100%; height: calc(100vh - 140px);">
                         <thead>
                             <tr>
                                 <th></th>
                                 <th class="text-white  opacity-7 text-center sticky" style="right: 0px;"  id="nth1">#</th>
-                                <th class="sticky" style="right: 71.7px;"  id="nth2">
+                                <th class="sticky" style="right: 55.7px;"  id="nth2">
                                     <div class='d-flex align-items-center justify-content-between'>
                                         <span>التاريخ</span>
                                         <div class='filter-dropdown ml-4'>
                                             <div class="dropdown">
-                                                <button class="btn" style="padding: 0; margin: 0; border: none;" type="button" id="date_filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-2" type="button" id="date_filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
                                                 </button>
                                                 <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="date_filter">
                                                     <div>
@@ -128,13 +76,13 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th  class="sticky" style="right: 167.3px;"  id="nth3">
-                                    <div class='d-flex align-items-center justify-content-between'>
+                                <th  class="sticky" style="right: 141.5px;"  id="nth3">
+                                    <div class="d-flex align-items-center justify-content-between">
                                         <span>المؤسسة</span>
                                         <div class="filter-dropdown ml-4">
                                             <div class="dropdown">
-                                                <button class="btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-3" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
                                                 </button>
                                                 <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="broker_filter">
                                                     <!-- إضافة checkboxes بدلاً من select -->
@@ -150,11 +98,6 @@
                                                                 <input type="checkbox" value="all" class="all-checkbox" data-index="3"> الكل
                                                             </label>
                                                             <div class="checkbox-list checkbox-list-3">
-                                                                @foreach ($brokers as $broker)
-                                                                    <label style="display: block;">
-                                                                        <input type="checkbox" value="{{ $broker }}" class="broker_name-checkbox"> {{ $broker }}
-                                                                    </label>
-                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
@@ -163,13 +106,13 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="sticky" style="right: 344px;"  id="nth4">
-                                    <div class='d-flex align-items-center justify-content-between'>
+                                <th class="sticky" style="right: 287px;"  id="nth4">
+                                    <div class="d-flex align-items-center justify-content-between">
                                         <span>الحساب</span>
                                         <div class="filter-dropdown ml-4">
                                             <div class="dropdown">
-                                                <button class="btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-4" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
                                                 </button>
                                                 <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="account_filter">
                                                     <!-- إضافة checkboxes بدلاً من select -->
@@ -185,11 +128,6 @@
                                                                 <input type="checkbox" value="all" class="all-checkbox" data-index="4"> الكل
                                                             </label>
                                                             <div class="checkbox-list checkbox-list-4">
-                                                                @foreach ($accounts as $account)
-                                                                    <label style="display: block;">
-                                                                        <input type="checkbox" value="{{ $account }}" class="account_name-checkbox"> {{ $account }}
-                                                                    </label>
-                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
@@ -199,12 +137,12 @@
                                     </div>
                                 </th>
                                 <th>
-                                    <div class='d-flex align-items-center justify-content-between'>
+                                    <div class="d-flex align-items-center justify-content-between">
                                         <span>الاسم</span>
                                         <div class="filter-dropdown ml-4">
                                             <div class="dropdown">
-                                                <button class="btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-5" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
                                                 </button>
                                                 <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="affiliate_name_filter">
                                                     <!-- إضافة checkboxes بدلاً من select -->
@@ -220,11 +158,6 @@
                                                                 <input type="checkbox" value="all" class="all-checkbox" data-index="5"> الكل
                                                             </label>
                                                             <div class="checkbox-list checkbox-list-5">
-                                                                @foreach ($affiliates as $affiliate)
-                                                                    <label style="display: block;">
-                                                                        <input type="checkbox" value="{{ $affiliate }}" class="affiliate_name-checkbox"> {{ $affiliate }}
-                                                                    </label>
-                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
@@ -234,19 +167,19 @@
                                     </div>
                                 </th>
                                 <th>
-                                    <div class='d-flex align-items-center justify-content-between'>
+                                    <div class="d-flex align-items-center justify-content-between">
                                         <span>المشروع</span>
                                         <div class="filter-dropdown ml-4">
                                             <div class="dropdown">
-                                                <button class="btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-6" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
                                                 </button>
-                                                <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="saends_filter">
+                                                <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="projects_filter">
                                                     <!-- إضافة checkboxes بدلاً من select -->
                                                     <div class="searchable-checkbox">
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <input type="search" class="form-control search-checkbox" data-index="6" placeholder="ابحث...">
-                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="6" data-field="saendsss">
+                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="6" data-field="project_field">
                                                                 <i class="fe fe-check"></i>
                                                             </button>
                                                         </div>
@@ -255,11 +188,6 @@
                                                                 <input type="checkbox" value="all" class="all-checkbox" data-index="6"> الكل
                                                             </label>
                                                             <div class="checkbox-list checkbox-list-6">
-                                                                @foreach ($saends as $saendsss)
-                                                                    <label style="display: block;">
-                                                                        <input type="checkbox" value="{{ $saendsss }}" class="saendsss-checkbox"> {{ $saendsss }}
-                                                                    </label>
-                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
@@ -269,19 +197,19 @@
                                     </div>
                                 </th>
                                 <th>
-                                    <div class='d-flex align-items-center justify-content-between'>
+                                    <div class="d-flex align-items-center justify-content-between">
                                         <span>التفصيل..</span>
                                         <div class="filter-dropdown ml-4">
                                             <div class="dropdown">
-                                                <button class="btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-7" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
                                                 </button>
                                                 <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="detail_filter">
                                                     <!-- إضافة checkboxes بدلاً من select -->
                                                     <div class="searchable-checkbox">
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <input type="search" class="form-control search-checkbox" data-index="7" placeholder="ابحث...">
-                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="7" data-field="detailsss">
+                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="7" data-field="detail_field">
                                                                 <i class="fe fe-check"></i>
                                                             </button>
                                                         </div>
@@ -290,11 +218,6 @@
                                                                 <input type="checkbox" value="all" class="all-checkbox" data-index="7"> الكل
                                                             </label>
                                                             <div class="checkbox-list checkbox-list-7">
-                                                                @foreach ($details as $detailsss)
-                                                                    <label style="display: block;">
-                                                                        <input type="checkbox" value="{{ $detailsss }}" class="detailsss-checkbox"> {{ $detailsss }}
-                                                                    </label>
-                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
@@ -304,19 +227,19 @@
                                     </div>
                                 </th>
                                 <th>
-                                    <div class='d-flex align-items-center justify-content-between'>
+                                    <div class="d-flex align-items-center justify-content-between">
                                         <span>الصنف</span>
                                         <div class="filter-dropdown ml-4">
                                             <div class="dropdown">
-                                                <button class="btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-8" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
                                                 </button>
                                                 <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="item_filter">
                                                     <!-- إضافة checkboxes بدلاً من select -->
                                                     <div class="searchable-checkbox">
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <input type="search" class="form-control search-checkbox" data-index="8" placeholder="ابحث...">
-                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="8" data-field="itttt">
+                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="8" data-field="item_field">
                                                                 <i class="fe fe-check"></i>
                                                             </button>
                                                         </div>
@@ -325,11 +248,6 @@
                                                                 <input type="checkbox" value="all" class="all-checkbox" data-index="8"> الكل
                                                             </label>
                                                             <div class="checkbox-list checkbox-list-8">
-                                                                @foreach ($items as $itttt)
-                                                                    <label style="display: block;">
-                                                                        <input type="checkbox" value="{{ $itttt }}" class="itttt-checkbox"> {{ $itttt }}
-                                                                    </label>
-                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
@@ -342,19 +260,19 @@
                                 <th>السعر ₪</th>
                                 <th>إجمالي ₪</th>
                                 <th>
-                                    <div class='d-flex align-items-center justify-content-between'>
+                                    <div class="d-flex align-items-center justify-content-between">
                                         <span>المستلم</span>
                                         <div class="filter-dropdown ml-4">
                                             <div class="dropdown">
-                                                <button class="btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-12" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
                                                 </button>
                                                 <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="receiveds_filter">
                                                     <!-- إضافة checkboxes بدلاً من select -->
                                                     <div class="searchable-checkbox">
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <input type="search" class="form-control search-checkbox" data-index="12" placeholder="ابحث...">
-                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="12" data-field="receivedsss">
+                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="12" data-field="received_field">
                                                                 <i class="fe fe-check"></i>
                                                             </button>
                                                         </div>
@@ -363,11 +281,6 @@
                                                                 <input type="checkbox" value="all" class="all-checkbox" data-index="12"> الكل
                                                             </label>
                                                             <div class="checkbox-list checkbox-list-12">
-                                                                @foreach ($receiveds as $receivedsss)
-                                                                    <label style="display: block;">
-                                                                        <input type="checkbox" value="{{ $receivedsss }}" class="receivedsss-checkbox"> {{ $receivedsss }}
-                                                                    </label>
-                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
@@ -387,18 +300,18 @@
                         <tfoot>
                             <tr>
                                 <td></td>
-                                <td class="text-white opacity-7 text-center" style="background-color: transparent !important;" id="count_executives"></td>
-                                <td class='sticky text-right' colSpan="3">المجموع</td>
+                                <td class="text-white text-center" style="background-color: transparent !important;" id="count_executives"></td>
+                                <td class='sticky text-left' colSpan="3">المجموع</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td class='text-white' id="total_quantity"></td>
+                                <td class='text-white text-center' id="total_quantity"></td>
                                 <td></td>
-                                <td class='text-white total_total_ils'></td>
+                                <td class='text-white text-center total_total_ils'></td>
                                 <td></td>
                                 <td></td>
-                                <td class='text-white total_amount_payments'></td>
+                                <td class='text-white text-center total_amount_payments'></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -411,16 +324,21 @@
         </div>
     </div>
     {{-- مجموع المبالغ --}}
-    <div class="row justify-content-end my-3">
-        <div class="col-12">
-            <table class="table align-items-center mb-0 table-hover table-bordered">
+    <div class="row justify-content-end m-0">
+        <div class="col-12 p-0">
+            <style>
+                #total-table td , #total-table th {
+                    padding: 2px 4px !important;
+                }
+            </style>
+            <table class="table align-items-center mb-0 table-hover table-bordered" id="total-table">
                 <thead>
                     <tr style="background: #27AE60;">
                         <th></th>
-                        <th>اجمالي مبالغ شيكل</th>
-                        <th>اجمالي الدفعات شيكل</th>
-                        <th>الرصيد المتبقي شيكل</th>
-                        <th>سعر الدولار / الشيكل</th>
+                        <th class="p-1">اجمالي مبالغ شيكل</th>
+                        <th class="p-1">اجمالي الدفعات شيكل</th>
+                        <th class="p-1">الرصيد المتبقي شيكل</th>
+                        <th class="p-1">سعر الدولار / الشيكل</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -446,12 +364,11 @@
                             {{number_format(1 / $ILS,2) ?? 0}}
                         </td>
                     </tr>
-                    <tr>
-                    </tr>
                 </tbody>
             </table>
         </div>
     </div>
+
 
     <!-- Fullscreen modal -->
     <div class="modal fade modal-full" id="editExecutive" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
@@ -497,539 +414,608 @@
         </div>
     </div>
     @endcan
+
+
     @push('scripts')
-    <!-- DataTables JS -->
-    <script src="{{asset('js/jquery.dataTables.min.js')}}"></script>
-    <script src="{{asset('js/dataTables.js')}}"></script>
-    <script src="{{asset('js/dataTables.buttons.js')}}"></script>
-    <script src="{{asset('js/buttons.dataTables.js')}}"></script>
-    <script src="{{asset('js/jszip.min.js')}}"></script>
-    <script src="{{asset('js/pdfmake.min.js')}}"></script>
-    <script src="{{asset('js/vfs_fonts.js')}}"></script>
-    <script src="{{asset('js/buttons.html5.min.js')}}"></script>
-    <script src="{{asset('js/buttons.print.min.js')}}"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            let ils = {{ $ILS }};
-            let formatNumber = (number,min = 0) => {
-                // التحقق إذا كانت القيمة فارغة أو غير صالحة كرقم
-                if (number === null || number === undefined || isNaN(number)) {
-                    return ''; // إرجاع قيمة فارغة إذا كان الرقم غير صالح
-                }
-                return new Intl.NumberFormat('en-US', { minimumFractionDigits: min, maximumFractionDigits: 2 }).format(number);
-            };
-            // let width1 = $('#nth1').width();
-            // let width2 = $('#nth2').width();
-            // let width3 = $('#nth3').width();
-            // let width4 = $('#nth4').width();
-            let table = $('#executives-table').DataTable({
-                processing: true,
-                serverSide: true,
-                responsive: true,
-                paging: false,              // تعطيل الترقيم
-                searching: true,            // الإبقاء على البحث إذا كنت تريده
-                info: false,                // تعطيل النص السفلي الذي يوضح عدد السجلات
-                lengthChange: false,        // تعطيل قائمة تغيير عدد المدخلات
-                layout: {
-                    topStart: {
-                        buttons: [
-                            {
-                                extend: 'excelHtml5',
-                                text: 'تصدير Excel',
-                                title: 'بيانات ips', // تخصيص العنوان عند التصدير
-                                className: 'd-none', // إخفاء الزر الأصلي
-                                exportOptions: {
-                                    columns: [1, 2, 3, 4, 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21], // تحديد الأعمدة التي سيتم تصديرها (يمكن تعديلها حسب الحاجة)
-                                    modifier: {
-                                        search: 'applied', // تصدير البيانات المفلترة فقط
-                                        order: 'applied',  // تصدير البيانات مع الترتيب الحالي
-                                        page: 'all'        // تصدير جميع الصفحات المفلترة
+        <!-- DataTables JS -->
+        <script src="{{asset('js/datatable/jquery.dataTables.min.js')}}"></script>
+        <script src="{{asset('js/datatable/dataTables.js')}}"></script>
+        <script src="{{asset('js/datatable/dataTables.buttons.js')}}"></script>
+        <script src="{{asset('js/datatable/buttons.dataTables.js')}}"></script>
+        <script src="{{asset('js/datatable/jszip.min.js')}}"></script>
+        <script src="{{asset('js/datatable/pdfmake.min.js')}}"></script>
+        <script src="{{asset('js/datatable/vfs_fonts.js')}}"></script>
+        <script src="{{asset('js/datatable/buttons.html5.min.js')}}"></script>
+        <script src="{{asset('js/datatable/buttons.print.min.js')}}"></script>
+
+        <script src="{{asset('js/jquery.validate.min.js')}}"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                let ils = {{ $ILS }};
+                $.validator.messages.required = "هذا الحقل مطلوب";
+                $("#editForm").validate({
+                    rules: {
+                        name: {
+                            required: true,
+                            maxlength: 255,
+                        }
+                    },
+                    messages: {
+                        name: "يرجى إدخال اسم المستخدم",
+                    }
+                });
+                let formatNumber = (number,min = 0) => {
+                    // التحقق إذا كانت القيمة فارغة أو غير صالحة كرقم
+                    if (number === null || number === undefined || isNaN(number)) {
+                        return ''; // إرجاع قيمة فارغة إذا كان الرقم غير صالح
+                    }
+                    return new Intl.NumberFormat('en-US', { minimumFractionDigits: min, maximumFractionDigits: 2 }).format(number);
+                };
+                // let width1 = $('#nth1').width();
+                // let width2 = $('#nth2').width();
+                // let width3 = $('#nth3').width();
+                // let width4 = $('#nth4').width();
+                let table = $('#executives-table').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    responsive: true,
+                    paging: false,              // تعطيل الترقيم
+                    searching: true,            // الإبقاء على البحث إذا كنت تريده
+                    info: false,                // تعطيل النص السفلي الذي يوضح عدد السجلات
+                    lengthChange: false,        // تعطيل قائمة تغيير عدد المدخلات
+                    layout: {
+                        topStart: {
+                            buttons: [
+                                {
+                                    extend: 'excelHtml5',
+                                    text: 'تصدير Excel',
+                                    title: 'بيانات ips', // تخصيص العنوان عند التصدير
+                                    className: 'd-none', // إخفاء الزر الأصلي
+                                    exportOptions: {
+                                        columns: [1, 2, 3, 4, 5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21], // تحديد الأعمدة التي سيتم تصديرها (يمكن تعديلها حسب الحاجة)
+                                        modifier: {
+                                            search: 'applied', // تصدير البيانات المفلترة فقط
+                                            order: 'applied',  // تصدير البيانات مع الترتيب الحالي
+                                            page: 'all'        // تصدير جميع الصفحات المفلترة
+                                        }
                                     }
-                                }
-                            },
-                        ]
-                    }
-                },
-                "language": {
-                    "url": "{{ asset('files/Arabic.json')}}"
-                },
-                ajax: {
-                    url: "{{ route('executives.index') }}",
-                    data: function (d) {
-                        // إضافة تواريخ التصفية إلى الطلب المرسل
-                        d.from_date = $('#from_date').val();
-                        d.to_date = $('#to_date').val();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('AJAX error:', status, error);
-                    }
-                },
-                columns: [
-                    { data: 'edit', name: 'edit', orderable: false, searchable: false, render: function(data, type, row) {
-                            // let link = `<a href="{{ route('executives.edit', ':executive') }}" class="btn btn-sm btn-primary">تعديل <i class="fa fa-edit"></i></a>`.replace(':executive', data);
-                            @can('update','App\\Models\Executive')
-                            let link = `<button class="btn btn-sm btn-icon text-primary edit_row"  data-id=":executive"><i class="fe fe-edit"></i></button>`.replace(':executive', data);
-                            return link ;
-                            @else
-                            return '';
-                            @endcan
+                                },
+                            ]
                         }
                     },
-                    { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, class: 'sticky'}, // عمود الترقيم التلقائي
-                    { data: 'implementation_date', name: 'implementation_date'  , orderable: false, class: 'sticky'},
-                    { data: 'broker_name', name: 'broker_name' , orderable: false, class: 'sticky' },
-                    { data: 'account', name: 'account' , orderable: false, class: 'sticky' },
-                    { data: 'affiliate_name', name: 'affiliate_name' , orderable: false},
-                    { data: 'project_name', name: 'project_name', orderable: false},
-                    { data: 'detail', name: 'detail'  , orderable: false},
-                    { data: 'item_name', name: 'item_name'  , orderable: false},
-                    { data: 'quantity', name: 'quantity'  , orderable: false, class: 'text-center'},
-                    { data: 'price', name: 'price'  , orderable: false, class: 'text-center'},
-                    { data: 'total_ils', name: 'total_ils'  , orderable: false, class: 'text-center', render: function(data, type, row) {
-                            return  formatNumber(data,2);
-                    }},
-                    { data: 'received', name: 'received'  , orderable: false},
-                    { data: 'notes', name: 'notes'  , orderable: false,},
-                    { data: 'amount_payments', name: 'amount_payments'  , orderable: false, class: 'text-center', render: function(data, type, row) {
-                        return  formatNumber(data,2);
-                    }},
-                    { data: 'payment_mechanism', name: 'payment_mechanism'  , orderable: false},
-                    { data: 'user_name', name: 'user_name'  , orderable: false,},
-                    { data: 'manager_name', name: 'manager_name'  , orderable: false,},
-                    {
-                        data: 'delete',
-                        name: 'delete',
-                        orderable: false,
-                        searchable: false,
-                        render: function (data, type, row) {
-                            @can('delete','App\\Models\Executive')
-                            return `
-                                    <button
-                                        class="btn btn-icon text-danger delete_row"
-                                        data-id="${data}">
-                                        <i class="fe fe-trash"></i>
-                                    </button>`;
-                            @else
-                            return '';
-                            @endcan
+                    "language": {
+                        "url": "{{ asset('files/Arabic.json')}}"
+                    },
+                    ajax: {
+                        url: "{{ route('executives.index') }}",
+                        data: function (d) {
+                            // إضافة تواريخ التصفية إلى الطلب المرسل
+                            d.from_date = $('#from_date').val();
+                            d.to_date = $('#to_date').val();
                         },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX error:', status, error);
+                        }
                     },
-                ],
-                columnDefs: [
-                    { targets: 1, searchable: false, orderable: false } // تعطيل الفرز والبحث على عمود الترقيم
-                ],
-                drawCallback: function(settings) {
-                    // تطبيق التنسيق على خلايا العمود المحدد
-                    $('#executives-table tbody tr').each(function() {
-                        $(this).find('td').eq(1).css('right', '0px');
-                        $(this).find('td').eq(2).css('right', '71.7px');
-                        $(this).find('td').eq(3).css('right', '167.3px');
-                        $(this).find('td').eq(4).css('right', '344px');
+                    columns: [
+                        { data: 'edit', name: 'edit', orderable: false, searchable: false, render: function(data, type, row) {
+                                // let link = `<a href="{{ route('executives.edit', ':executive') }}" class="btn btn-sm btn-primary">تعديل <i class="fa fa-edit"></i></a>`.replace(':executive', data);
+                                @can('update','App\\Models\Executive')
+                                let link = `<button class="btn btn-sm p-1 btn-icon text-primary edit_row"  data-id=":executive"><i class="fe fe-edit"></i></button>`.replace(':executive', data);
+                                return link ;
+                                @else
+                                return '';
+                                @endcan
+                        }},
+                        { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, class: 'sticky text-center'}, // عمود الترقيم التلقائي
+                        { data: 'implementation_date', name: 'implementation_date'  , orderable: false, class: 'sticky text-center'},
+                        { data: 'broker_name', name: 'broker_name' , orderable: false, class: 'sticky' },
+                        { data: 'account', name: 'account' , orderable: false, class: 'sticky' },
+                        { data: 'affiliate_name', name: 'affiliate_name' , orderable: false},
+                        { data: 'project_name', name: 'project_name', orderable: false},
+                        { data: 'detail', name: 'detail'  , orderable: false},
+                        { data: 'item_name', name: 'item_name'  , orderable: false},
+                        { data: 'quantity', name: 'quantity'  , orderable: false, class: 'text-center'},
+                        { data: 'price', name: 'price'  , orderable: false, class: 'text-center'},
+                        { data: 'total_ils', name: 'total_ils'  , orderable: false, class: 'text-center', render: function(data, type, row) {
+                                return  formatNumber(data,2);
+                        }},
+                        { data: 'received', name: 'received'  , orderable: false},
+                        { data: 'notes', name: 'notes'  , orderable: false,},
+                        { data: 'amount_payments', name: 'amount_payments'  , orderable: false, class: 'text-center', render: function(data, type, row) {
+                            return  formatNumber(data,2);
+                        }},
+                        { data: 'payment_mechanism', name: 'payment_mechanism'  , orderable: false},
+                        { data: 'user_name', name: 'user_name'  , orderable: false,},
+                        { data: 'manager_name', name: 'manager_name'  , orderable: false,},
+                        {
+                            data: 'delete',
+                            name: 'delete',
+                            orderable: false,
+                            searchable: false,
+                            render: function (data, type, row) {
+                                @can('delete','App\\Models\Executive')
+                                return `
+                                        <button
+                                            class="btn btn-icon p-1 text-danger delete_row"
+                                            data-id="${data}">
+                                            <i class="fe fe-trash"></i>
+                                        </button>`;
+                                @else
+                                return '';
+                                @endcan
+                            },
+                        },
+                    ],
+                    columnDefs: [
+                        { targets: 1, searchable: false, orderable: false } // تعطيل الفرز والبحث على عمود الترقيم
+                    ],
+                    drawCallback: function(settings) {
+                        // تطبيق التنسيق على خلايا العمود المحدد
+                        $('#executives-table tbody tr').each(function() {
+                            $(this).find('td').eq(1).css('right', '0px');
+                            $(this).find('td').eq(2).css('right', '55.7px');
+                            $(this).find('td').eq(3).css('right', '141.5px');
+                            $(this).find('td').eq(4).css('right', '287px');
+                        });
+                    },
+                    footerCallback: function(row, data, start, end, display) {
+                        var api = this.api();
+                        // تحويل القيم النصية إلى أرقام
+                        var intVal = function(i) {
+                            return typeof i === 'string' ?
+                                parseFloat(i.replace(/[\$,]/g, '')) :
+                                typeof i === 'number' ? i : 0;
+                        };
+                        // 1. حساب عدد الأسطر في الصفحة الحالية
+                        // count_executives 1
+                        var rowCount = display.length;
+
+                        // total_quantity 9
+                        var total_quantity_sum = api
+                            .column(9, { page: 'current' }) // العمود الرابع
+                            .data()
+                            .reduce(function(a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0);
+
+                        // total_total_ils 11
+                        var total_total_ils_sum = api
+                            .column(11, { page: 'current' }) // العمود الرابع
+                            .data()
+                            .reduce(function(a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0);
+
+                        // total_amount_payments 14
+                        var total_amount_payments_sum = api
+                            .column(14, { page: 'current' }) // العمود الرابع
+                            .data()
+                            .reduce(function(a, b) {
+                                return intVal(a) + intVal(b);
+                            }, 0);
+
+                        let remaining = total_total_ils_sum - total_amount_payments_sum;
+
+                        // 4. عرض النتائج في `tfoot`
+                        $('#count_executives').html(formatNumber(rowCount)); // عدد الأسطر
+                        $('#total_quantity').html(formatNumber(total_quantity_sum));
+                        $('.total_total_ils').html(formatNumber(total_total_ils_sum,2));
+                        $('.total_total_dollars').html(formatNumber((total_total_ils_sum * ils),2));
+                        $('.total_amount_payments').html(formatNumber(total_amount_payments_sum,2));
+                        $('.total_amount_payments_dollars').html(formatNumber((total_amount_payments_sum * ils),2));
+                        $('.remaining').html(formatNumber(remaining,2));
+                        $('.remaining_dollars').html(formatNumber((remaining * ils),2));
+                    }
+                });
+                // عندما يتم رسم الجدول (بعد تحميل البيانات أو تحديثها)
+                table.on('draw', function() {
+                    // التمرير إلى آخر سطر في الجدول
+                    let tableContainer = $('#executives-table');
+                    tableContainer.scrollTop(tableContainer[0].scrollHeight);
+                });
+                $('#executives-table_filter').addClass('d-none');
+                // نسخ وظيفة الزر إلى الزر المخصص
+                $('#excel-export').on('click', function () {
+                    table.button('.buttons-excel').trigger(); // استدعاء وظيفة الزر الأصلي
+                });
+                $('#print-btn').on('click', function () {
+                    table.button('.buttons-print').trigger(); // استدعاء وظيفة الطباعة الأصلية
+                });
+                // جلب الداتا في checkbox
+                function populateFilterOptions(columnIndex, container,name) {
+                    const uniqueValues = [];
+                    table.column(columnIndex, { search: 'applied' }).data().each(function (value) {
+                        const stringValue = value ? String(value).trim() : ''; // تحويل القيمة إلى نص وإزالة الفراغات
+                        if (stringValue && uniqueValues.indexOf(stringValue) === -1) {
+                            uniqueValues.push(stringValue);
+                        }
                     });
-                },
-                footerCallback: function(row, data, start, end, display) {
-                    var api = this.api();
-                    // تحويل القيم النصية إلى أرقام
-                    var intVal = function(i) {
-                        return typeof i === 'string' ?
-                            parseFloat(i.replace(/[\$,]/g, '')) :
-                            typeof i === 'number' ? i : 0;
-                    };
-                    // 1. حساب عدد الأسطر في الصفحة الحالية
-                    // count_executives 1
-                    var rowCount = display.length;
-
-                    // total_quantity 9
-                    var total_quantity_sum = api
-                        .column(9, { page: 'current' }) // العمود الرابع
-                        .data()
-                        .reduce(function(a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0);
-
-                    // total_total_ils 11
-                    var total_total_ils_sum = api
-                        .column(11, { page: 'current' }) // العمود الرابع
-                        .data()
-                        .reduce(function(a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0);
-
-                    // total_amount_payments 14
-                    var total_amount_payments_sum = api
-                        .column(14, { page: 'current' }) // العمود الرابع
-                        .data()
-                        .reduce(function(a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0);
-
-                    let remaining = total_total_ils_sum - total_amount_payments_sum;
-
-                    // 4. عرض النتائج في `tfoot`
-                    $('#count_executives').html(formatNumber(rowCount)); // عدد الأسطر
-                    $('#total_quantity').html(formatNumber(total_quantity_sum));
-                    $('.total_total_ils').html(formatNumber(total_total_ils_sum,2));
-                    $('.total_total_dollars').html(formatNumber((total_total_ils_sum * ils),2));
-                    $('.total_amount_payments').html(formatNumber(total_amount_payments_sum,2));
-                    $('.total_amount_payments_dollars').html(formatNumber((total_amount_payments_sum * ils),2));
-                    $('.remaining').html(formatNumber(remaining,2));
-                    $('.remaining_dollars').html(formatNumber((remaining * ils),2));
+                    // ترتيب القيم أبجديًا
+                    uniqueValues.sort();
+                    // إضافة الخيارات إلى div
+                    const checkboxList = $(container);
+                    checkboxList.empty();
+                    uniqueValues.forEach(value => {
+                        checkboxList.append(`
+                            <label style="display: block;">
+                                <input type="checkbox" value="${value}" class="${name}-checkbox"> ${value}
+                            </label>
+                        `);
+                    });
                 }
-            });
-            // عندما يتم رسم الجدول (بعد تحميل البيانات أو تحديثها)
-            table.on('draw', function() {
-                // التمرير إلى آخر سطر في الجدول
-                let tableContainer = $('#executives-table');
-                tableContainer.scrollTop(tableContainer[0].scrollHeight);
-            });
-            $('#executives-table_filter').addClass('d-none');
-            // نسخ وظيفة الزر إلى الزر المخصص
-            $('#excel-export').on('click', function () {
-                table.button('.buttons-excel').trigger(); // استدعاء وظيفة الزر الأصلي
-            });
-            $('#print-btn').on('click', function () {
-                table.button('.buttons-print').trigger(); // استدعاء وظيفة الطباعة الأصلية
-            });
-            // تطبيق الفلترة عند الضغط على زر "check"
-            $('.filter-apply-btn').on('click', function() {
-                let target = $(this).data('target');
-                let field = $(this).data('field');
-                var filterValue = $("input[name="+ field + "]").val();
-                table.column(target).search(filterValue).draw();
-            });
-            // منع إغلاق dropdown عند النقر على input أو label
-            $('th  .dropdown-menu .checkbox-list-box').on('click', function (e) {
-                e.stopPropagation(); // منع انتشار الحدث
-            });
-            // البحث داخل الـ checkboxes
-            $('.search-checkbox').on('input', function() {
-                let searchValue = $(this).val().toLowerCase();
-                let tdIndex = $(this).data('index');
-                $('.checkbox-list-' + tdIndex + ' label').each(function() {
-                    let labelText = $(this).text().toLowerCase();  // النص داخل الـ label
-                    let checkbox = $(this).find('input');  // الـ checkbox داخل الـ label
+                function isColumnFiltered(columnIndex) {
+                    const filterValue = table.column(columnIndex).search();
+                    return filterValue !== ""; // إذا لم يكن فارغًا، الفلترة مفعلة
+                }
+                // دالة لإعادة بناء الفلاتر بناءً على البيانات الحالية
+                function rebuildFilters() {
+                    isColumnFiltered(3) ? '' : populateFilterOptions(3, '.checkbox-list-3','broker_name');
+                    isColumnFiltered(4) ? '' : populateFilterOptions(4, '.checkbox-list-4','account_name');
+                    isColumnFiltered(5) ? '' : populateFilterOptions(5, '.checkbox-list-5','affiliate_name');
+                    isColumnFiltered(6) ? '' : populateFilterOptions(6, '.checkbox-list-6','project_field');
+                    isColumnFiltered(7) ? '' : populateFilterOptions(7, '.checkbox-list-7','detail_field');
+                    isColumnFiltered(8) ? '' : populateFilterOptions(8, '.checkbox-list-8','item_field');
+                    isColumnFiltered(12) ? '' : populateFilterOptions(12, '.checkbox-list-12','received_field');
 
-                    if (labelText.indexOf(searchValue) !== -1) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                        if (checkbox.prop('checked')) {
-                            checkbox.prop('checked', false);  // إذا كان الـ checkbox محددًا، قم بإلغاء تحديده
+
+                    for (let i = 1; i <= 17; i++) {
+                        if (isColumnFiltered(i)) {
+                            $('#btn-filter-' + i).removeClass('btn-secondary');
+                            $('#btn-filter-' + i + ' i').removeClass('fe-pocket');
+                            $('#btn-filter-' + i + ' i').addClass('fe-filter');
+                            $('#btn-filter-' + i).addClass('btn-success');
+                        }else{
+                            $('#btn-filter-' + i + ' i').removeClass('fe-filter');
+                            $('#btn-filter-' + i).removeClass('btn-success');
+                            $('#btn-filter-' + i).addClass('btn-secondary');
+                            $('#btn-filter-' + i + ' i').addClass('fe-pocket');
                         }
                     }
+                }
+                table.on('draw', function() {
+                    rebuildFilters();
                 });
-            });
-            $('.all-checkbox').on('change', function() {
-                let index = $(this).data('index'); // الحصول على الـ index من الـ data-index
+                // تطبيق الفلترة عند الضغط على زر "check"
+                $('.filter-apply-btn').on('click', function() {
+                    let target = $(this).data('target');
+                    let field = $(this).data('field');
+                    var filterValue = $("input[name="+ field + "]").val();
+                    table.column(target).search(filterValue).draw();
+                });
+                // منع إغلاق dropdown عند النقر على input أو label
+                $('th  .dropdown-menu .checkbox-list-box').on('click', function (e) {
+                    e.stopPropagation(); // منع انتشار الحدث
+                });
+                // البحث داخل الـ checkboxes
+                $('.search-checkbox').on('input', function() {
+                    let searchValue = $(this).val().toLowerCase();
+                    let tdIndex = $(this).data('index');
+                    $('.checkbox-list-' + tdIndex + ' label').each(function() {
+                        let labelText = $(this).text().toLowerCase();  // النص داخل الـ label
+                        let checkbox = $(this).find('input');  // الـ checkbox داخل الـ label
 
-                // التحقق من حالة الـ checkbox "الكل"
-                if ($(this).prop('checked')) {
-                    // إذا كانت الـ checkbox "الكل" محددة، تحديد جميع الـ checkboxes الظاهرة فقط
-                    $('.checkbox-list-' + index + ' input[type="checkbox"]:visible').prop('checked', true);
-                } else {
-                    // إذا كانت الـ checkbox "الكل" غير محددة، إلغاء تحديد جميع الـ checkboxes الظاهرة فقط
-                    $('.checkbox-list-' + index + ' input[type="checkbox"]:visible').prop('checked', false);
-                }
-            });
-            $('.filter-apply-btn-checkbox').on('click', function() {
-                let target = $(this).data('target'); // استرجاع الهدف (العمود)
-                let field = $(this).data('field'); // استرجاع الحقل (اسم المشروع أو أي حقل آخر)
-
-                // الحصول على القيم المحددة من الـ checkboxes
-                var filterValues = [];
-                // نستخدم الكلاس المناسب بناءً على الحقل (هنا مشروع)
-                $('.' + field + '-checkbox:checked').each(function() {
-                    filterValues.push($(this).val()); // إضافة القيمة المحددة
-                });
-                // إذا كانت هناك قيم محددة، نستخدمها في الفلترة
-                if (filterValues.length > 0) {
-                    // دمج القيم باستخدام OR (|) كما هو متوقع في البحث
-                    var searchExpression = filterValues.join('|');
-                    // تطبيق الفلترة على العمود باستخدام القيم المحددة
-                    table.column(target).search(searchExpression, true, false).draw();
-                } else {
-                    // إذا لم تكن هناك قيم محددة، نعرض جميع البيانات
-                    table.column(target).search('').draw();
-                }
-            });
-            // تطبيق التصفية عند النقر على زر "Apply"
-            $('#filter-date-btn').on('click', function () {
-                const fromDate = $('#from_date').val();
-                const toDate = $('#to_date').val();
-                table.ajax.reload(); // إعادة تحميل الجدول مع التواريخ المحدثة
-            });
-            // تفويض حدث الحذف على الأزرار الديناميكية
-            $(document).on('click', '.delete_row', function () {
-                const id = $(this).data('id'); // الحصول على ID الصف
-                if (confirm('هل أنت متأكد من حذف العنصر؟')) {
-                    deleteRow(id); // استدعاء وظيفة الحذف
-                }
-            });
-            // وظيفة الحذف
-            function deleteRow(id) {
-                $.ajax({
-                    url: '{{ route("executives.destroy", ":id") }}'.replace(':id', id),
-                    method: 'DELETE',
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                    },
-                    success: function (response) {
-                        alert('تم حذف العنصر بنجاح');
-                        table.ajax.reload(); // إعادة تحميل الجدول بعد الحذف
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('AJAX error:', status, error);
-                        alert('هنالك خطاء في عملية الحذف.');
-                    },
-                });
-            }
-            $(document).on('click', '#refreshData', function() {
-                table.ajax.reload();
-            });
-            $(document).on('click', '#filterBtnClear', function() {
-                $('.filter-dropdown').slideUp();
-                $('#filterBtn').text('تصفية');
-                $('.filterDropdownMenu input').val('');
-                $('th input[type="checkbox"]').prop('checked', false);
-                table.columns().search('').draw(); // إعادة رسم الجدول بدون فلاتر
-            });
-            $(document).on('click', '.edit_row', function () {
-                const id = $(this).data('id'); // الحصول على ID الصف
-                editExecutiveForm(id); // استدعاء وظيفة الحذف
-            });
-            const executive = {
-                id: '',
-                implementation_date: '',
-                month: '',
-                broker_name: '',
-                account: '',
-                affiliate_name: '',
-                project_name: '',
-                detail: '',
-                item_name: '',
-                quantity: '',
-                price: '',
-                total_ils: '',
-                received: '',
-                notes: '',
-                amount_payments: '',
-                payment_mechanism: '',
-                user_id: '',
-                user_name: '',
-                manager_name: '',
-                // files: '',
-                user : '',
-            }
-            function editExecutiveForm(id) {
-                $.ajax({
-                    url: '{{ route("executives.edit", ":id") }}'.replace(':id', id),
-                    method: 'GET',
-                    success: function (response) {
-                        executive.id = response.id;
-                        executive.implementation_date = response.implementation_date;
-                        executive.month = response.month;
-                        executive.broker_name = response.broker_name;
-                        executive.account = response.account;
-                        executive.affiliate_name = response.affiliate_name;
-                        executive.project_name = response.project_name;
-                        executive.detail = response.detail;
-                        executive.item_name = response.item_name;
-                        executive.quantity = response.quantity;
-                        executive.price = response.price;
-                        executive.total_ils = response.total_ils;
-                        executive.received = response.received;
-                        executive.notes = response.notes;
-                        executive.amount_payments = response.amount_payments;
-                        executive.payment_mechanism = response.payment_mechanism;
-                        executive.user_id = response.user_id;
-                        executive.user_name = response.user_name;
-                        executive.manager_name = response.manager_name;
-                        executive.user = response.user;
-                        $.each(executive, function(key, value) {
-                            const input = $('#' + key); // البحث عن العنصر باستخدام id
-                            if (input.length) { // التحقق إذا كان العنصر موجودًا
-                                input.val(value); // تعيين القيمة
+                        if (labelText.indexOf(searchValue) !== -1) {
+                            $(this).show();
+                        } else {
+                            $(this).hide();
+                            if (checkbox.prop('checked')) {
+                                checkbox.prop('checked', false);  // إذا كان الـ checkbox محددًا، قم بإلغاء تحديده
                             }
-                        });
-                        $('#addExecutive').remove();
-                        $('#update').remove();
-                        $('#btns_form').append(`
-                            <button type="button" id="update" class="btn btn-primary mx-2">
-                                <i class="fa-solid fa-pen-to-square"></i>
-                                تعديل
-                            </button>
-                        `);
-                        $('.editForm').css('display','block');
-                        $('#editExecutive').modal('show');
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('AJAX error:', status, error);
-                        alert('هنالك خطأ في الإتصال بالسيرفر.');
-                    },
-                })
-            }
-            $('.calculation').on('blur keypress', function (event) {
-                // تحقق إذا كان الحدث هو الضغط على مفتاح
-                if (event.type == 'keypress' && event.key != "Enter") {
-                    return;
-                }
-                // استرجاع القيمة المدخلة
-                var input = $(this).val();
-                try {
-                    // استخدام eval لحساب الناتج (مع الاحتياطات الأمنية)
-                    var result = eval(input);
-                    // عرض الناتج في الحقل
-                    $(this).val(result);
-                } catch (e) {
-                    // في حالة وجود خطأ (مثل إدخال غير صحيح)
-                    alert('يرجى إدخال معادلة صحيحة!');
-                }
-            });
-            // التعديلات الحاصلة على النموذج
-            $('#quantity, #price').on('input blur', function () {
-                // جلب القيم من الحقول
-                let quantity = $('#quantity').val();
-                let price = $('#price').val();
+                        }
+                    });
+                });
+                $('.all-checkbox').on('change', function() {
+                    let index = $(this).data('index'); // الحصول على الـ index من الـ data-index
 
-                if(quantity != '' && price != ''){
-                    quantity = parseFloat(quantity);
-                    price = parseFloat(price);
-                    let total_ils = quantity * price;
-                    $('#total_ils').val(total_ils);
-                }
-            });
-            $(document).on('click', '#update', function () {
-                $.each(executive, function(key, value) {
-                    const input = $('#' + key); // البحث عن العنصر باستخدام id
-                    if(key == 'id'){
-                        //
-                    }else{
-                        executive[key] = input.val();
+                    // التحقق من حالة الـ checkbox "الكل"
+                    if ($(this).prop('checked')) {
+                        // إذا كانت الـ checkbox "الكل" محددة، تحديد جميع الـ checkboxes الظاهرة فقط
+                        $('.checkbox-list-' + index + ' input[type="checkbox"]:visible').prop('checked', true);
+                    } else {
+                        // إذا كانت الـ checkbox "الكل" غير محددة، إلغاء تحديد جميع الـ checkboxes الظاهرة فقط
+                        $('.checkbox-list-' + index + ' input[type="checkbox"]:visible').prop('checked', false);
                     }
                 });
-                $.ajax({
-                    url: "{{ route('executives.update', ':id') }}".replace(':id', executive.id),
-                    method: 'PUT',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    data: executive,
-                    success: function (response) {
-                        $('#editExecutive').modal('hide');
-                        table.ajax.reload();
-                        alert('تم التعديل بنجاح');
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('AJAX error:', status, error);
-                        alert('هنالك خطأ في الإتصال بالسيرفر.');
-                    },
-                })
-            });
-            $(document).on('click', '#createNew', function () {
-                $.ajax({
-                    url: '{{ route("executives.create") }}',
-                    method: 'GET',
-                    success: function (response) {
-                        executive.id = response.id;
-                        executive.implementation_date = response.implementation_date;
-                        executive.month = response.month;
-                        executive.broker_name = response.broker_name;
-                        executive.account = response.account;
-                        executive.affiliate_name = response.affiliate_name;
-                        executive.project_name = response.project_name;
-                        executive.detail = response.detail;
-                        executive.item_name = response.item_name;
-                        executive.quantity = response.quantity;
-                        executive.price = response.price;
-                        executive.total_ils = response.total_ils;
-                        executive.received = response.received;
-                        executive.notes = response.notes;
-                        executive.amount_payments = response.amount_payments;
-                        executive.payment_mechanism = response.payment_mechanism;
-                        executive.user_id = response.user_id;
-                        executive.user_name = response.user_name;
-                        executive.manager_name = response.manager_name;
-                        executive.user = response.user;
-                        $.each(executive, function(key, value) {
-                            const input = $('#' + key); // البحث عن العنصر باستخدام id
-                            if (input.length) { // التحقق إذا كان العنصر موجودًا
-                                input.val(value); // تعيين القيمة
-                            }
-                        });
-                        $('#addExecutive').remove();
-                        $('#update').remove();
-                        $('#btns_form').append(`
-                            <button type="button" id="addExecutive" class="btn btn-primary mx-2">
-                                <i class="fe fe-plus"></i>
-                                أضف
-                            </button>
-                        `);
-                        $('.editForm').css('display','none');
-                        $('#editExecutive').modal('show');
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('AJAX error:', status, error);
-                        alert('هنالك خطأ في الإتصال بالسيرفر.');
-                    },
-                })
-            });
-            $(document).on('click', '#addExecutive', function () {
-                const id = $(this).data('id'); // الحصول على ID الصف
-                createExecutiveForm(id);
-            });
-            function createExecutiveForm(id){
-                $.each(executive, function(key, value) {
-                    const input = $('#' + key); // البحث عن العنصر باستخدام id
-                    if(key == 'id'){
-                        executive['id'] = null;
-                    }else{
-                        executive[key] = input.val();
+                $('.filter-apply-btn-checkbox').on('click', function() {
+                    let target = $(this).data('target'); // استرجاع الهدف (العمود)
+                    let field = $(this).data('field'); // استرجاع الحقل (اسم المشروع أو أي حقل آخر)
+
+                    // الحصول على القيم المحددة من الـ checkboxes
+                    var filterValues = [];
+                    // نستخدم الكلاس المناسب بناءً على الحقل (هنا مشروع)
+                    $('.' + field + '-checkbox:checked').each(function() {
+                        filterValues.push($(this).val()); // إضافة القيمة المحددة
+                    });
+                    // إذا كانت هناك قيم محددة، نستخدمها في الفلترة
+                    if (filterValues.length > 0) {
+                        // دمج القيم باستخدام OR (|) كما هو متوقع في البحث
+                        var searchExpression = filterValues.join('|');
+                        // تطبيق الفلترة على العمود باستخدام القيم المحددة
+                        table.column(target).search(searchExpression, true, false).draw();
+                    } else {
+                        // إذا لم تكن هناك قيم محددة، نعرض جميع البيانات
+                        table.column(target).search('').draw();
                     }
                 });
-                console.log(executive);
-                $.ajax({
-                    url: "{{ route('executives.store') }}",
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    data: executive,
-                    success: function (response) {
-                        $('#editExecutive').modal('hide');
-                        table.ajax.reload();
-                        alert('تم إضافة التنفيذ بنجاح');
-                    },
-                    error: function (xhr, status, error) {
-                        console.error('AJAX error:', status, error);
-                        alert('هنالك خطأ في الإتصال بالسيرفر.');
-                    },
-                })
-            };
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $(document).on('click', '#filterBtn', function() {
-                let text = $(this).text();
-                if (text != 'تصفية') {
-                    $(this).text('تصفية');
-                }else{
-                    $(this).text('إخفاء التصفية');
+                // تطبيق التصفية عند النقر على زر "Apply"
+                $('#filter-date-btn').on('click', function () {
+                    const fromDate = $('#from_date').val();
+                    const toDate = $('#to_date').val();
+                    table.ajax.reload(); // إعادة تحميل الجدول مع التواريخ المحدثة
+                });
+                // تفويض حدث الحذف على الأزرار الديناميكية
+                $(document).on('click', '.delete_row', function () {
+                    const id = $(this).data('id'); // الحصول على ID الصف
+                    if (confirm('هل أنت متأكد من حذف العنصر؟')) {
+                        deleteRow(id); // استدعاء وظيفة الحذف
+                    }
+                });
+                // وظيفة الحذف
+                function deleteRow(id) {
+                    $.ajax({
+                        url: '{{ route("executives.destroy", ":id") }}'.replace(':id', id),
+                        method: 'DELETE',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                        },
+                        success: function (response) {
+                            alert('تم حذف العنصر بنجاح');
+                            table.ajax.reload(); // إعادة تحميل الجدول بعد الحذف
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('AJAX error:', status, error);
+                            alert('هنالك خطاء في عملية الحذف.');
+                        },
+                    });
                 }
-                $('.filter-dropdown').slideToggle();
+                $(document).on('click', '#refreshData', function() {
+                    table.ajax.reload();
+                });
+                $(document).on('click', '#filterBtnClear', function() {
+                    $('.filter-dropdown').slideUp();
+                    $('#filterBtn').text('تصفية');
+                    $('.filterDropdownMenu input').val('');
+                    $('th input[type="checkbox"]').prop('checked', false);
+                    table.columns().search('').draw(); // إعادة رسم الجدول بدون فلاتر
+                });
+                $(document).on('click', '.edit_row', function () {
+                    const id = $(this).data('id'); // الحصول على ID الصف
+                    editExecutiveForm(id); // استدعاء وظيفة الحذف
+                });
+                const executive = {
+                    id: '',
+                    implementation_date: '',
+                    month: '',
+                    broker_name: '',
+                    account: '',
+                    affiliate_name: '',
+                    project_name: '',
+                    detail: '',
+                    item_name: '',
+                    quantity: '',
+                    price: '',
+                    total_ils: '',
+                    received: '',
+                    notes: '',
+                    amount_payments: '',
+                    payment_mechanism: '',
+                    user_id: '',
+                    user_name: '',
+                    manager_name: '',
+                    // files: '',
+                    user : '',
+                }
+                function editExecutiveForm(id) {
+                    $.ajax({
+                        url: '{{ route("executives.edit", ":id") }}'.replace(':id', id),
+                        method: 'GET',
+                        success: function (response) {
+                            executive.id = response.id;
+                            executive.implementation_date = response.implementation_date;
+                            executive.month = response.month;
+                            executive.broker_name = response.broker_name;
+                            executive.account = response.account;
+                            executive.affiliate_name = response.affiliate_name;
+                            executive.project_name = response.project_name;
+                            executive.detail = response.detail;
+                            executive.item_name = response.item_name;
+                            executive.quantity = response.quantity;
+                            executive.price = response.price;
+                            executive.total_ils = response.total_ils;
+                            executive.received = response.received;
+                            executive.notes = response.notes;
+                            executive.amount_payments = response.amount_payments;
+                            executive.payment_mechanism = response.payment_mechanism;
+                            executive.user_id = response.user_id;
+                            executive.user_name = response.user_name;
+                            executive.manager_name = response.manager_name;
+                            executive.user = response.user;
+                            $.each(executive, function(key, value) {
+                                const input = $('#' + key); // البحث عن العنصر باستخدام id
+                                if (input.length) { // التحقق إذا كان العنصر موجودًا
+                                    input.val(value); // تعيين القيمة
+                                }
+                            });
+                            $('#addExecutive').remove();
+                            $('#update').remove();
+                            $('#btns_form').append(`
+                                <button type="button" id="update" class="btn btn-primary mx-2">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                    تعديل
+                                </button>
+                            `);
+                            $('.editForm').css('display','block');
+                            $('#editExecutive').modal('show');
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('AJAX error:', status, error);
+                            alert('هنالك خطأ في الإتصال بالسيرفر.');
+                        },
+                    })
+                }
+                $('.calculation').on('blur keypress', function (event) {
+                    // تحقق إذا كان الحدث هو الضغط على مفتاح
+                    if (event.type == 'keypress' && event.key != "Enter") {
+                        return;
+                    }
+                    // استرجاع القيمة المدخلة
+                    var input = $(this).val();
+                    try {
+                        // استخدام eval لحساب الناتج (مع الاحتياطات الأمنية)
+                        var result = eval(input);
+                        // عرض الناتج في الحقل
+                        $(this).val(result);
+                    } catch (e) {
+                        // في حالة وجود خطأ (مثل إدخال غير صحيح)
+                        alert('يرجى إدخال معادلة صحيحة!');
+                    }
+                });
+                // التعديلات الحاصلة على النموذج
+                $('#quantity, #price').on('input blur', function () {
+                    // جلب القيم من الحقول
+                    let quantity = $('#quantity').val();
+                    let price = $('#price').val();
+
+                    if(quantity != '' && price != ''){
+                        quantity = parseFloat(quantity);
+                        price = parseFloat(price);
+                        let total_ils = quantity * price;
+                        $('#total_ils').val(total_ils);
+                    }
+                });
+                $(document).on('click', '#update', function () {
+                    $.each(executive, function(key, value) {
+                        const input = $('#' + key); // البحث عن العنصر باستخدام id
+                        if(key == 'id'){
+                            //
+                        }else{
+                            executive[key] = input.val();
+                        }
+                    });
+                    $.ajax({
+                        url: "{{ route('executives.update', ':id') }}".replace(':id', executive.id),
+                        method: 'PUT',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        data: executive,
+                        success: function (response) {
+                            $('#editExecutive').modal('hide');
+                            table.ajax.reload();
+                            alert('تم التعديل بنجاح');
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('AJAX error:', status, error);
+                            alert('هنالك خطأ في الإتصال بالسيرفر.');
+                        },
+                    })
+                });
+                $(document).on('click', '#createNew', function () {
+                    $.ajax({
+                        url: '{{ route("executives.create") }}',
+                        method: 'GET',
+                        success: function (response) {
+                            executive.id = response.id;
+                            executive.implementation_date = response.implementation_date;
+                            executive.month = response.month;
+                            executive.broker_name = response.broker_name;
+                            executive.account = response.account;
+                            executive.affiliate_name = response.affiliate_name;
+                            executive.project_name = response.project_name;
+                            executive.detail = response.detail;
+                            executive.item_name = response.item_name;
+                            executive.quantity = response.quantity;
+                            executive.price = response.price;
+                            executive.total_ils = response.total_ils;
+                            executive.received = response.received;
+                            executive.notes = response.notes;
+                            executive.amount_payments = response.amount_payments;
+                            executive.payment_mechanism = response.payment_mechanism;
+                            executive.user_id = response.user_id;
+                            executive.user_name = response.user_name;
+                            executive.manager_name = response.manager_name;
+                            executive.user = response.user;
+                            $.each(executive, function(key, value) {
+                                const input = $('#' + key); // البحث عن العنصر باستخدام id
+                                if (input.length) { // التحقق إذا كان العنصر موجودًا
+                                    input.val(value); // تعيين القيمة
+                                }
+                            });
+                            $('#addExecutive').remove();
+                            $('#update').remove();
+                            $('#btns_form').append(`
+                                <button type="button" id="addExecutive" class="btn btn-primary mx-2">
+                                    <i class="fe fe-plus"></i>
+                                    أضف
+                                </button>
+                            `);
+                            $('.editForm').css('display','none');
+                            $('#editExecutive').modal('show');
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('AJAX error:', status, error);
+                            alert('هنالك خطأ في الإتصال بالسيرفر.');
+                        },
+                    })
+                });
+                $(document).on('click', '#addExecutive', function () {
+                    const id = $(this).data('id'); // الحصول على ID الصف
+                    createExecutiveForm(id);
+                });
+                function createExecutiveForm(id){
+                    $.each(executive, function(key, value) {
+                        const input = $('#' + key); // البحث عن العنصر باستخدام id
+                        if(key == 'id'){
+                            executive['id'] = null;
+                        }else{
+                            executive[key] = input.val();
+                        }
+                    });
+                    console.log(executive);
+                    $.ajax({
+                        url: "{{ route('executives.store') }}",
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        data: executive,
+                        success: function (response) {
+                            $('#editExecutive').modal('hide');
+                            table.ajax.reload();
+                            alert('تم إضافة التنفيذ بنجاح');
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('AJAX error:', status, error);
+                            alert('هنالك خطأ في الإتصال بالسيرفر.');
+                        },
+                    })
+                };
             });
-            if (curentTheme == "light") {
-                $('#stickyTableLight').prop('disabled', false); // تشغيل النمط Light
-                $('#stickyTableDark').prop('disabled', true);  // تعطيل النمط Dark
-            } else {
-                $('#stickyTableLight').prop('disabled', true);  // تعطيل النمط Light
-                $('#stickyTableDark').prop('disabled', false); // تشغيل النمط Dark
-            }
-            $(document).on('click', '#import_excel_btn', function() {
-                $('#editExecutive').modal('hide');
-                $('#import_excel').modal('show');
-            })
-        });
-    </script>
+        </script>
+        <script>
+            $(document).ready(function() {
+                $(document).on('click', '#filterBtn', function() {
+                    let text = $(this).text();
+                    if (text != 'تصفية') {
+                        $(this).text('تصفية');
+                    }else{
+                        $(this).text('إخفاء التصفية');
+                    }
+                    $('.filter-dropdown').slideToggle();
+                });
+                if (curentTheme == "light") {
+                    $('#stickyTableLight').prop('disabled', false); // تشغيل النمط Light
+                    $('#stickyTableDark').prop('disabled', true);  // تعطيل النمط Dark
+                } else {
+                    $('#stickyTableLight').prop('disabled', true);  // تعطيل النمط Light
+                    $('#stickyTableDark').prop('disabled', false); // تشغيل النمط Dark
+                }
+                $(document).on('click', '#import_excel_btn', function() {
+                    $('#editExecutive').modal('hide');
+                    $('#import_excel').modal('show');
+                })
+            });
+        </script>
     @endpush
 </x-front-layout>

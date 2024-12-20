@@ -1,79 +1,16 @@
 <x-front-layout>
     @push('styles')
         <!-- DataTables CSS -->
-        <link rel="stylesheet" href="{{asset('css/jquery.dataTables.min.css')}}">
-        {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css"> --}}
-        <link rel="stylesheet" href="{{asset('css/dataTables.bootstrap4.css')}}">
-        <link rel="stylesheet" href="{{asset('css/dataTables.dataTables.css')}}">
-        <link rel="stylesheet" href="{{asset('css/buttons.dataTables.css')}}">
+        <link rel="stylesheet" href="{{asset('css/datatable/jquery.dataTables.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/datatable/dataTables.bootstrap4.css')}}">
+        <link rel="stylesheet" href="{{asset('css/datatable/dataTables.dataTables.css')}}">
+        <link rel="stylesheet" href="{{asset('css/datatable/buttons.dataTables.css')}}">
+
+
         <link id="stickyTableLight" rel="stylesheet" href="{{ asset('css/stickyTable.css') }}">
         <link id="stickyTableDark" rel="stylesheet" href="{{ asset('css/stickyTableDark.css') }}" disabled>
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-        <style>
-            body{
-                font-family: 'Cairo', sans-serif;
-            }
-            .main-content{
-                margin: 15px 0 0 0 !important;
-            }
-            table.dataTable th:not(.sticky) {
-                position: relative !important;
-            }
-            table.dataTable th, table.dataTable td {
-                box-sizing: content-box !important;
-                white-space: nowrap !important;
-            }
-            table.dataTable th .filter-dropdown{
-                position: absolute;
-                bottom: -2px;
-                left: 2px;
-            }
-            tbody td{
-                padding: 2px 5px !important;
-                color: #000 !important;
-                font-size: 14px !important;
-            }
-            /* تعطيل مؤشر الفرز لرأس العمود */
-            th.no-sort::after {
-                display: none !important;
-            }
-            .breadcrumb{
-                display: none !important;
-            }
-            .filter-dropdown{
-                display: none;
-            }
-            table .dropdown-menu.show {
-                width: 245px;
-            }
-            .dropdown-menu.show  .search-checkbox{
-                padding: 2px 7px !important;
-                width: 70% !important;
-                margin: 0 !important;
-            }
-            .checkbox-list{
-                overflow: auto;
-                max-height: 200px;
-                max-width: 246px;
-            }
-            .dt-layout-row{
-                margin: 0 !important;
-            }
-            .dt-search{
-                display: none !important;
-            }
-            .organization{
-                width: 130px !important;
-                overflow: hidden;
-                display: block;
-
-                transition: all 0.5s ease-in-out;
-            }
-            .organization:hover {
-                width: 100% !important;
-            }
-
-        </style>
+        <link rel="stylesheet" href="{{ asset('css/datatableIndex.css') }}">
     @endpush
     <x-slot:extra_nav>
         <li class="nav-item">
@@ -84,8 +21,8 @@
             </button>
         </li>
         @can('create', 'App\\Models\Allocation')
-        <li class="nav-item">
-            <button type="button" class="btn btn-icon text-success my-2" id="createNew">
+        <li class="nav-item mx-2">
+            <button type="button" class="btn btn-icon text-success m-0" id="createNew">
                 <i class="fe fe-plus fe-16"></i>
             </button>
         </li>
@@ -106,6 +43,8 @@
             <button type="button" class="btn" id="refreshData"><span class="fe fe-refresh-ccw fe-16 text-white"></span></button>
         </li>
     </x-slot:extra_nav>
+
+
     <div class="row">
         <div class="col-md-12" style="padding: 0 2px;">
             <div class="card">
@@ -120,8 +59,8 @@
                                         <span>تاريخ التخصيص</span>
                                         <div class='filter-dropdown ml-4'>
                                             <div class="dropdown">
-                                                <button class="btn" style="padding: 0; margin: 0; border: none;" type="button" id="date_filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-2" type="button" id="date_filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
                                                 </button>
                                                 <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="date_filter">
                                                     <div>
@@ -139,18 +78,18 @@
                                     </div>
                                 </th>
                                 <th class="sticky" style="right: 132px;" id="nth2">
-                                    <div class='d-flex align-items-center justify-content-between'>
-                                        <span>رقم <br> الموازنة</span>
-                                        <div class='filter-dropdown ml-4'>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span style="font-size: 12px;">رقم <br> الموازنة</span>
+                                        <div class="filter-dropdown ml-4">
                                             <div class="dropdown">
-                                                <button class="btn" style="padding: 0; margin: 0; border: none;" type="button" id="budget_filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-3" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
                                                 </button>
                                                 <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="budget_filter">
                                                     <!-- إضافة checkboxes بدلاً من select -->
                                                     <div class="searchable-checkbox">
                                                         <div class="d-flex justify-content-between align-items-center">
-                                                            <input type="number" class="form-control search-checkbox" data-index="3" placeholder="ابحث...">
+                                                            <input type="search" class="form-control search-checkbox" data-index="3" placeholder="ابحث...">
                                                             <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="3" data-field="budget_name">
                                                                 <i class="fe fe-check"></i>
                                                             </button>
@@ -160,11 +99,6 @@
                                                                 <input type="checkbox" value="all" class="all-checkbox" data-index="3"> الكل
                                                             </label>
                                                             <div class="checkbox-list checkbox-list-3">
-                                                                @foreach ($budgets as $budget)
-                                                                <label style="display: block;">
-                                                                    <input type="checkbox" value="{{ $budget }}" class="budget_name-checkbox"> {{ $budget }}
-                                                                </label>
-                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
@@ -200,11 +134,11 @@
                                 </th> --}}
                                 <th class="sticky" style="right: 220px;" id="nth3">
                                     <div class="d-flex align-items-center justify-content-between">
-                                        <span>الاسم المختصر</span>
+                                        <span>المؤسسة</span>
                                         <div class="filter-dropdown ml-4">
                                             <div class="dropdown">
-                                                <button class="btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-4" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
                                                 </button>
                                                 <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="broker_filter">
                                                     <!-- إضافة checkboxes بدلاً من select -->
@@ -220,11 +154,6 @@
                                                                 <input type="checkbox" value="all" class="all-checkbox" data-index="4"> الكل
                                                             </label>
                                                             <div class="checkbox-list checkbox-list-4">
-                                                                @foreach ($brokers as $broker)
-                                                                    <label style="display: block;">
-                                                                        <input type="checkbox" value="{{ $broker }}" class="broker_name-checkbox"> {{ $broker }}
-                                                                    </label>
-                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
@@ -234,14 +163,14 @@
                                     </div>
                                 </th>
                                 <th>
-                                    <div class='d-flex align-items-center justify-content-between'>
-                                        <span>المؤسسة</span>
-                                        <div class='filter-dropdown ml-4'>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span>المتبرع</span>
+                                        <div class="filter-dropdown ml-4">
                                             <div class="dropdown">
-                                                <button class="btn" style="padding: 0; margin: 0; border: none;" type="button" id="organization_filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-5" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
                                                 </button>
-                                                <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="broker_filter">
+                                                <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="organization_filter">
                                                     <!-- إضافة checkboxes بدلاً من select -->
                                                     <div class="searchable-checkbox">
                                                         <div class="d-flex justify-content-between align-items-center">
@@ -255,11 +184,6 @@
                                                                 <input type="checkbox" value="all" class="all-checkbox" data-index="5"> الكل
                                                             </label>
                                                             <div class="checkbox-list checkbox-list-5">
-                                                                @foreach ($organizations as $organization)
-                                                                <label style="display: block;">
-                                                                    <input type="checkbox" value="{{ $organization }}" class="organization_name-checkbox"> {{ $organization }}
-                                                                </label>
-                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
@@ -269,12 +193,12 @@
                                     </div>
                                 </th>
                                 <th>
-                                    <div class='d-flex align-items-center justify-content-between'>
+                                    <div class="d-flex align-items-center justify-content-between">
                                         <span>المشروع</span>
                                         <div class="filter-dropdown ml-4">
                                             <div class="dropdown">
-                                                <button class="btn" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-6" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
                                                 </button>
                                                 <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="proj_filter">
                                                     <!-- إضافة checkboxes بدلاً من select -->
@@ -287,14 +211,9 @@
                                                         </div>
                                                         <div class="checkbox-list-box">
                                                             {{-- <label style="display: block;">
-                                                                <input type="checkbox" value="all" class="all-checkbox" data-index="4"> الكل
+                                                                <input type="checkbox" value="all" class="all-checkbox" data-index="6"> الكل
                                                             </label> --}}
                                                             <div class="checkbox-list checkbox-list-6">
-                                                                @foreach ($projs as $proj)
-                                                                    <label style="display: block;">
-                                                                        <input type="checkbox" value="{{ $proj }}" class="proj_name-checkbox"> {{ $proj }}
-                                                                    </label>
-                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
@@ -304,32 +223,27 @@
                                     </div>
                                 </th>
                                 <th>
-                                    <div class='d-flex align-items-center justify-content-between'>
+                                    <div class="d-flex align-items-center justify-content-between">
                                         <span>الصنف</span>
-                                        <div class='filter-dropdown ml-4'>
+                                        <div class="filter-dropdown ml-4">
                                             <div class="dropdown">
-                                                <button class="btn" style="padding: 0; margin: 0; border: none;" type="button" id="item_filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                    <i class="fe fe-filter text-white"></i>
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-7" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
                                                 </button>
                                                 <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="item_filter">
                                                     <!-- إضافة checkboxes بدلاً من select -->
                                                     <div class="searchable-checkbox">
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <input type="search" class="form-control search-checkbox" data-index="7" placeholder="ابحث...">
-                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="7" data-field="itemssss">
+                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="7" data-field="item_name">
                                                                 <i class="fe fe-check"></i>
                                                             </button>
                                                         </div>
                                                         <div class="checkbox-list-box">
-                                                            {{-- <label style="display: block;">
+                                                            <label style="display: block;">
                                                                 <input type="checkbox" value="all" class="all-checkbox" data-index="7"> الكل
-                                                            </label> --}}
+                                                            </label>
                                                             <div class="checkbox-list checkbox-list-7">
-                                                                @foreach ($items as $itemssss)
-                                                                <label style="display: block;">
-                                                                    <input type="checkbox" value="{{ $itemssss }}" class="itemssss-checkbox"> {{ $itemssss }}
-                                                                </label>
-                                                                @endforeach
                                                             </div>
                                                         </div>
                                                     </div>
@@ -338,50 +252,292 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th>الكمية</th>
+                                <th>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span>الكمية</span>
+                                        <div class="filter-dropdown ml-4">
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-8" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
+                                                </button>
+                                                <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="quantity_filter">
+                                                    <!-- إضافة checkboxes بدلاً من select -->
+                                                    <div class="searchable-checkbox">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <input type="search" class="form-control search-checkbox" data-index="8" placeholder="ابحث...">
+                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="8" data-field="quantity_field">
+                                                                <i class="fe fe-check"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="checkbox-list-box">
+                                                            <label style="display: block;">
+                                                                <input type="checkbox" value="all" class="all-checkbox" data-index="8"> الكل
+                                                            </label>
+                                                            <div class="checkbox-list checkbox-list-8">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
                                 <th>السعر</th>
                                 <th>إجمالي</th>
-                                <th>التخصيص</th>
-                                <th>العملة</th>
+                                <th>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span>التخصيص</span>
+                                        <div class="filter-dropdown ml-4">
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-11" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
+                                                </button>
+                                                <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="allocation_filter">
+                                                    <!-- إضافة checkboxes بدلاً من select -->
+                                                    <div class="searchable-checkbox">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <input type="search" class="form-control search-checkbox" data-index="11" placeholder="ابحث...">
+                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="11" data-field="allocation_field">
+                                                                <i class="fe fe-check"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="checkbox-list-box">
+                                                            <label style="display: block;">
+                                                                <input type="checkbox" value="all" class="all-checkbox" data-index="11"> الكل
+                                                            </label>
+                                                            <div class="checkbox-list checkbox-list-11">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span>العملة</span>
+                                        <div class="filter-dropdown ml-4">
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-25" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
+                                                </button>
+                                                <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="currency_allocation_filter">
+                                                    <!-- إضافة checkboxes بدلاً من select -->
+                                                    <div class="searchable-checkbox">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <input type="search" class="form-control search-checkbox" data-index="25" placeholder="ابحث...">
+                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="25" data-field="currency_allocation_field">
+                                                                <i class="fe fe-check"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="checkbox-list-box">
+                                                            <label style="display: block;">
+                                                                <input type="checkbox" value="all" class="all-checkbox" data-index="25"> الكل
+                                                            </label>
+                                                            <div class="checkbox-list checkbox-list-25">
+                                                                <label style="display: block;">
+                                                                    <input type="checkbox" value="USD" class="currency_allocation_field-checkbox"> الدولار
+                                                                </label>
+                                                                <label style="display: block;">
+                                                                    <input type="checkbox" value="ILS" class="currency_allocation_field-checkbox"> شيكل
+                                                                </label>
+                                                                <label style="display: block;">
+                                                                    <input type="checkbox" value="EUR" class="currency_allocation_field-checkbox"> اليورو
+                                                                </label>
+                                                                <label style="display: block;">
+                                                                    <input type="checkbox" value="JOD" class="currency_allocation_field-checkbox"> الدينار الأردني
+                                                                </label>
+                                                                <label style="display: block;">
+                                                                    <input type="checkbox" value="KWD" class="currency_allocation_field-checkbox"> الدينار الكويتي
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
                                 <th>سعر العملة</th>
-                                <th>المبلغ $</th>
-                                <th>عدد المستفيدين</th>
+                                <th>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span>المبلغ $</span>
+                                        <div class="filter-dropdown ml-4">
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-14" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
+                                                </button>
+                                                <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="amount_filter">
+                                                    <!-- إضافة checkboxes بدلاً من select -->
+                                                    <div class="searchable-checkbox">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <input type="search" class="form-control search-checkbox" data-index="14" placeholder="ابحث...">
+                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="14" data-field="amount_field">
+                                                                <i class="fe fe-check"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="checkbox-list-box">
+                                                            <label style="display: block;">
+                                                                <input type="checkbox" value="all" class="all-checkbox" data-index="14"> الكل
+                                                            </label>
+                                                            <div class="checkbox-list checkbox-list-14">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span>عدد المستفيدين</span>
+                                        <div class="filter-dropdown ml-4">
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-15" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
+                                                </button>
+                                                <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="number_beneficiaries_filter">
+                                                    <!-- إضافة checkboxes بدلاً من select -->
+                                                    <div class="searchable-checkbox">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <input type="search" class="form-control search-checkbox" data-index="15" placeholder="ابحث...">
+                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="15" data-field="number_beneficiaries_field">
+                                                                <i class="fe fe-check"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="checkbox-list-box">
+                                                            <label style="display: block;">
+                                                                <input type="checkbox" value="all" class="all-checkbox" data-index="15"> الكل
+                                                            </label>
+                                                            <div class="checkbox-list checkbox-list-15">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
                                 <th>بنود التنفيد</th>
-                                <th>تاريخ القبض</th>
+                                <th>
+                                    <div class='d-flex align-items-center justify-content-between'>
+                                        <span>تاريخ القبض</span>
+                                        <div class='filter-dropdown ml-4'>
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-2" type="button" id="date_filter" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
+                                                </button>
+                                                <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="date_filter">
+                                                    <div>
+                                                        <input type="date" id="from_date_implementation" name="from_date_implementation" class="form-control mr-2" style="width: 200px"/>
+                                                        <input type="date" id="to_date_implementation" value="{{Carbon\Carbon::now()->format('Y-m-d')}}" name="to_date_implementation" class="form-control mr-2 mt-2" style="width: 200px"/>
+                                                    </div>
+                                                    <div>
+                                                        <button id="filter-date-btn_implementation" class='btn btn-success text-white filter-apply-btn-data' data-target="17" data-field="date_implementation">
+                                                            <i class='fe fe-check'></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
                                 <th>بيان</th>
-                                <th>المبلغ المقبوض</th>
-                                <th>رقم الإيصال</th>
+                                <th>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span>المبلغ المقبوض</span>
+                                        <div class="filter-dropdown ml-4">
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-19" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
+                                                </button>
+                                                <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="amount_received_filter">
+                                                    <!-- إضافة checkboxes بدلاً من select -->
+                                                    <div class="searchable-checkbox">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <input type="search" class="form-control search-checkbox" data-index="19" placeholder="ابحث...">
+                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="19" data-field="amount_received_field">
+                                                                <i class="fe fe-check"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="checkbox-list-box">
+                                                            <label style="display: block;">
+                                                                <input type="checkbox" value="all" class="all-checkbox" data-index="19"> الكل
+                                                            </label>
+                                                            <div class="checkbox-list checkbox-list-19">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                                <th>
+                                    <div class="d-flex align-items-center justify-content-between">
+                                        <span>رقم الإيصال</span>
+                                        <div class="filter-dropdown ml-4">
+                                            <div class="dropdown">
+                                                <button class="btn btn-secondary btn-filter" id="btn-filter-20" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    <i class="fe fe-pocket text-white"></i>
+                                                </button>
+                                                <div class="filterDropdownMenu dropdown-menu dropdown-menu-right p-2" aria-labelledby="arrest_receipt_number_filter">
+                                                    <!-- إضافة checkboxes بدلاً من select -->
+                                                    <div class="searchable-checkbox">
+                                                        <div class="d-flex justify-content-between align-items-center">
+                                                            <input type="search" class="form-control search-checkbox" data-index="20" placeholder="ابحث...">
+                                                            <button class="btn btn-success text-white filter-apply-btn-checkbox" data-target="20" data-field="arrest_receipt_number_field">
+                                                                <i class="fe fe-check"></i>
+                                                            </button>
+                                                        </div>
+                                                        <div class="checkbox-list-box">
+                                                            <label style="display: block;">
+                                                                <input type="checkbox" value="all" class="all-checkbox" data-index="20"> الكل
+                                                            </label>
+                                                            <div class="checkbox-list checkbox-list-20">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
                                 <th>ملاحظات</th>
                                 <th>اسم المستخدم</th>
                                 <th>المدير المستلم</th>
                                 <th></th>
+                                <th style="display: none;"></th>
                             </tr>
                         </thead>
                         <tfoot>
                             <tr>
                                 <td></td>
-                                <td class="text-white opacity-7 text-center" id="count_allocations"></td>
-                                <td class='sticky text-right' colSpan="3">المجموع</td>
+                                <td class="text-white text-center" id="count_allocations"></td>
+                                <td class='sticky text-left' colSpan="3">المجموع</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td class='text-white' id="total_quantity"></td>
+                                <td class='text-white text-center' id="total_quantity"></td>
                                 <td></td>
                                 <td></td>
-                                <td class='text-white' id="total_allocation"></td>
+                                <td class='text-white text-center' id="total_allocation"></td>
                                 <td></td>
                                 <td></td>
-                                <td class='text-white total_amount'></td>
-                                <td class='text-white' id="total_number_beneficiaries"></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td class='text-white total_amount_received'></td>
+                                <td class='text-white text-center total_amount'></td>
+                                <td class='text-white text-center' id="total_number_beneficiaries"></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
+                                <td class='text-white text-center total_amount_received'></td>
                                 <td></td>
                                 <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td style="display: none;"></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -462,17 +618,19 @@
     </div>
     @endcan
 
+
+
     @push('scripts')
         <!-- DataTables JS -->
-        <script src="{{asset('js/jquery.dataTables.min.js')}}"></script>
-        <script src="{{asset('js/dataTables.js')}}"></script>
-        <script src="{{asset('js/dataTables.buttons.js')}}"></script>
-        <script src="{{asset('js/buttons.dataTables.js')}}"></script>
-        <script src="{{asset('js/jszip.min.js')}}"></script>
-        <script src="{{asset('js/pdfmake.min.js')}}"></script>
-        <script src="{{asset('js/vfs_fonts.js')}}"></script>
-        <script src="{{asset('js/buttons.html5.min.js')}}"></script>
-        <script src="{{asset('js/buttons.print.min.js')}}"></script>
+        <script src="{{asset('js/datatable/jquery.dataTables.min.js')}}"></script>
+        <script src="{{asset('js/datatable/dataTables.js')}}"></script>
+        <script src="{{asset('js/datatable/dataTables.buttons.js')}}"></script>
+        <script src="{{asset('js/datatable/buttons.dataTables.js')}}"></script>
+        <script src="{{asset('js/datatable/jszip.min.js')}}"></script>
+        <script src="{{asset('js/datatable/pdfmake.min.js')}}"></script>
+        <script src="{{asset('js/datatable/vfs_fonts.js')}}"></script>
+        <script src="{{asset('js/datatable/buttons.html5.min.js')}}"></script>
+        <script src="{{asset('js/datatable/buttons.print.min.js')}}"></script>
 
         <script src="{{asset('js/jquery.validate.min.js')}}"></script>
         <script type="text/javascript">
@@ -543,6 +701,8 @@
                             // إضافة تواريخ التصفية إلى الطلب المرسل
                             d.from_date = $('#from_date').val();
                             d.to_date = $('#to_date').val();
+                            d.from_date_implementation = $('#from_date_implementation').val();
+                            d.to_date_implementation = $('#to_date_implementation').val();
                         },
                         error: function(xhr, status, error) {
                             console.error('AJAX error:', status, error);
@@ -556,8 +716,7 @@
                             @else
                             return '';
                             @endcan
-                        }
-                        },
+                        }},
                         { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, class: 'text-center'}, // عمود الترقيم التلقائي
                         { data: 'date_allocation', name: 'date_allocation'  , orderable: false, class: 'sticky text-center'},
                         { data: 'budget_number', name: 'budget_number' , orderable: false, class: 'sticky text-center'},
@@ -569,13 +728,16 @@
                         { data: 'item_name', name: 'item_name'  , orderable: false},
                         { data: 'quantity', name: 'quantity'  , orderable: false, class: 'text-center'},
                         { data: 'price', name: 'price'  , orderable: false, class: 'text-center'},
-                        { data: 'total_dollar', name: 'total_dollar'  , orderable: false, class: 'text-center', render: function(data, type, row) {
+                        { data: 'total_dollar', name: 'total_dollar', orderable: false, class: 'text-center', render: function(data, type, row) {
                             return  formatNumber(data,2);
                         }},
-                        { data: 'allocation', name: 'allocation'  , orderable: false, class: 'text-center', render: function(data, type, row) {
+                        { data: 'allocation', name: 'allocation', orderable: false, class: 'text-center', render: function(data, type, row) {
                             return  formatNumber(data,2);
                         }},
-                        { data: 'currency_allocation_name', name: 'currency_allocation_name'  , orderable: false},
+                        // { data: 'currency_allocation_name_column', name: 'currency_allocation_name_column', orderable: false , searchable: true},
+                        { data: 'currency_allocation_name', name: 'currency_allocation_name', orderable: false , searchable: true,render: function(data, type, row) {
+                            return data;
+                        }},
                         { data: 'currency_allocation_value', name: 'currency_allocation_value' , orderable: false, class: 'text-center', render: function(data, type, row) {
                             return  formatNumber((1/data),2);
                         }},
@@ -589,7 +751,7 @@
                         { data: 'amount_received', name: 'amount_received'  , orderable: false, class: 'text-center', render: function(data, type, row) {
                             return  formatNumber(data,2);
                         }},
-                        { data: 'arrest_receipt_number', name: 'arrest_receipt_number'  , orderable: false, class: 'text-center', render: function(data, type, row) {
+                        { data: 'arrest_receipt_number', name: 'arrest_receipt_number', orderable: false, class: 'text-center', render: function(data, type, row) {
                             return  formatNumber(data,0);
                         }},
                         { data: 'notes', name: 'notes'  , orderable: false},
@@ -613,6 +775,9 @@
                                 @endcan
                             },
                         },
+                        { data: 'currency_allocation', name: 'currency_allocation', orderable: false , class: 'd-none' ,render: function(data, type, row) {
+                            return data;
+                        }}
                     ],
                     columnDefs: [
                         { targets: 1, searchable: false, orderable: false } // تعطيل الفرز والبحث على عمود الترقيم
@@ -710,6 +875,65 @@
                     table.button('.buttons-print').trigger(); // استدعاء وظيفة الطباعة الأصلية
                 });
                 $('#allocations-table_filter').addClass('d-none');
+                // جلب الداتا في checkbox
+                function populateFilterOptions(columnIndex, container,name) {
+                    const uniqueValues = [];
+                    table.column(columnIndex, { search: 'applied' }).data().each(function (value) {
+                        const stringValue = value ? String(value).trim() : ''; // تحويل القيمة إلى نص وإزالة الفراغات
+                        if (stringValue && uniqueValues.indexOf(stringValue) === -1) {
+                            uniqueValues.push(stringValue);
+                        }
+                    });
+                    // ترتيب القيم أبجديًا
+                    uniqueValues.sort();
+                    // إضافة الخيارات إلى div
+                    const checkboxList = $(container);
+                    checkboxList.empty();
+                    uniqueValues.forEach(value => {
+                        checkboxList.append(`
+                            <label style="display: block;">
+                                <input type="checkbox" value="${value}" class="${name}-checkbox"> ${value}
+                            </label>
+                        `);
+                    });
+                }
+                function isColumnFiltered(columnIndex) {
+                    const filterValue = table.column(columnIndex).search();
+                    return filterValue !== ""; // إذا لم يكن فارغًا، الفلترة مفعلة
+                }
+                // دالة لإعادة بناء الفلاتر بناءً على البيانات الحالية
+                function rebuildFilters() {
+                    isColumnFiltered(3) ? '' : populateFilterOptions(3, '.checkbox-list-3','budget_name');
+                    isColumnFiltered(4) ? '' : populateFilterOptions(4, '.checkbox-list-4','broker_name');
+                    isColumnFiltered(5) ? '' : populateFilterOptions(5, '.checkbox-list-5','organization_name');
+                    isColumnFiltered(6) ? '' : populateFilterOptions(6, '.checkbox-list-6','proj_name');
+                    isColumnFiltered(7) ? '' : populateFilterOptions(7, '.checkbox-list-7','item_name');
+                    isColumnFiltered(8) ? '' : populateFilterOptions(8, '.checkbox-list-8','quantity_field');
+                    isColumnFiltered(11) ? '' : populateFilterOptions(11, '.checkbox-list-11','allocation_field');
+                    // isColumnFiltered(25) ? '' : populateFilterOptions(25, '.checkbox-list-25','currency_allocation_field');
+                    isColumnFiltered(14) ? '' : populateFilterOptions(14, '.checkbox-list-14','amount_field');
+                    isColumnFiltered(15) ? '' : populateFilterOptions(15, '.checkbox-list-15','number_beneficiaries_field');
+                    isColumnFiltered(19) ? '' : populateFilterOptions(19, '.checkbox-list-19','amount_received_field');
+                    isColumnFiltered(20) ? '' : populateFilterOptions(20, '.checkbox-list-20','arrest_receipt_number_field');
+
+
+                    for (let i = 1; i <= 20; i++) {
+                        if (isColumnFiltered(i)) {
+                            $('#btn-filter-' + i).removeClass('btn-secondary');
+                            $('#btn-filter-' + i + ' i').removeClass('fe-pocket');
+                            $('#btn-filter-' + i + ' i').addClass('fe-filter');
+                            $('#btn-filter-' + i).addClass('btn-success');
+                        }else{
+                            $('#btn-filter-' + i + ' i').removeClass('fe-filter');
+                            $('#btn-filter-' + i).removeClass('btn-success');
+                            $('#btn-filter-' + i).addClass('btn-secondary');
+                            $('#btn-filter-' + i + ' i').addClass('fe-pocket');
+                        }
+                    }
+                }
+                table.on('draw', function() {
+                    rebuildFilters();
+                });
                 // // تطبيق الفلترة عند الضغط على زر "check"
                 $('.filter-apply-btn').on('click', function() {
                     let target = $(this).data('target');
@@ -766,16 +990,18 @@
                         // دمج القيم باستخدام OR (|) كما هو متوقع في البحث
                         var searchExpression = filterValues.join('|');
                         // تطبيق الفلترة على العمود باستخدام القيم المحددة
-                        table.column(target).search(searchExpression, true, false).draw();
+                        table.column(target).search(searchExpression, true, false).draw(); // Use regex search
                     } else {
                         // إذا لم تكن هناك قيم محددة، نعرض جميع البيانات
                         table.column(target).search('').draw();
                     }
                 });
                 // تطبيق التصفية عند النقر على زر "Apply"
-                $('#filter-date-btn').on('click', function () {
+                $('#filter-date-btn', '#filter-date-implementation-btn').on('click', function () {
                     const fromDate = $('#from_date').val();
                     const toDate = $('#to_date').val();
+                    const fromDateImplementation = $('#from_date_implementation').val();
+                    const toDateImplementation = $('#to_date_implementation').val();
                     table.ajax.reload(); // إعادة تحميل الجدول مع التواريخ المحدثة
                 });
                 // تفويض حدث الحذف على الأزرار الديناميكية

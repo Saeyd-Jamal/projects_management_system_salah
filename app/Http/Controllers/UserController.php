@@ -90,7 +90,7 @@ class UserController extends Controller
     public function show(User $user)
     {
         $this->authorize('view', User::class);
-        $logs = Logs::where('user_id', $user->id)->paginate(10);
+        $logs = Logs::where('user_id', $user->id)->orderBy('id', 'desc')->paginate(10);
         return view('dashboard.users.show', compact('user', 'logs'));
     }
 

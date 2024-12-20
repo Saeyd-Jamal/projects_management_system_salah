@@ -53,15 +53,15 @@
                                     </td>
                                     <td class="text-center">{{$loop->iteration}}</td>
                                     <td>{{ ($accreditation->type == 'allocation') ? 'تخصيص' : 'تنفيذ' }}</td>
-                                    <td>{{ $accreditation->broker_name }}</td>
-                                    <td>{{ $accreditation->project_name }}</td>
-                                    <td>{{ $accreditation->item_name }}</td>
-                                    <td>{{ $accreditation->quantity }}</td>
+                                    <td>{{ $accreditation->broker_name ?? '' }}</td>
+                                    <td>{{ $accreditation->project_name ?? '' }}</td>
+                                    <td>{{ $accreditation->item_name ?? '' }}</td>
+                                    <td>{{ $accreditation->quantity ?? '' }}</td>
                                     <td>{{ ($accreditation->amount != null) ? $accreditation->amount : $accreditation->total_ils }}</td>
-                                    <td>{{ $accreditation->notes }}</td>
-                                    <td>{{ $accreditation->user->name }}</td>
-                                    <td>{{ $accreditation->manager_name }}</td>
-                                    <td>{{ $accreditation->created_at }}</td>
+                                    <td>{{ $accreditation->notes ?? '' }}</td>
+                                    <td>{{ $accreditation->user->name ?? '' }}</td>
+                                    <td>{{ $accreditation->manager_name ?? '' }}</td>
+                                    <td>{{ $accreditation->created_at ?? '' }}</td>
                                 </tr>
                                 @endforeach
                             </tbody>
