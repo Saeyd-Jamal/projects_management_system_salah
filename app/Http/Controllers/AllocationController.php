@@ -8,6 +8,7 @@ use App\Models\Allocation;
 use App\Models\Broker;
 use App\Models\Currency;
 use App\Models\Item;
+use App\Models\Logs;
 use App\Models\Organization;
 use App\Models\Project;
 use Carbon\Carbon;
@@ -18,6 +19,8 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use Yajra\DataTables\Facades\DataTables;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf as PDF;
+
 
 class AllocationController extends Controller
 {
@@ -50,6 +53,9 @@ class AllocationController extends Controller
                     ->addColumn('currency_allocation_name', function ($allocation) {
                         $currency = Currency::where('code', $allocation->currency_allocation)->first();
                         return $currency ? "$currency->name" : '';
+                    })
+                    ->addColumn('print', function ($allocation) {
+                        return $allocation->id;
                     })
                     ->addColumn('delete', function ($allocation) {
                         return $allocation->id;
@@ -241,4 +247,26 @@ class AllocationController extends Controller
         return redirect()->route('allocations.index')->with('success', 'تمت عملية الاستيراد بنجاح');
     }
 
+    public function print(Request $request, Allocation $allocation){
+        $pdf = PDF::loadView('dashboard.reports.allocation',['allocation' => $allocation],[],
+        [
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'default_font_size' => 12,
+            'default_font' => 'Arial',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 30,
+            'margin_bottom' => 0,
+        ]);
+        Logs::create([
+            'type' => 'print' ,
+            'message' => 'تم طباعة بيانات تخصيص رقم :' . $allocation->budget_number,
+            'data' => 'report' ,
+            'user_id' => Auth::user()->id,
+            'user_name' => Auth::user()->name,
+        ]);
+        $time = Carbon::now();
+        return $pdf->stream('التخصيص رقم '.$allocation->budget_number.'  _ '.$time.'.pdf');
+    }
 }

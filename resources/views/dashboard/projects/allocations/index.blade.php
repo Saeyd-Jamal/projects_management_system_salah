@@ -508,6 +508,9 @@
                                 <th>ملاحظات</th>
                                 <th>اسم المستخدم</th>
                                 <th>المدير المستلم</th>
+                                <th>
+                                    <i class="fe fe-printer text-white fe-16"></i>
+                                </th>
                                 <th></th>
                                 <th style="display: none;"></th>
                             </tr>
@@ -532,6 +535,7 @@
                                 <td></td>
                                 <td></td>
                                 <td class='text-white text-center total_amount_received'></td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -631,7 +635,6 @@
         <script src="{{asset('js/datatable/vfs_fonts.js')}}"></script>
         <script src="{{asset('js/datatable/buttons.html5.min.js')}}"></script>
         <script src="{{asset('js/datatable/buttons.print.min.js')}}"></script>
-
         <script src="{{asset('js/jquery.validate.min.js')}}"></script>
         <script type="text/javascript">
             $(document).ready(function() {
@@ -757,24 +760,33 @@
                         { data: 'notes', name: 'notes'  , orderable: false},
                         { data: 'user_name', name: 'user_name'  , orderable: false},
                         { data: 'manager_name', name: 'manager_name'  , orderable: false},
-                        {
-                            data: 'delete',
-                            name: 'delete',
-                            orderable: false,
-                            searchable: false,
-                            render: function (data, type, row) {
-                                @can('delete','App\\Models\Allocation')
-                                return `
+                        { data: 'print', name: 'print', orderable: false, searchable: false, render: function (data, type, row) {
+                            @can('print','App\\Models\Allocation')
+                            return `
+                                <form method="post" action="{{ route('allocations.print', ':allocation') }}" target="_blank">
+                                    @csrf
                                     <button
-                                        class="btn btn-icon p-1 text-danger delete_row"
-                                        data-id="${data}">
-                                        <i class="fe fe-trash"></i>
-                                    </button>`;
-                                @else
-                                return '';
-                                @endcan
-                            },
-                        },
+                                        class="btn btn-icon p-1 text-info">
+                                        <i class="fe fe-printer"></i>
+                                    </button>
+                                </form>
+                                `.replace(':allocation', data);
+                            @else
+                            return '';
+                            @endcan
+                        },},
+                        { data: 'delete', name: 'delete', orderable: false, searchable: false, render: function (data, type, row) {
+                            @can('delete','App\\Models\Allocation')
+                            return `
+                                <button
+                                    class="btn btn-icon p-1 text-danger delete_row"
+                                    data-id="${data}">
+                                    <i class="fe fe-trash"></i>
+                                </button>`;
+                            @else
+                            return '';
+                            @endcan
+                        },},
                         { data: 'currency_allocation', name: 'currency_allocation', orderable: false , class: 'd-none' ,render: function(data, type, row) {
                             return data;
                         }}
