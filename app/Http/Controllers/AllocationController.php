@@ -54,6 +54,9 @@ class AllocationController extends Controller
                         $currency = Currency::where('code', $allocation->currency_allocation)->first();
                         return $currency ? "$currency->name" : '';
                     })
+                    ->addColumn('select', function ($allocation) {
+                        return $allocation->id;
+                    })
                     ->addColumn('print', function ($allocation) {
                         return $allocation->id;
                     })

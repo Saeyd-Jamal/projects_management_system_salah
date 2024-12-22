@@ -6,13 +6,17 @@
         <link rel="stylesheet" href="{{asset('css/datatable/dataTables.dataTables.css')}}">
         <link rel="stylesheet" href="{{asset('css/datatable/buttons.dataTables.css')}}">
 
-
         <link id="stickyTableLight" rel="stylesheet" href="{{ asset('css/stickyTable.css') }}">
         <link id="stickyTableDark" rel="stylesheet" href="{{ asset('css/stickyTableDark.css') }}" disabled>
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         <link rel="stylesheet" href="{{ asset('css/datatableIndex.css') }}">
     @endpush
     <x-slot:extra_nav>
+        <li class="nav-item">
+            <button type="button" class="btn btn-icon btn-info text-white mx-1" id="copy-export" title="نسخ">
+                <i class="fe fe-copy fe-16"></i>
+            </button>
+        </li>
         <li class="nav-item">
             <button type="button" class="btn btn-icon btn-success text-white" id="excel-export" title="تصدير excel">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="16" height="16">
@@ -508,6 +512,7 @@
                                 <th>ملاحظات</th>
                                 <th>اسم المستخدم</th>
                                 <th>المدير المستلم</th>
+                                <th></th>
                                 <th>
                                     <i class="fe fe-printer text-white fe-16"></i>
                                 </th>
@@ -535,6 +540,7 @@
                                 <td></td>
                                 <td></td>
                                 <td class='text-white text-center total_amount_received'></td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -692,6 +698,39 @@
                                         }
                                     }
                                 },
+                                {
+                                    extend: 'copy',
+                                    text: 'نسخ الأسطر المحددة',
+                                    exportOptions: {
+                                        // تحديد الأعمدة المطلوبة فقط
+                                        columns: [
+                                            2,
+                                            4,
+                                            5,
+                                            6,
+                                            7,
+                                            8,
+                                            9,
+                                            10,
+                                            11,
+                                            12,
+                                            14,
+                                            16,
+                                            17,
+                                            18,
+                                        ], // ضع أرقام الأعمدة التي تريد نسخها فقط
+                                        rows: function (idx, data, node) {
+                                            return $(node).find('.select_row').prop('checked');
+                                        }
+                                    },
+                                    className: 'd-none', // إخفاء الزر الأصلي
+                                    title: '', // إزالة عنوان الملف
+                                    header: false, // إزالة رؤوس الأعمدة
+                                    footer: false,
+                                    copySuccess: {
+                                        1: '%d سطر تم نسخه'
+                                    }
+                                }
                             ]
                         }
                     },
@@ -760,6 +799,11 @@
                         { data: 'notes', name: 'notes'  , orderable: false},
                         { data: 'user_name', name: 'user_name'  , orderable: false},
                         { data: 'manager_name', name: 'manager_name'  , orderable: false},
+                        { data: 'select', name: 'select', orderable: false, searchable: false, render: function (data, type, row) {
+                            return `
+                                <input type="checkbox" class="select_row form-check" name="id[]" value=":allocation">
+                                `.replace(':allocation', data);
+                        }},
                         { data: 'print', name: 'print', orderable: false, searchable: false, render: function (data, type, row) {
                             @can('print','App\\Models\Allocation')
                             return `
@@ -882,6 +926,9 @@
                 // نسخ وظيفة الزر إلى الزر المخصص
                 $('#excel-export').on('click', function () {
                     table.button('.buttons-excel').trigger(); // استدعاء وظيفة الزر الأصلي
+                });
+                $('#copy-export').on('click', function () {
+                    table.button('.buttons-copy').trigger(); // استدعاء وظيفة النسخ من مكتبة Buttons
                 });
                 $('#print-btn').on('click', function () {
                     table.button('.buttons-print').trigger(); // استدعاء وظيفة الطباعة الأصلية
