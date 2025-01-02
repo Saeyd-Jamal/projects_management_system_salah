@@ -34,9 +34,12 @@ class AllocationController extends Controller
 
         if($request->ajax()) {
                 // جلب بيانات المستخدمين من الجدول
-            $allocations = Allocation::query()->orderBy('date_allocation', 'asc');;
+            $year = $request->year ?? Carbon::now()->year;
+            $allocations = Allocation::query()->orderBy('budget_number', 'asc')->orderBy('date_allocation', 'asc');
 
-
+            // التصفية بناءً على السنة
+            $allocations->whereYear('date_allocation', $request->year);
+            
             // التصفية بناءً على التواريخ
             if ($request->from_date != null && $request->to_date != null) {
                 $allocations->whereBetween('date_allocation', [$request->from_date, $request->to_date]);

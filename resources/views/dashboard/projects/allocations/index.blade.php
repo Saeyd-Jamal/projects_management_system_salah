@@ -12,6 +12,13 @@
         <link rel="stylesheet" href="{{ asset('css/datatableIndex.css') }}">
     @endpush
     <x-slot:extra_nav>
+        <div class="form-group my-0 mx-2">
+            <select name="year" id="year" class="form-control">
+                @for ($year = date('Y'); $year >= 2024; $year--)
+                    <option value="{{ $year }}">{{ $year }}</option>
+                @endfor
+            </select>
+        </div>
         <li class="nav-item">
             <button type="button" class="btn btn-icon btn-info text-white mx-1" id="copy-export" title="نسخ">
                 <i class="fe fe-copy fe-16"></i>
@@ -718,9 +725,25 @@
                                             16,
                                             17,
                                             18,
+                                            19,
                                         ], // ضع أرقام الأعمدة التي تريد نسخها فقط
                                         rows: function (idx, data, node) {
                                             return $(node).find('.select_row').prop('checked');
+                                        },
+                                        format: {
+                                            body: function(data, row, column, node) {
+                                                // تأكد من تحويل البيانات إلى نص لتجنب الأخطاء
+                                                let cleanData = String(data)
+                                                    // إزالة HTML tags والتنسيقات
+                                                    .replace(/<[^>]+>/g, ' ')
+                                                    // إزالة multiple spaces
+                                                    .replace(/\s+/g, ' ')
+                                                    // إزالة line breaks
+                                                    .replace(/(\r\n|\n|\r)/gm, ' ')
+                                                    // إزالة الفراغات من البداية والنهاية
+                                                    .trim();
+                                                    return cleanData;
+                                                }
                                         }
                                     },
                                     className: 'd-none', // إخفاء الزر الأصلي
@@ -745,6 +768,7 @@
                             d.to_date = $('#to_date').val();
                             d.from_date_implementation = $('#from_date_implementation').val();
                             d.to_date_implementation = $('#to_date_implementation').val();
+                            d.year = $('#year').val();
                         },
                         error: function(xhr, status, error) {
                             console.error('AJAX error:', status, error);
@@ -1063,6 +1087,10 @@
                     const toDateImplementation = $('#to_date_implementation').val();
                     table.ajax.reload(); // إعادة تحميل الجدول مع التواريخ المحدثة
                 });
+                $('#year').on('change', function () {
+                    const year = $('#year').val();
+                    table.ajax.reload();
+                })
                 // تفويض حدث الحذف على الأزرار الديناميكية
                 $(document).on('click', '.delete_row', function () {
                     const id = $(this).data('id'); // الحصول على ID الصف
