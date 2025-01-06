@@ -42,6 +42,10 @@
                                 <tbody>
 
                                     <tr>
+                                        <th>المبالغ المخصصة (الرصيد السابق)</th>
+                                        <td>{{ number_format($total_amount_sub, 2) ?? 0 }}</td>
+                                    </tr>
+                                    <tr>
                                         <th>المبالغ المخصصة</th>
                                         <td>{{ number_format($total_amount, 2) ?? 0 }}</td>
                                     </tr>
@@ -51,7 +55,7 @@
                                     </tr>
                                     <tr>
                                         <th>المتبقي</th>
-                                        <td>{{ number_format($total_amount - $total_amount_received, 2) ?? 0 }}</td>
+                                        <td>{{ number_format(($total_amount_sub + $total_amount) - $total_amount_received, 2) ?? 0 }}</td>
                                     </tr>
                                     <tr>
                                         <th>نسبة التحصيل</th>
@@ -172,6 +176,15 @@
                                 </thead>
                                 <tbody>
                                     <tr>
+                                        <th>إجمالي المبالغ (الرصيد السابق)</th>
+                                        <td class="total_total_ils">
+                                            {{ number_format($total_ils_sub, 2) ?? 0 }}
+                                        </td>
+                                        <td class="total_total_dollars">
+                                            {{ number_format($total_ils_sub * $ILS, 2) ?? 0 }}
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th>إجمالي المبالغ</th>
                                         <td class="total_total_ils">
                                             {{ number_format($total_ils, 2) ?? 0 }}
@@ -192,10 +205,10 @@
                                     <tr>
                                         <th>الرصيد المتبقي</th>
                                         <td class="remaining">
-                                            {{ number_format($total_ils - $total_amount_payments, 2) ?? 0 }}
+                                            {{ number_format(($total_ils_sub + $total_ils) - $total_amount_payments, 2) ?? 0 }}
                                         </td>
                                         <td class="remaining_dollars">
-                                            {{ number_format(($total_ils - $total_amount_payments) * $ILS, 2) ?? 0 }}
+                                            {{ number_format((($total_ils_sub + $total_ils) - $total_amount_payments) * $ILS, 2) ?? 0 }}
                                         </td>
                                     </tr>
                                     <tr >

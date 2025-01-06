@@ -63,7 +63,7 @@ class ReportController extends Controller
             $allocations = $allocations->where("date_allocation",">=",Carbon::parse($data["month"]));
         }
         if($data["to_month"] != null){
-            $allocations = $allocations->where("date_allocation","<=",Carbon::parse($data["to_month"]));
+            $allocations = $allocations->where("date_allocation","<",Carbon::parse($data["to_month"])->addMonth());
         }
         return $allocations;
     }
@@ -145,7 +145,6 @@ class ReportController extends Controller
         $month = $request->month ?? Carbon::now()->format('Y-m');
         $to_month = $request->to_month ?? Carbon::now()->format('Y-m');
         $year = ($request->month != null) ? Carbon::parse($request->month)->format('Y') : Carbon::now()->format('Y');
-
         $allocations = $this->filterAllocations($request->all());
         $executives = $this->filterExecutives($request->all());
 
@@ -157,20 +156,25 @@ class ReportController extends Controller
             $allocations = $this->filterAllocations($request->all())->get();
 
             // دوال الموجوع اخر سطر في التقرير
-            $allocationsTotal = collect($allocations)->map(function ($allocation) use ($month,$to_month) {
-                return [
-                    "amount" => $allocation->amount ?? '0',
-                    'amount_received' => $allocation->amount_received ?? '0',
-                ];
-            });
+            $allocationsTotal_amout = $allocations->sum('amount');
+            $allocationsTotal_amount_received = $allocations->sum('amount_received');
+
             $allocationsTotalArray = [
-                'amount' => collect($allocationsTotal->pluck('amount')->toArray())->sum(),
-                'amount_received' => collect($allocationsTotal->pluck('amount_received')->toArray())->sum(),
+                'amount' => $allocationsTotal_amout,
+                'amount_received' => $allocationsTotal_amount_received,
             ];
 
             if($request->export_type == 'view'){
                 $this->createLogs('المؤسسات الداعمة','pdf');
-                $pdf = PDF::loadView('dashboard.reports.brokers_balance',['allocations' => $allocations,'allocationsTotal' => $allocationsTotalArray,'brokers' => $brokers,'month' => $month,'to_month' => $to_month],[],
+                $pdf = PDF::loadView('dashboard.reports.brokers_balance',
+                    [
+                        'allocations' => $allocations,
+                        'allocationsTotal' => $allocationsTotalArray,
+                        'brokers' => $brokers,
+                        'month' => $month,
+                        'to_month' => $to_month
+                    ]
+                ,[],
                 [
                     'mode' => 'utf-8',
                     'format' => 'A4',

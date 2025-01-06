@@ -21,6 +21,7 @@
                                 <th>الاسم</th>
                                 <th>الرمز</th>
                                 <th>القيمة مقابل الدولار</th>
+                                <th>الدولار مقابل العملة</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -31,6 +32,7 @@
                                 <td>{{ $currency->name }}</td>
                                 <td>{{ $currency->code }}</td>
                                 <td>{{ $currency->value }}</td>
+                                <td>{{ number_format(1 / $currency->value,2) }}</td>
                                 <td class="align-middle">
                                     <div class="d-flex align-items-center">
                                         @can('delete','App\\Models\Currency')
@@ -110,7 +112,10 @@
                                 <x-form.input type="text" name="code" label="الرمز بالإنجليزي" :value="$currency->code" placeholder="إملأ الرمز : USD"  required />
                             </div>
                             <div class="form-group col-md-12">
-                                <x-form.input type="text" min="0" name="value" label="القيمة مقابل الدولار" :value="$currency->value" placeholder="إملأ القيمة : 1.1" required />
+                                <x-form.input type="text" min="0" class="value value-{{$currency->id}}" name="value" data-id="{{$currency->id}}" label="القيمة مقابل الدولار" :value="$currency->value" placeholder="إملأ القيمة : 1.1" required />
+                            </div>
+                            <div class="form-group col-md-12">
+                                <x-form.input type="text" min="0" class="value-usd value-usd-{{$currency->id}}" data-id="{{$currency->id}}" name="value-usd" label="القيمة مقابل الدولار" :value="$currency->value" placeholder="إملأ القيمة : 1.1" required />
                             </div>
                         </div>
                     </div>
@@ -130,4 +135,19 @@
     </div>
     @endforeach
     @endcan
+    @push('scripts')
+    <script>
+        $(document).ready(function() {
+            $('.value').on('input', function() {
+                let id = $(this).data('id');
+                $('.value-usd-' + id + '').val(1 / $('.value-' + id + '').val())
+            });
+            $('.value-usd').on('input', function() {
+                let id = $(this).data('id');
+                $('.value-' + id + '').val(1 / $('.value-usd-' + id + '').val())
+            });
+            $('.value').trigger('input');
+        })
+    </script>
+    @endpush
 </x-front-layout>

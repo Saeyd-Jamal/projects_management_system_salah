@@ -25,8 +25,12 @@ class ExecutiveController extends Controller
     {
         $this->authorize('view', Executive::class);
         if($request->ajax()) {
+            $year = $request->year ?? Carbon::now()->year;
             // جلب بيانات المستخدمين من الجدول
             $executives = Executive::query();
+
+            // التصفية بناءً على السنة
+            $executives->whereYear('implementation_date', $request->year);
 
             // التصفية بناءً على التواريخ
             if ($request->from_date != null && $request->to_date != null) {

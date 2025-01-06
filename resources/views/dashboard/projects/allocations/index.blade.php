@@ -711,6 +711,7 @@
                                     exportOptions: {
                                         // تحديد الأعمدة المطلوبة فقط
                                         columns: [
+                                            3,
                                             2,
                                             4,
                                             5,
@@ -1080,7 +1081,7 @@
                     }
                 });
                 // تطبيق التصفية عند النقر على زر "Apply"
-                $('#filter-date-btn', '#filter-date-implementation-btn').on('click', function () {
+                $('#filter-date-btn , #filter-date-implementation-btn').on('click', function () {
                     const fromDate = $('#from_date').val();
                     const toDate = $('#to_date').val();
                     const fromDateImplementation = $('#from_date_implementation').val();

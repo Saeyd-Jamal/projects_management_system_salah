@@ -63,9 +63,27 @@ class AllocationForm extends Component
 
         $this->date_allocation =  $this->allocation->date_allocation ?? Carbon::now()->format('Y-m-d');
         if(AccreditationProject::where('type', 'allocation')->count() > 0){
-            $this->budget_number  =  $this->allocation->budget_number ?? (AccreditationProject::where('type', 'allocation')->orderBy('budget_number', 'desc')->first() ? AccreditationProject::where('type', 'allocation')->orderBy('budget_number', 'desc')->first()->budget_number + 1 : 1);
+            // $this->budget_number  =  $this->allocation->budget_number ?? (AccreditationProject::where('type', 'allocation')->orderBy('budget_number', 'desc')->whereYear('date_allocation', Carbon::now()->format('Y'))->first() ? AccreditationProject::where('type', 'allocation')->orderBy('budget_number', 'desc')->whereYear('date_allocation', Carbon::now()->format('Y'))->first()->budget_number + 1 : 1);
+            if($this->allocation->budget_number != null){
+                $this->budget_number  =  $this->allocation->budget_number;
+            }else{
+                $budget_number = AccreditationProject::where('type', 'allocation')->whereYear('date_allocation', Carbon::now()->format('Y'))->orderBy('budget_number', 'desc')->first();
+
+                if($budget_number != null){
+                    $budget_number_allocation =  Allocation::whereYear('date_allocation', Carbon::now()->format('Y'))->orderBy('budget_number', 'desc')->first() ? Allocation::whereYear('date_allocation', Carbon::now()->format('Y'))->orderBy('budget_number', 'desc')->first()->budget_number : 1;
+                    if($budget_number_allocation > $budget_number->budget_number){
+                        $budget_number  =  $budget_number_allocation;
+                    }else{
+                        $budget_number  =  $budget_number->budget_number;
+                    }
+                    $this->budget_number  =  $budget_number + 1;
+                }else{
+                    $this->budget_number  =  1;
+                }
+            }
+
         }else{
-            $this->budget_number  =  $this->allocation->budget_number ?? (Allocation::orderBy('budget_number', 'desc')->first() ? Allocation::orderBy('budget_number', 'desc')->first()->budget_number + 1 : 1);
+            $this->budget_number  =  $this->allocation->budget_number ?? (Allocation::whereYear('date_allocation', Carbon::now()->format('Y'))->orderBy('budget_number', 'desc')->first() ? Allocation::whereYear('date_allocation', Carbon::now()->format('Y'))->orderBy('budget_number', 'desc')->first()->budget_number + 1 : 1);
         }
         // fields
         $this->quantity = $this->allocation->quantity ?? '';
@@ -86,7 +104,7 @@ class AllocationForm extends Component
     }
 
     public function budget_number_check($value){
-        $check = Allocation::where('budget_number', $value)->first();
+        $check = Allocation::where('budget_number', $value)->whereYear('date_allocation', Carbon::now()->format('Y'))->first();
         if($check != null){
             $this->budget_number_error = 'رقم الموازنة المستعمل موجود سابقا';
         }else{

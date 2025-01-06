@@ -12,6 +12,13 @@
         <link rel="stylesheet" href="{{ asset('css/datatableIndex.css') }}">
     @endpush
     <x-slot:extra_nav>
+        <div class="form-group my-0 mx-2">
+            <select name="year" id="year" class="form-control">
+                @for ($year = date('Y'); $year >= 2024; $year--)
+                    <option value="{{ $year }}">{{ $year }}</option>
+                @endfor
+            </select>
+        </div>
         <li class="nav-item">
             <button type="button" class="btn btn-icon btn-success text-white" id="excel-export" title="تصدير excel">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="16" height="16">
@@ -492,6 +499,7 @@
                             // إضافة تواريخ التصفية إلى الطلب المرسل
                             d.from_date = $('#from_date').val();
                             d.to_date = $('#to_date').val();
+                            d.year = $('#year').val();
                         },
                         error: function(xhr, status, error) {
                             console.error('AJAX error:', status, error);
@@ -744,6 +752,10 @@
                     const toDate = $('#to_date').val();
                     table.ajax.reload(); // إعادة تحميل الجدول مع التواريخ المحدثة
                 });
+                $('#year').on('change', function () {
+                    const year = $('#year').val();
+                    table.ajax.reload();
+                })
                 // تفويض حدث الحذف على الأزرار الديناميكية
                 $(document).on('click', '.delete_row', function () {
                     const id = $(this).data('id'); // الحصول على ID الصف

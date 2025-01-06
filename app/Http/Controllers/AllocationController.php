@@ -35,17 +35,23 @@ class AllocationController extends Controller
         if($request->ajax()) {
                 // جلب بيانات المستخدمين من الجدول
             $year = $request->year ?? Carbon::now()->year;
-            $allocations = Allocation::query()->orderBy('budget_number', 'asc')->orderBy('date_allocation', 'asc');
+            $allocations = Allocation::query()->orderBy('date_allocation', 'asc')->orderBy('budget_number', 'asc');
 
-            // التصفية بناءً على السنة
-            $allocations->whereYear('date_allocation', $request->year);
-            
+
             // التصفية بناءً على التواريخ
             if ($request->from_date != null && $request->to_date != null) {
+                $allocations = Allocation::query()->orderBy('date_allocation', 'asc')->orderBy('budget_number', 'asc');
                 $allocations->whereBetween('date_allocation', [$request->from_date, $request->to_date]);
             }
             if ($request->from_date_implementation != null && $request->to_date_implementation != null) {
+                $allocations = Allocation::query()->orderBy('date_allocation', 'asc')->orderBy('budget_number', 'asc');
                 $allocations->whereBetween('date_implementation', [$request->from_date_implementation, $request->to_date_implementation]);
+            }
+
+            if($request->from_date == null && $request->from_date_implementation == null){
+                $allocations = Allocation::query()->orderBy('date_allocation', 'asc')->orderBy('budget_number', 'asc');
+                // التصفية بناءً على السنة
+                $allocations->whereYear('date_allocation', $request->year);
             }
 
             return DataTables::of($allocations)
