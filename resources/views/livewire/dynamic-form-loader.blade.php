@@ -30,7 +30,7 @@
             @if ($allocation)
                 <form action="{{ route('accreditations.store') }}" method="post" enctype="multipart/form-data">
                     @csrf
-                    <livewire:allocation-form :allocation="$allocation" />
+                    <livewire:allocation-form-create :allocation="$allocation" />
                     <input type="hidden" name="type" value="allocation">
                 </form>
             @else

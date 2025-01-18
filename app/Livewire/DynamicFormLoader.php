@@ -8,7 +8,7 @@ use Livewire\Component;
 
 class DynamicFormLoader extends Component
 {
-    public $selectedForm = '';
+    public $selectedForm = 'allocations';
     public $load = '';
     public $allocation;
     public $executive;

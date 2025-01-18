@@ -52,24 +52,58 @@ class AccreditationProjectController extends Controller
         }
         if($request->type == 'allocation'){
             $this->authorize('allocation', AccreditationProject::class);
-            $request->validate([
-                'date_allocation' => 'required|date',
-                'budget_number' => 'required|integer',
-                'quantity' => 'nullable|integer',
-                'price' => 'nullable|numeric',
-                'total_dollar' => 'nullable|numeric',
-                'allocation' => 'nullable|numeric',
-                'currency_allocation' => 'required|exists:currencies,code',
-                'currency_allocation_value'  => 'required|numeric',
-                'amount' => 'nullable|numeric',
-                'implementation_items' => 'nullable|string',
-                'date_implementation' => 'nullable|date',
-                'implementation_statement' => 'nullable|string',
-                'amount_received' => 'nullable|numeric',
-                'notes' => 'nullable|string',
-                'number_beneficiaries' => 'nullable|integer',
-            ]);
-
+            $num_allo = $request->num_allo + 1 ?? 1;
+            for($i = 0; $i < $num_allo; $i++){
+                $request->validate([
+                    'date_allocation' => 'required|date',
+                    'budget_number' => 'required|integer',
+                    'quantity_'.$i => 'nullable|integer',
+                    'price_'.$i => 'nullable|numeric',
+                    'total_dollar_'.$i => 'nullable|numeric',
+                    'allocation_'.$i => 'nullable|numeric',
+                    'currency_allocation_'.$i => 'required|exists:currencies,code',
+                    'currency_allocation_value_'.$i  => 'required|numeric',
+                    'amount_'.$i => 'nullable|numeric',
+                    'implementation_items_'.$i => 'nullable|string',
+                    'date_implementation' => 'nullable|date',
+                    'implementation_statement' => 'nullable|string',
+                    'amount_received' => 'nullable|numeric',
+                    'notes' => 'nullable|string',
+                    'number_beneficiaries_'.$i => 'nullable|integer',
+                ]);
+                $request['currency_allocation_value_'.$i] = 1 / $request['currency_allocation_value_'.$i];
+                $request->merge([
+                    'user_id' => Auth::user()->id,
+                    'user_name' => Auth::user()->name,
+                    // 'files' => json_encode($files),
+                ]);
+                AccreditationProject::create([
+                    'date_allocation' => $request->date_allocation ?? null,
+                    'budget_number' => $request->budget_number ?? null,
+                    'broker_name' => $request->broker_name ?? null,
+                    'organization_name' => $request->organization_name ?? null,
+                    'project_name' => $request['project_name_'.$i]?? null,
+                    'item_name' => $request['item_name_'.$i] ?? null,
+                    'quantity' => $request['quantity_'.$i] ?? null,
+                    'price' => $request['price_'.$i] ?? null,
+                    'total_dollar' => $request['total_dollar_'.$i] ?? null,
+                    'allocation' => $request['allocation_'.$i] ?? null,
+                    'currency_allocation' => $request['currency_allocation_'.$i] ?? null,
+                    'currency_allocation_value' => $request['currency_allocation_value_'.$i] ?? null,
+                    'amount' => $request['amount_'.$i] ?? null,
+                    'implementation_items' => $request['implementation_items_'.$i] ?? null,
+                    'date_implementation' => $request['date_implementation'] ?? null,
+                    'implementation_statement' => $request['implementation_statement'] ?? null,
+                    'amount_received' => $request['amount_received'] ?? null,
+                    'notes' => $request['notes'] ?? null,
+                    'number_beneficiaries' => $request['number_beneficiaries_'.$i] ?? null,
+                    'arrest_receipt_number' => $request->arrest_receipt_number ?? null,
+                    'user_id' => Auth::user()->id ?? null,
+                    'user_name' => Auth::user()->name ?? null,
+                    'manager_name' => $request->manager_name ?? null,
+                    // 'files' => json_encode($files),
+                ]);
+            }
             // رفع الملفات للتخصيص
             // $files = [];
             // $year = Carbon::parse($request->date_allocation)->format('Y');
@@ -81,12 +115,9 @@ class AccreditationProjectController extends Controller
             //         $files[$file->getClientOriginalName()] = $filepath;
             //     }
             // }
-            $request['currency_allocation_value'] = 1 / $request->currency_allocation_value;
-            $request->merge([
-                'user_id' => Auth::user()->id,
-                'user_name' => Auth::user()->name,
-                // 'files' => json_encode($files),
-            ]);
+            
+            return redirect()->route('accreditations.index')->with('success', 'تمت إضافة مشروع جديد');
+
         }
 
 
