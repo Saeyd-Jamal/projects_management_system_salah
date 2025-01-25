@@ -46,7 +46,7 @@ class AllocationForm extends Component
     public function __construct()
     {
         // get data from models
-        $this->brokers = Allocation::select('broker_name')->distinct()->pluck('broker_name')->toArray();
+        $this->brokers = Broker::select('name')->distinct()->pluck('name')->toArray();
         $this->organizations = Allocation::select('organization_name')->distinct()->pluck('organization_name')->toArray();
         $this->projects = Allocation::select('project_name')->distinct()->pluck('project_name')->toArray();
         $this->items =  Allocation::select('item_name')->distinct()->pluck('item_name')->toArray();

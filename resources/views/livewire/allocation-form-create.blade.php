@@ -1,7 +1,8 @@
+@push('styles')
+<link rel="stylesheet" href="{{asset('css/select2.min.css')}}">
+@endpush
 <div class="container-fluid">
     <h3>بيانات التخصيص</h3>
-
-
     {{-- البيانات المشتركة --}}
     <div class="row">
         <div class="form-group col-md-3">
@@ -18,12 +19,12 @@
         </div>
         <div class="form-group col-md-3">
             <label for="broker_name">المؤسسة</label>
-            <input type="text" name="broker_name" id="broker_name" value="{{$allocation->broker_name}}" class="form-control form-control-alternative" list="brokers_listA" required="required">
-            <datalist id="brokers_listA">
+            <select class="form-control text-center" name="broker_name" id="broker_name" wire:model="broker_name">
+                <option label="فتح القائمة">
                 @foreach ($brokers as $broker)
-                    <option value="{{ $broker }}">
+                    <option value="{{ $broker }}" @selected($broker == $allocation->broker_name)>{{ $broker }}</option>
                 @endforeach
-            </datalist>
+            </select>
         </div>
         <div class="form-group col-md-3"></div>
         <div class="form-group col-md-3">
@@ -208,3 +209,13 @@
     </script>
     @endpush
 </div>
+@push('scripts')
+<script>
+    const csrf_token = "{{csrf_token()}}";
+    const app_link = "{{config('app.url')}}";
+</script>
+<script src='{{asset('js/select2.min.js')}}'></script>
+<script>
+    $('#broker_name').select2();
+</script>
+@endpush

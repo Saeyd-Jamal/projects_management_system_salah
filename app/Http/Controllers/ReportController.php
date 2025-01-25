@@ -142,19 +142,17 @@ class ReportController extends Controller
     {
 
         $time = Carbon::now();
-        $month = $request->month ?? Carbon::now()->format('Y-m');
+        $month = $request->month ?? '1970-01';
         $to_month = $request->to_month ?? Carbon::now()->format('Y-m');
         $year = ($request->month != null) ? Carbon::parse($request->month)->format('Y') : Carbon::now()->format('Y');
         $allocations = $this->filterAllocations($request->all());
         $executives = $this->filterExecutives($request->all());
-
         // المؤسسات الداعمة
         if($request->report_type == 'brokers_balance'){
 
             $brokers = $allocations->select('broker_name')->distinct()->pluck('broker_name')->toArray();
 
             $allocations = $this->filterAllocations($request->all())->get();
-
             // دوال الموجوع اخر سطر في التقرير
             $allocationsTotal_amout = $allocations->sum('amount');
             $allocationsTotal_amount_received = $allocations->sum('amount_received');
@@ -163,7 +161,6 @@ class ReportController extends Controller
                 'amount' => $allocationsTotal_amout,
                 'amount_received' => $allocationsTotal_amount_received,
             ];
-
             if($request->export_type == 'view'){
                 $this->createLogs('المؤسسات الداعمة','pdf');
                 $pdf = PDF::loadView('dashboard.reports.brokers_balance',
@@ -185,7 +182,15 @@ class ReportController extends Controller
             }
             if($request->export_type == 'export_pdf'){
                 $this->createLogs('المؤسسات الداعمة','pdf');
-                $pdf = PDF::loadView('dashboard.reports.brokers_balance',['allocations' => $allocations,'allocationsTotal' => $allocationsTotalArray,'brokers' => $brokers,'month' => $month,'to_month' => $to_month],[],
+                $pdf = PDF::loadView('dashboard.reports.brokers_balance',
+                    [
+                        'allocations' => $allocations,
+                        'allocationsTotal' => $allocationsTotalArray,
+                        'brokers' => $brokers,
+                        'month' => $month,
+                        'to_month' => $to_month
+                    ]
+                ,[],
                 [
                     'mode' => 'utf-8',
                     'format' => 'A4',
@@ -274,7 +279,7 @@ class ReportController extends Controller
                 'quantity' => $executives->sum('quantity') ?? '0',
                 'total_ils' => $this->filterExecutives($request->all())->get()->sum('total_ils') ?? '0',
             ];
-            
+
             if($request->export_type == 'view'){
                 $this->createLogs('الأصناف حسب الأشهر','pdf');
                 $pdf = PDF::loadView('dashboard.reports.detection_items_month',['executives' => $executives,'executivesTotal' => $executivesTotalArray,'items' => $items,'year' => $year,'lastYear' => $lastYear,'month' => $month,'to_month' => $to_month,'months' => $months,'monthNameAr' => $this->monthNameAr],[],

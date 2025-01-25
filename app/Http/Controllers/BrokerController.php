@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Allocation;
 use App\Models\Broker;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Yajra\DataTables\Facades\DataTables;
 
 class BrokerController extends Controller
 {
@@ -18,8 +20,22 @@ class BrokerController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Broker::class);
-        $brokers = Broker::paginate(10);
-        return view('dashboard.cataloguing.brokers.index', compact('brokers'));
+        $request = request();
+        if($request->ajax()) {
+            $brokers = Broker::query();
+
+            return DataTables::of($brokers)
+                    ->addIndexColumn()  // إضافة عمود الترقيم التلقائي
+                    ->addColumn('edit', function ($broker) {
+                        return $broker->id;
+                    })
+                    ->addColumn('delete', function ($broker) {
+                        return $broker->id;
+                    })
+                    ->make(true);
+        }
+
+        return view('dashboard.cataloguing.brokers.index');
     }
 
     /**
@@ -29,6 +45,10 @@ class BrokerController extends Controller
     {
         $this->authorize('create', Broker::class);
         $broker = new Broker();
+        $request = request();
+        if($request->ajax()){
+            return $broker;
+        }
         return view('dashboard.cataloguing.brokers.create', compact('broker'));
     }
 
@@ -45,20 +65,10 @@ class BrokerController extends Controller
         $request->merge([
             'slug' => Str::slug($request->post('name')),
         ]);
-
-        $files = [];
-        if ($request->hasFile('filesArray')) {
-            foreach ($request->file('filesArray') as $file) {
-                $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-                $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
-                $filepath = $file->storeAs("files/borkers/$request->slug", $filenameExtension, 'public');
-                $files[$file->getClientOriginalName()] = $filepath;
-            }
-        }
-        $request->merge([
-            'files' => json_encode($files),
-        ]);
         Broker::create($request->all());
+        if($request->ajax()){
+            return redirect()->route('brokers.index')->with('success', 'تم إضافة وسيط جديد');
+        }
         return redirect()->route('brokers.index')->with('success', 'تم إضافة وسيط جديد');
     }
 
@@ -77,8 +87,10 @@ class BrokerController extends Controller
     {
         $this->authorize('update', Broker::class);
         $broker = Broker::where('slug', $slug)->first();
-        $btn_label = 'تعديل';
-        $files = json_decode($broker->files, true) ?? [];
+        $request = request();
+        if($request->ajax()) {
+            return response()->json($broker);
+        }
         return view('dashboard.cataloguing.brokers.edit', compact('broker', 'btn_label','files'));
     }
 
@@ -89,21 +101,11 @@ class BrokerController extends Controller
     {
         $this->authorize('update', Broker::class);
         $broker = Broker::where('slug', $slug)->first();
-
-        // استرجاع الملفات الحالية وتحويلها إلى مصفوفة
-        $files = json_decode($broker->files, true) ?? [];
-        if ($request->hasFile('filesArray')) {
-            foreach ($request->file('filesArray') as $file) {
-                $fileName = Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-                $filenameExtension = time() . '_' . $fileName . '.' . $file->extension();
-                $filepath = $file->storeAs("files/borkers/$slug", $filenameExtension, 'public');
-                $files[$file->getClientOriginalName()] = $filepath;
-            }
-        }
-        $request->merge([
-            'files' => json_encode($files),
-        ]);
         $broker->update($request->all());
+
+        if($request->ajax()) {
+            return response()->json(['message' => 'تم التحديث بنجاح']);
+        }
         return redirect()->route('brokers.edit',$slug)->with('success', 'تم تحديث بيانات وسيط');
     }
 
@@ -113,13 +115,33 @@ class BrokerController extends Controller
     public function destroy($slug)
     {
         $this->authorize('delete', Broker::class);
-        $broker = Broker::where('slug', $slug)->first();
-        $files = json_decode($broker->files, true) ?? [];
-        foreach ($files as $file) {
-            Storage::delete($file);
-        }
-        Storage::deleteDirectory('files/borkers/' . $slug);
+        $broker = Broker::where('id', $slug)->first();
         $broker->delete();
+
+        $request = request();
+        if($request->ajax()) {
+            return response()->json(['success' => 'تمت عملية الحذف بنجاح']);
+        }
         return redirect()->route('brokers.index')->with('danger', 'تم حذف وسيط');
+    }
+
+
+    public function setNew(){
+        $brokers = Allocation::select('broker_name')->distinct()->pluck('broker_name')->toArray();
+        foreach ($brokers as $broker) {
+            $slug = Str::slug($broker);
+
+            // تحقق إذا كان الـ slug موجودًا
+            $originalSlug = $slug;
+            $counter = 1;
+            while (Broker::where('slug', $slug)->exists()) {
+                $slug = $originalSlug . '-' . $counter; // أضف رقم لجعل الـ slug فريدًا
+                $counter++;
+            }
+
+            // قم بإنشاء السجل في الجدول
+            Broker::create(['name' => $broker, 'slug' => $slug]);
+        }
+        return 'success';
     }
 }

@@ -15,12 +15,12 @@
         </div>
         <div class="form-group col-md-3">
             <label for="broker_name">المؤسسة</label>
-            <input type="text" name="broker_name" id="broker_name" value="{{$allocation->broker_name}}" class="form-control form-control-alternative" list="brokers_listA" required="required">
-            <datalist id="brokers_listA">
+            <select class="form-control text-center" name="broker_name" id="broker_name" wire:model="broker_name">
+                <option label="فتح القائمة">
                 @foreach ($brokers as $broker)
-                    <option value="{{ $broker }}">
+                    <option value="{{ $broker->name }}" @selected($broker->name == $allocation->broker_name)>{{ $broker->name }}</option>
                 @endforeach
-            </datalist>
+            </select>
         </div>
         <div class="form-group col-md-3"></div>
         <div class="form-group col-md-3">
@@ -32,6 +32,8 @@
                 @endforeach
             </datalist>
         </div>
+    </div>
+    <div class="row">
         <div class="form-group col-md-3">
             <label for="project_name">المشروع</label>
             <x-form.input name="project_name" list="projects_list" :value="$allocation->project_name" required />
@@ -79,7 +81,7 @@
             {{-- <x-form.input type="text" name="amount" label="المبلغ $" wire:model="amount" readonly/> --}}
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="text" min="0" name="number_beneficiaries" label="عدد المستفيدين" :value="$allocation->number_beneficiaries" />
+            <x-form.input type="text" min="0"  class="calculation" name="number_beneficiaries" label="عدد المستفيدين" :value="$allocation->number_beneficiaries" />
         </div>
         <div class="form-group col-md-6">
             <x-form.textarea name="implementation_items" label="بنوذ التنفيد" :value="$allocation->implementation_items" />
@@ -92,7 +94,7 @@
             <x-form.input type="date" name="date_implementation" label="تاريخ القبض" :value="$allocation->date_implementation" />
         </div>
         <div class="form-group col-md-3">
-            <x-form.input type="text" min="0" step="0.01" name="amount_received" label="المبلغ المقبوض" :value="$allocation->amount_received" />
+            <x-form.input type="text" min="0" step="0.01" class="calculation" name="amount_received" label="المبلغ المقبوض" :value="$allocation->amount_received" />
         </div>
         <div class="form-group col-md-6">
             <x-form.textarea name="implementation_statement" label="بيان" :value="$allocation->implementation_statement" />
@@ -130,4 +132,27 @@
     {{-- <div class="form-group col-md-4">
         <x-form.input type="file" name="filesArray[]" label="رفع ملفات للتخصيص" multiple />
     </div> --}}
+    @push('scripts')
+    <script>
+        $(document).ready(function () {
+            $('.calculation').on('blur keypress', function (event) {
+                // تحقق إذا كان الحدث هو الضغط على مفتاح
+                if (event.type == 'keypress' && event.key != "Enter") {
+                    return;
+                }
+                // استرجاع القيمة المدخلة
+                var input = $(this).val();
+                try {
+                    // استخدام eval لحساب الناتج (مع الاحتياطات الأمنية)
+                    var result = eval(input);
+                    // عرض الناتج في الحقل
+                    $(this).val(result);
+                } catch (e) {
+                    // في حالة وجود خطأ (مثل إدخال غير صحيح)
+                    alert('يرجى إدخال معادلة صحيحة!');
+                }
+            });
+        });
+    </script>
+    @endpush
 </div>

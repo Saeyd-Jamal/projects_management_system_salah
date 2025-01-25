@@ -61,7 +61,7 @@
                                         <th>نسبة التحصيل</th>
                                         <td>
                                             <span class="remaining_percent">
-                                                {{ number_format(($total_amount_received / $total_amount) * 100, 2) ?? 0 }}
+                                                {{ number_format(($total_amount_received / ($total_amount_sub + $total_amount)) * 100, 2) ?? 0 }}
                                             </span>%
                                         </td>
                                     </tr>
@@ -228,6 +228,7 @@
     </div>
     <h2 class="mt-2">العام</h2>
     <div class="row mt-4">
+        @can('create', 'App\\Models\AccreditationProject')
         <div class="col-lg-3 col-sm-6 mb-lg-0 mb-4">
             <div class="card">
                 <div class="card-body p-3">
@@ -238,6 +239,7 @@
                 </div>
             </div>
         </div>
+        @endcan
     </div>
 
 

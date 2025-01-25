@@ -116,24 +116,28 @@
                 @foreach ($brokers as $broker)
                     @php
                         $allocation = App\Models\Allocation::where('broker_name', $broker);
-                        if($month != null){
-                            $allocations = $allocations->where("date_allocation",">=",Carbon\Carbon::parse($month));
-                        }
-                        if($to_month != null){
-                            $allocations = $allocations->where("date_allocation","<",Carbon\Carbon::parse($to_month)->addMonth());
-                        }
 
-                        $allocation_sub = App\Models\Allocation::where('broker_name', $broker)
+                        if($month != '1970-01'){
+                            $allocation_sub = App\Models\Allocation::where('broker_name', $broker)
                                             ->where("date_allocation","<",Carbon\Carbon::parse($month))
                                             ->sum('amount');
+                        }else{
+                            $allocation_sub = 0;
+                        }
 
+                        $allocation = $allocation->where("date_allocation",">=",Carbon\Carbon::parse($month)->format('Y-m-d'));
 
+                        if($to_month != null){
+                            $to_month = Carbon\Carbon::parse($to_month)->addMonth()->format('Y-m-d');
+                            $allocation = $allocation->where("date_allocation","<",$to_month);
+                        }
+
+                        $allocation = $allocation->get();
                         $amount = $allocation->sum('amount');
                         $amount_received = $allocation->sum('amount_received');
 
+                        $allocationsTotalReceived = App\Models\Allocation::where('broker_name', $broker)->sum('amount_received');
                         //  لحل مشكلة القسمة
-                        $amount = ($amount == 0 ? 1 : $amount);
-                        $amount_received = ($amount_received == 0 ? 1 : $amount_received);
                         $totalAmount = ($allocationsTotal['amount'] == 0 ? 1 : $allocationsTotal['amount']); ;
                     @endphp
                         <tr>
@@ -144,10 +148,10 @@
                             <td>{{ number_format($amount,2) }}</td>
                             <td>{{ number_format($amount_received,2) }}</td>
                             <td>
-                                {{ number_format(($allocation_sub + $amount) - $amount_received,2) }}
+                                {{ number_format(($allocation_sub + $amount) - $allocationsTotalReceived,2) }}
                             </td>
                             <td>
-                                {{ number_format($amount_received / ($allocation_sub + $amount),5) * 100 }} %
+                                {{ number_format(($amount_received == 0 ? 1 : $amount_received) / ($allocation_sub + ($amount == 0 ? 1 : $amount)),5) * 100 }} %
                             </td>
                         </tr>
                 @endforeach
@@ -158,11 +162,13 @@
                     @php
                         $amount_sub = 0;
                         foreach ($brokers as $broker) {
-
-
-                            $amount_sub += App\Models\Allocation::where('broker_name', $broker)
+                            if($month != '1970-01'){
+                                $amount_sub += App\Models\Allocation::where('broker_name', $broker)
                                                 ->where("date_allocation","<",Carbon\Carbon::parse($month))
                                                 ->sum('amount');
+                            }else{
+                                $amount_sub = 0;
+                            }
                         }
                     @endphp
                     <td>{{ number_format($amount_sub,2) }}</td>

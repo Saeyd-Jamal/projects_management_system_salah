@@ -34,6 +34,7 @@ Route::group([
 
     Route::post('allocations/{allocation}/print', [AllocationController::class, 'print'])->name('allocations.print');
 
+    Route::get('brokers/setNew', [BrokerController::class, 'setNew'])->name('brokers.setNew');
 
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     Route::post('reports/export', [ReportController::class, 'export'])->name('reports.export');

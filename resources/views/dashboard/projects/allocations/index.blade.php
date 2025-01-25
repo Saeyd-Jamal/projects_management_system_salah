@@ -14,16 +14,19 @@
     <x-slot:extra_nav>
         <div class="form-group my-0 mx-2">
             <select name="year" id="year" class="form-control">
-                @for ($year = date('Y'); $year >= 2024; $year--)
+                @for ($year = date('Y'); $year >= 2023; $year--)
                     <option value="{{ $year }}">{{ $year }}</option>
                 @endfor
             </select>
         </div>
+        @can('copy', 'App\\Models\Allocation')
         <li class="nav-item">
             <button type="button" class="btn btn-icon btn-info text-white mx-1" id="copy-export" title="نسخ">
                 <i class="fe fe-copy fe-16"></i>
             </button>
         </li>
+        @endcan
+        @can('export-excel', 'App\\Models\Allocation')
         <li class="nav-item">
             <button type="button" class="btn btn-icon btn-success text-white" id="excel-export" title="تصدير excel">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="16" height="16">
@@ -31,6 +34,7 @@
                 </svg>
             </button>
         </li>
+        @endcan
         @can('create', 'App\\Models\Allocation')
         <li class="nav-item mx-2">
             <button type="button" class="btn btn-icon text-success m-0" id="createNew">
@@ -63,9 +67,9 @@
                     <table id="allocations-table" class="table table-striped table-bordered table-hover sticky" style="width:100%; height: calc(100vh - 115px);">
                         <thead>
                             <tr>
-                                <th></th>
-                                <th class="text-white opacity-7 text-center">#</th>
-                                <th class="sticky" style="right: 0px;" id="nth1">
+                                <th class="sticky" id="nth0"></th>
+                                <th class="text-white opacity-7 text-center sticky"  id="nth1">#</th>
+                                <th class="sticky" style="right: 36.5px;"  id="nth2">
                                     <div class='d-flex align-items-center justify-content-between'>
                                         <span>تاريخ التخصيص</span>
                                         <div class='filter-dropdown ml-4'>
@@ -88,7 +92,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="sticky" style="right: 132px;" id="nth2">
+                                <th class="sticky" style="right: 153px;" id="nth3">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span style="font-size: 12px;">رقم <br> الموازنة</span>
                                         <div class="filter-dropdown ml-4">
@@ -143,7 +147,7 @@
                                         </div>
                                     </div>
                                 </th> --}}
-                                <th class="sticky" style="right: 220px;" id="nth3">
+                                <th class="sticky" style="right: 217.6px;" id="nth4">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span>المؤسسة</span>
                                         <div class="filter-dropdown ml-4">
@@ -670,9 +674,11 @@
                     }
                     return new Intl.NumberFormat('en-US', { minimumFractionDigits: min, maximumFractionDigits: 2 }).format(number);
                 };
-                // let width1 = $('#nth1').width();
-                // let width2 = $('#nth2').width();
-                // let width3 = $('#nth3').width();
+                let width0 = $('#nth0').outerWidth(true);
+                let width1 = $('#nth1').outerWidth(true);
+                let width2 = $('#nth2').outerWidth(true);
+                let width3 = $('#nth3').outerWidth(true);
+
                 let table = $('#allocations-table').DataTable({
                     processing: true,
                     serverSide: true,
@@ -776,7 +782,7 @@
                         }
                     },
                     columns: [
-                        { data: 'edit', name: 'edit', orderable: false, searchable: false, render: function(data, type, row) {
+                        { data: 'edit', name: 'edit', orderable: false, class: 'sticky text-center', searchable: false, render: function(data, type, row) {
                             @can('update','App\\Models\Allocation')
                             let link = `<button class="btn btn-sm p-1 btn-icon text-primary edit_row"  data-id=":allocation"><i class="fe fe-edit"></i></button>`.replace(':allocation', data);
                             return link ;
@@ -784,7 +790,7 @@
                             return '';
                             @endcan
                         }},
-                        { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, class: 'text-center'}, // عمود الترقيم التلقائي
+                        { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, class: 'sticky text-center'}, // عمود الترقيم التلقائي
                         { data: 'date_allocation', name: 'date_allocation'  , orderable: false, class: 'sticky text-center'},
                         { data: 'budget_number', name: 'budget_number' , orderable: false, class: 'sticky text-center'},
                         { data: 'broker_name', name: 'broker_name' , orderable: false, class: 'sticky' },
@@ -866,10 +872,13 @@
                     drawCallback: function(settings) {
                         // تطبيق التنسيق على خلايا العمود المحدد
                         $('#allocations-table tbody tr').each(function() {
-                            $(this).find('td').eq(2).css('right', '0px');
-                            $(this).find('td').eq(3).css('right', '132px');
-                            $(this).find('td').eq(4).css('right', '220px');
+                            $(this).find('td').eq(0).css('right', (0) + 'px');
+                            $(this).find('td').eq(1).css('right', (width0) + 'px');
+                            $(this).find('td').eq(2).css('right', (width0 + width1) + 'px');
+                            $(this).find('td').eq(3).css('right', (width0 + width1 + width2 - 5) + 'px');
+                            $(this).find('td').eq(4).css('right', (width0 + width1 + width2 + width3 - 10) + 'px');
                         });
+
                     },
                     footerCallback: function(row, data, start, end, display) {
                         var api = this.api();

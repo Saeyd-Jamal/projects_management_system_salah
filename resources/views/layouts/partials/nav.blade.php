@@ -100,6 +100,9 @@
                         @can('view','App\\Models\Currency')
                             <a class="nav-link pl-lg-2" href="{{route('currencies.index')}}"><span class="ml-1">العملات</span></a>
                         @endcan
+                        @can('view','App\\Models\Broker')
+                            <a class="nav-link pl-lg-2" href="{{route('brokers.index')}}"><span class="ml-1">المؤسسات</span></a>
+                        @endcan
                         @can('view','App\\Models\Item')
                             <a class="nav-link pl-lg-2" href="{{route('items.index')}}"><span class="ml-1">الأصناف</span></a>
                         @endcan

@@ -14,11 +14,12 @@
     <x-slot:extra_nav>
         <div class="form-group my-0 mx-2">
             <select name="year" id="year" class="form-control">
-                @for ($year = date('Y'); $year >= 2024; $year--)
+                @for ($year = date('Y'); $year >= 2023; $year--)
                     <option value="{{ $year }}">{{ $year }}</option>
                 @endfor
             </select>
         </div>
+        @can('export-excel','App\\Models\Executive')
         <li class="nav-item">
             <button type="button" class="btn btn-icon btn-success text-white" id="excel-export" title="تصدير excel">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512" width="16" height="16">
@@ -26,6 +27,7 @@
                 </svg>
             </button>
         </li>
+        @endcan
         @can('create', 'App\\Models\Executive')
         <li class="nav-item mx-2">
             <button type="button" class="btn btn-icon text-success m-0" id="createNew">
@@ -58,9 +60,9 @@
                     <table id="executives-table" class="table table-striped table-bordered table-hover sticky" style="width:100%; height: calc(100vh - 140px);">
                         <thead>
                             <tr>
-                                <th></th>
-                                <th class="text-white  opacity-7 text-center sticky" style="right: 0px;"  id="nth1">#</th>
-                                <th class="sticky" style="right: 55.7px;"  id="nth2">
+                                <th class="sticky" style="right: 0px;" id="nth0"></th>
+                                <th class="text-white  opacity-7 text-center sticky" style="right: 40.6px;"  id="nth1">#</th>
+                                <th class="sticky" style="right: 96.3px;"  id="nth2">
                                     <div class='d-flex align-items-center justify-content-between'>
                                         <span>التاريخ</span>
                                         <div class='filter-dropdown ml-4'>
@@ -83,7 +85,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th  class="sticky" style="right: 141.5px;"  id="nth3">
+                                <th  class="sticky" style="right: 181.7px;"  id="nth3">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span>المؤسسة</span>
                                         <div class="filter-dropdown ml-4">
@@ -113,7 +115,7 @@
                                         </div>
                                     </div>
                                 </th>
-                                <th class="sticky" style="right: 287px;"  id="nth4">
+                                <th class="sticky" style="right: 346.7px;"  id="nth4">
                                     <div class="d-flex align-items-center justify-content-between">
                                         <span>الحساب</span>
                                         <div class="filter-dropdown ml-4">
@@ -458,18 +460,23 @@
                     }
                     return new Intl.NumberFormat('en-US', { minimumFractionDigits: min, maximumFractionDigits: 2 }).format(number);
                 };
-                // let width1 = $('#nth1').width();
-                // let width2 = $('#nth2').width();
-                // let width3 = $('#nth3').width();
-                // let width4 = $('#nth4').width();
+                let width0 = $('#nth0').outerWidth(true);
+                let width1 = $('#nth1').outerWidth(true);
+                let width2 = $('#nth2').outerWidth(true);
+                let width3 = $('#nth3').outerWidth(true);
                 let table = $('#executives-table').DataTable({
                     processing: true,
-                    serverSide: true,
+                    // serverSide: true,
                     responsive: true,
-                    paging: false,              // تعطيل الترقيم
-                    searching: true,            // الإبقاء على البحث إذا كنت تريده
-                    info: false,                // تعطيل النص السفلي الذي يوضح عدد السجلات
-                    lengthChange: false,        // تعطيل قائمة تغيير عدد المدخلات
+                    paging: true,              // تمكين الترقيم (Pagination)
+                    searching: true,           // الإبقاء على البحث
+                    info: true,                // تمكين النص السفلي الذي يوضح عدد السجلات
+                    lengthChange: true,        // السماح للمستخدم بتغيير عدد المدخلات
+                    pageLength: 50,            // عدد السجلات الافتراضي لكل صفحة
+                    lengthMenu: [              // القيم التي يمكن للمستخدم تحديدها
+                        [50, 100, 500, -1],     // القيم الفعلية لعدد السطور
+                        ['50', '100' , '500', 'عرض الكل'] // النصوص التي تظهر في القائمة المنسدلة
+                    ],
                     layout: {
                         topStart: {
                             buttons: [
@@ -506,7 +513,7 @@
                         }
                     },
                     columns: [
-                        { data: 'edit', name: 'edit', orderable: false, searchable: false, render: function(data, type, row) {
+                        { data: 'edit', name: 'edit', orderable: false, class: 'sticky' , searchable: false, render: function(data, type, row) {
                                 // let link = `<a href="{{ route('executives.edit', ':executive') }}" class="btn btn-sm btn-primary">تعديل <i class="fa fa-edit"></i></a>`.replace(':executive', data);
                                 @can('update','App\\Models\Executive')
                                 let link = `<button class="btn btn-sm p-1 btn-icon text-primary edit_row"  data-id=":executive"><i class="fe fe-edit"></i></button>`.replace(':executive', data);
@@ -558,14 +565,35 @@
                     columnDefs: [
                         { targets: 1, searchable: false, orderable: false } // تعطيل الفرز والبحث على عمود الترقيم
                     ],
+                     // الانتقال إلى آخر صفحة عند تحديث البيانات عبر AJAX
+                    xhr: function () {
+                        var api = this.api();
+                        if (api.page.info().pages > 1) {
+                            api.page('last').draw('page');
+                        }
+                    },
+                    // الانتقال إلى آخر صفحة عند تحميل الجدول لأول مرة
+                    initComplete: function (settings, json) {
+                        let api = this.api();
+                        api.page('last').draw('page');
+                    },
                     drawCallback: function(settings) {
                         // تطبيق التنسيق على خلايا العمود المحدد
                         $('#executives-table tbody tr').each(function() {
-                            $(this).find('td').eq(1).css('right', '0px');
-                            $(this).find('td').eq(2).css('right', '55.7px');
-                            $(this).find('td').eq(3).css('right', '141.5px');
-                            $(this).find('td').eq(4).css('right', '287px');
+                            $(this).find('td').eq(0).css('right', (0) + 'px');
+                            $(this).find('td').eq(1).css('right', (width0) + 'px');
+                            $(this).find('td').eq(2).css('right', (width0 + width1) + 'px');
+                            $(this).find('td').eq(3).css('right', (width0 + width1 + width2 - 5) + 'px');
+                            $(this).find('td').eq(4).css('right', (width0 + width1 + width2 + width3 - 10) + 'px');
                         });
+                        table.ajax.reload(function () {
+                            // الانتقال إلى آخر صفحة بعد التحديث
+                            table.page('last').draw(false);
+                        });
+                        let api = this.api();
+                        if (api.search()) {
+                            api.page('last').draw('page');
+                        }
                     },
                     footerCallback: function(row, data, start, end, display) {
                         var api = this.api();
@@ -581,7 +609,7 @@
 
                         // total_quantity 9
                         var total_quantity_sum = api
-                            .column(9, { page: 'current' }) // العمود الرابع
+                            .column(9, { search: 'applied' }) // العمود الرابع
                             .data()
                             .reduce(function(a, b) {
                                 return intVal(a) + intVal(b);
@@ -589,7 +617,7 @@
 
                         // total_total_ils 11
                         var total_total_ils_sum = api
-                            .column(11, { page: 'current' }) // العمود الرابع
+                            .column(11, { search: 'applied' }) // العمود الرابع
                             .data()
                             .reduce(function(a, b) {
                                 return intVal(a) + intVal(b);
@@ -597,7 +625,7 @@
 
                         // total_amount_payments 14
                         var total_amount_payments_sum = api
-                            .column(14, { page: 'current' }) // العمود الرابع
+                            .column(14, { search: 'applied' }) // العمود الرابع
                             .data()
                             .reduce(function(a, b) {
                                 return intVal(a) + intVal(b);
@@ -615,6 +643,11 @@
                         $('.remaining').html(formatNumber(remaining,2));
                         $('.remaining_dollars').html(formatNumber((remaining * ils),2));
                     }
+                });
+                // الانتقال إلى آخر صفحة تلقائيًا بعد استجابة AJAX
+                table.on('xhr.dt', function () {
+                    var api = table;
+                    api.page('last').draw(false);
                 });
                 // عندما يتم رسم الجدول (بعد تحميل البيانات أو تحديثها)
                 table.on('draw', function() {
